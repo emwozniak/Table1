@@ -1,6 +1,7 @@
 \name{Table1-package}
 \alias{Table1-package}
 \alias{Table1}
+
 \docType{package}
 \title{
 \packageTitle{Table1}
@@ -10,10 +11,10 @@
 }
 \details{
 
-The DESCRIPTION file:
-\packageDESCRIPTION{Table1}
-\packageIndices{Table1}
-~~ An overview of how to use the package, including the most important functions ~~
+%The DESCRIPTION file:
+%\packageDESCRIPTION{Table1}
+%\packageIndices{Table1}
+Use the \code{\link{cont.var}} and \code{\link{cat.var}} functions to produce summary statistics for continuous and categorical variables, respectively. Create a data frame of these results with rbind, and output the results as plain text, LaTeX, or HTML using \code{\link{out.plain}}, \code{\link{out.latex}}, or \code{\link{out.html}}.
 }
 \author{
 \packageAuthor{Table1}
@@ -21,15 +22,20 @@ The DESCRIPTION file:
 Maintainer: \packageMaintainer{Table1}
 }
 \references{
-~~ Literature or other references for background information ~~
 }
-~~ Optionally other standard keywords, one per line, from file KEYWORDS in the R documentation ~~
-~~ directory ~~
+
 \keyword{ package }
 \seealso{
-~~ Optional links to other man pages, e.g. ~~
-~~ \code{\link[<pkg>:<pkg>-package]{<pkg>}} ~~
+
 }
 \examples{
-~~ simple examples of the most important functions ~~
+library(survival)
+library(htmlTable)
+attach(pbc)
+example <- rbind(
+  cont.var(var=age, strat=trt, header='Age', ptype='ttest'),
+  cat.var(var=sex, strat=trt, rownames=c('Male', 'Female'), header='Sex', ptype='chisq'),
+  cont.var(var=bili, strat=trt, header='Serum bilirubin', ptype='ttest')
+  )
+out.html(example, colnames=c('Variable', 'D-penicillmain', 'Placebo', 'Overall', 'p-value'))
 }

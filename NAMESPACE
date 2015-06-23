@@ -1,1 +1,7 @@
-exportPattern("^[[:alpha:]]+")
+import(htmlTable)
+import(xtable)
+export(cont.var)
+export(cat.var)
+export(out.plain)
+export(out.html)
+export(out.latex)
