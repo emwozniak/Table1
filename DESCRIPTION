@@ -1,0 +1,11 @@
+Package: Table1
+Type: Package
+Title: Summary Table
+Version: 1.0
+Date: 2015-06-18
+Author: Erica Wozniak
+Maintainer: Erica Wozniak <ewozniak@mcw.edu>
+Description: This package creates summaries for categorical and continuous variables. Basic significance tests across strata are available. Options to output results to LaTeX, HTML, and plain text are currently supported.
+Imports: xtable, htmlTable
+Suggests: survival
+License: GPL-2
