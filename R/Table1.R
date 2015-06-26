@@ -534,12 +534,19 @@ out.latex <- function(tab, colnames=NULL) {
 ###############
 # HTML output #
 ###############
+#For categorical variables, formatting may be a problem if categories 
+#have similar names to available summary statistics
 out.html <- function(tab, colnames) {
   named <- as.vector(tab[,1])
   tags <- grepl('^ ', named)
-  named <- c(ifelse(tags==F, paste('<b>', named, '</b>', sep=''), 
-                    paste("&nbsp;", "&nbsp;", "&nbsp;", named, sep=' ')))
-  output <- cbind(named, tab[,2:dim(tab)[2]])
+  tags2 <- (grepl('Count', named, fixed=TRUE) | grepl('%', named, fixed=TRUE) | 
+              grepl('Missing', named, fixed=T)==TRUE | grepl('Mean', named, fixed=TRUE) |
+              grepl('Median', named, fixed=TRUE) | grepl('Q1', named, fixed=TRUE) |
+              grepl('Min', named, fixed=TRUE))
+  named <- ifelse((tags==FALSE | tags2==FALSE), paste('<b>', named, '</b>', sep=''), named)
+  named <- ifelse(tags==TRUE, paste("&nbsp;", "&nbsp;", "&nbsp;", named, sep=' '), named)
+  
+  output <- cbind(named, as.vector(tab[,2:dim(tab)[2]]))
   
   return (
     htmlTable(as.matrix(output), 
