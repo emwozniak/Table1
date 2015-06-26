@@ -10,137 +10,178 @@ cat.var <- function(var,
                     ptype='None',
                     pname=FALSE) {
   if (is.null(strat)) {
+    #Construct categorical summary with no strata
+    #Column percents only
+    n <- length(which(is.na(var)==FALSE))
     tot <- as.matrix(table(var))
     tot[] <- paste0(tot, 
-                paste0(' (', 
-                    format(round((tot/rowSums(tot))*100, dec), 
-                    nsmall=dec), ')',
-                paste0(' (', 
-                    format(round((tot/colSums(tot))*100, dec), 
-                    nsmall=dec), ')'))
-                )
+                    #paste0(' (', 
+                    #format(round((tot/rowSums(tot))*100, dec), 
+                    #nsmall=dec), '%)',
+                    paste0(' (', 
+                           format(round((tot/colSums(tot))*100, dec), 
+                                  nsmall=dec), '%)'))
+    #)
     miss <- length(which(is.na(var)==T))
-    out <- sapply(data.frame(rbind(rep(NA, length(levels(as.factor(strat))) + 1), tot, miss)),
+    out <- sapply(data.frame(rbind(rep(NA, length(levels(as.factor(strat))) + 1), 
+                                   n, 
+                                   rep(NA, length(levels(as.factor(strat))) + 1),
+                                   tot, 
+                                   miss),
+                             row.names=NULL),
                   as.character)
     out <- replace(out, is.na(out), '')
-    out <- cbind(as.vector(c(paste(header, '     '), paste0('   ', rownames), '   Missing')), out)
+    out <- cbind(as.vector(c(paste(header, '     '), '  Count', '  (%)',  
+                             paste0('  ', rownames), '  Missing')), out)
     rownames(out) <- NULL
     colnames(out) <- c('Variable', 'Overall')
   }
   else {
     if (!is.null(strat)) {
+      #Construct categorical summary with strata
+      #Row and column percents
       cat <- as.matrix(table(var, as.factor(strat)))
-      tot <- as.matrix(table(var))
+      tot <- as.matrix(apply(cat, 1, sum))
+      n <- as.matrix(apply(cat, 2, sum))
+      n[] <- paste0(n,
+                    paste0(' (',
+                           format(round((n/sum(n))*100, dec),
+                                  nsmall=dec), '%)'
+                    )
+      )
+      n <- cbind(t(n), apply(tot, 2, sum))
       cat[] <- paste0(cat, 
-                  paste0(' (', 
-                      format(round((cat/rowSums(cat))*100, dec), 
-                      nsmall=dec), ')',
-                  paste0(' (', 
-                      format(round((cat/colSums(cat))*100, dec), 
-                      nsmall=dec), ')'))
-                  )
+                      paste0(' (', 
+                             format(round((cat/rowSums(cat))*100, dec), 
+                                    nsmall=dec), '%)',
+                             paste0(' (', 
+                                    format(round((cat/colSums(cat))*100, dec), 
+                                           nsmall=dec), '%)'))
+      )
       tot[] <- paste0(tot, 
-                  paste0(' (', 
-                      format(round((tot/rowSums(tot))*100, dec), 
-                      nsmall=dec), ')',
-                  paste0(' (', 
-                      format(round((tot/colSums(tot))*100, dec), 
-                      nsmall=dec), ')'))
-                  )
+                      paste0(' (', 
+                             format(round((tot/rowSums(tot))*100, dec), 
+                                    nsmall=dec), '%)',
+                             paste0(' (', 
+                                    format(round((tot/colSums(tot))*100, dec), 
+                                           nsmall=dec), '%)'))
+      )
       miss <- c(aggregate(var, list(strat), function(x) {sum(is.na(x))})[,-1],
                 sum(aggregate(var, list(strat), function(x) {sum(is.na(x))})[,-1]))
-      out <- sapply(data.frame(rbind(rep(NA, length(levels(as.factor(strat))) + 1), 
-                    cbind(cat, tot), miss)),
+      out <- sapply(data.frame(rbind(rep(NA, length(levels(as.factor(strat))) + 1),
+                                     n,
+                                     rep(NA, length(levels(as.factor(strat))) + 1),
+                                     cbind(cat, tot), 
+                                     miss),
+                               row.names=NULL),
                     as.character)
       out <- replace(out, is.na(out), '')
-      out <- cbind(as.vector(c(paste(header, '     '), paste0('   ', rownames), '   Missing')), out)
+      out <- cbind(as.vector(c(paste(header, '     '), '  Count (%)', '  (Row %)(Col %)', 
+                               paste0('  ', rownames), '  Missing')), out)
       rownames(out) <- NULL
       colnames(out) <- c('Variable', as.vector(levels(as.factor(strat))), 'Overall')
     }
   }
   if (ptype=='chisq') {
     p <- chisq.test(var, strat)$p.value
-      if (p>=0.0001 & pname==TRUE) {
-        p.col <- c(format(round(p, 4), nsmall=4), 'Chi-square', rep(NA, length(levels(as.factor(var)))))
-      }
+    if (p>=0.0001 & pname==TRUE) {
+      p.col <- c(signif(p, 3), 'Chi-square', rep(NA, length(levels(as.factor(var))) + 2))
+    }
     else {
       if (p<0.0001 & pname==TRUE) {
-        p.col <- c('<0.0001', 'Chi-square', rep(NA, length(levels(as.factor(var)))))
+        p.col <- c('<0.0001', 'Chi-square', rep(NA, length(levels(as.factor(var))) + 2))
       }
       else {
         if (p>=0.0001 & pname==FALSE) {
-          p.col <- c(format(round(p, 4), nsmall=4), rep(NA, length(levels(as.factor(var))) + 1)) 
+          p.col <- c(signif(p, 3), rep(NA, length(levels(as.factor(var))) + 3)) 
         }
         else {
           if (p<0.0001 & pname==FALSE) {
-            p.col <- c('<0.0001', rep(NA, length(levels(as.factor(var))) + 1))
+            p.col <- c('<0.0001', rep(NA, length(levels(as.factor(var))) + 3))
           }
         }
       }
     }      
-    out <- sapply(data.frame(cbind(rbind(rep(NA, length(levels(as.factor(strat))) + 1), 
-                  cbind(cat, tot), miss)), p.col),
+    out <- sapply(data.frame(cbind(rbind(rep(NA, length(levels(as.factor(strat))) + 1),
+                                         n,
+                                         rep(NA, length(levels(as.factor(strat))) + 1),
+                                         cbind(cat, tot), 
+                                         miss),
+                                   p.col),
+                             row.names=NULL),
                   as.character)
     out <- replace(out, is.na(out), '')
-    out <- cbind(as.vector(c(paste(header, '     '), paste0('   ', rownames), '   Missing')), out)
+    out <- cbind(as.vector(c(paste(header, '     '), '  Count (%)', '  (Row %)(Col %)', 
+                             paste0('   ', rownames), '  Missing')), out)
     rownames(out) <- NULL
     colnames(out) <- c('Variable', as.vector(levels(as.factor(strat))), 'Overall', 'p-value')
   }
   else {
     if (ptype=='fisher') {
       p <- fisher.test(var, strat)$p.value
-        if (p>=0.0001 & pname==TRUE) {
-          p.col <- c(format(round(p, 4), nsmall=4), 'Fisher exact', rep(NA, length(levels(as.factor(var)))))
-        }
+      if (p>=0.0001 & pname==TRUE) {
+        p.col <- c(signif(p, 3), 'Fisher exact', rep(NA, length(levels(as.factor(var))) + 2))
+      }
       else {
         if (p<0.0001 & pname==TRUE) {
-          p.col <- c('<0.0001', 'Fisher exact', rep(NA, length(levels(as.factor(var)))))
+          p.col <- c('<0.0001', 'Fisher exact', rep(NA, length(levels(as.factor(var))) + 2))
         }
         else {
           if (p>=0.0001 & pname==FALSE) {
-            p.col <- c(format(round(p, 4), nsmall=4), rep(NA, length(levels(as.factor(var))) + 1))
+            p.col <- c(signif(p, 3), rep(NA, length(levels(as.factor(var))) + 3))
           }
           else {
             if (p<0.0001 & pname==FALSE) {
-              p.col <- c('<0.0001', rep(NA, length(levels(as.factor(var))) + 1))
+              p.col <- c('<0.0001', rep(NA, length(levels(as.factor(var))) + 3))
             }
           }
         }
       }      
-      out <- sapply(data.frame(cbind(rbind(rep(NA, length(levels(as.factor(strat))) + 1), 
-                    cbind(cat, tot), miss)), p.col),
+      out <- sapply(data.frame(cbind(rbind(rep(NA, length(levels(as.factor(strat))) + 1),
+                                           n,
+                                           rep(NA, length(levels(as.factor(strat))) + 1),
+                                           cbind(cat, tot), 
+                                           miss),
+                                     p.col),
+                               row.names=NULL),
                     as.character)
       out <- replace(out, is.na(out), '')
-      out <- cbind(as.vector(c(paste(header, '     '), paste0('   ', rownames), '   Missing')), out)
+      out <- cbind(as.vector(c(paste(header, '     '), '  Count (%)', '  (Row %)(Col %)', paste0('   ', rownames), '   Missing')), out)
       rownames(out) <- NULL
       colnames(out) <- c('Variable', as.vector(levels(as.factor(strat))), 'Overall', 'p-value')
     }
     else {
       if (ptype=='mcnemar') {
         p <- mcnemar.test(var, strat)$p.value
-          if (p>=0.0001 & pname==TRUE) {
-            p.col <- c(format(round(p, 4), nsmall=4), 'McNemar', rep(NA, length(levels(as.factor(strat)))))
-          }
+        if (p>=0.0001 & pname==TRUE) {
+          p.col <- c(signif(p, 3), 'McNemar', rep(NA, length(levels(as.factor(strat))) + 2))
+        }
         else {
           if (p<0.0001 & pname==TRUE) {
-            p.col <- c('<0.0001', 'McNemar', rep(NA, length(levels(as.factor(strat)))))
+            p.col <- c('<0.0001', 'McNemar', rep(NA, length(levels(as.factor(strat))) + 2))
           }
           else {
             if (p>=0.0001 & pname==FALSE) {
-              p.col <- c(format(round(p, 4), nsmall=4), rep(NA, length(levels(as.factor(strat))) + 1))
+              p.col <- c(signif(p, 3), rep(NA, length(levels(as.factor(strat))) + 3))
             }
             else {
               if (p<0.0001 & pname==FALSE) {
-                p.col <- c('<0.0001', rep(NA, length(levels(as.factor(strat))) + 1))
+                p.col <- c('<0.0001', rep(NA, length(levels(as.factor(strat))) + 3))
               }
             }
           }
         }      
-        out <- sapply(data.frame(cbind(rbind(rep(NA, length(levels(as.factor(strat))) + 1), 
-                      cbind(cat, tot), miss)), p.col),
+        out <- sapply(data.frame(cbind(rbind(rep(NA, length(levels(as.factor(strat))) + 1),
+                                             n,
+                                             rep(NA, length(levels(as.factor(strat))) + 1),
+                                             cbind(cat, tot), 
+                                             miss),
+                                       p.col),
+                                 row.names=NULL),
                       as.character)
         out <- replace(out, is.na(out), '')
-        out <- cbind(as.vector(c(paste(header, '     '), paste0('   ', rownames), '   Missing')), out)
+        out <- cbind(as.vector(c(paste(header, '     '), '  Count (%)', '  (Row %)(Col %)', 
+                                 paste0('   ', rownames), '   Missing')), out)
         rownames(out) <- NULL
         colnames(out) <- c('Variable', as.vector(levels(as.factor(strat))), 'Overall', 'p-value')
       }
