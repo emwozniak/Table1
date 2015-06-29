@@ -55,9 +55,9 @@ cat.var <- function(var,
                              format(round((cat/rowSums(cat))*100, dec), 
                                     nsmall=dec), '%)',
                              paste0(' (', 
-                                    format(round((cat/colSums(cat))*100, dec), 
-                                           nsmall=dec), '%)'))
-      )
+                                    format(round(t(t(cat)/colSums(cat))*100, dec), 
+                                           nsmall=dec), '%)')
+                      ))
       tot[] <- paste0(tot, 
                       paste0(' (', 
                              format(round((tot/rowSums(tot))*100, dec), 
