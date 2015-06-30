@@ -526,7 +526,7 @@ out.latex <- function(tab, colnames=NULL) {
   output <- cbind(named, tab[,2:dim(tab)[2]])
   colnames(output) <- colnames
   
-  print(xtable(output, align='llrrrr'), 
+  print(xtable(output, align=cat('ll', rep('r', dim(tab)[2]-1), sep='')), 
         type="latex", 
         sanitize.text.function = function(x){x}, 
         include.rownames=F)
