@@ -314,7 +314,7 @@ cont.var <- function(var,
           round(max(var[!is.na(strat)], na.rm=T), dec),
           nsmall=dec), 
         sep='')
-      miss.tot <- length(which(is.na(var)==T))
+      miss.tot=sum(miss)
       tot <- rbind(n.tot, mean.sd.tot, med.iqr.tot, q1.q3.tot, min.max.tot, miss.tot)
       
       out <- sapply(data.frame(rbind(rep(NA, length(levels(as.factor(strat))) + 1),
@@ -510,6 +510,7 @@ cont.var <- function(var,
   }
   return(data.frame(out))
 }
+
 ################
 # LaTeX output #
 ################
