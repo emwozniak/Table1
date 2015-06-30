@@ -517,16 +517,24 @@ cont.var <- function(var,
 out.latex <- function(tab, colnames=NULL) {
   named <- as.vector(tab[,1])
   tags <- grepl('^ ', named)
+  tags2 <- (grepl('Count', named, fixed=TRUE) | grepl('%', named, fixed=TRUE) | 
+              grepl('Missing', named, fixed=T)==TRUE | grepl('Mean', named, fixed=TRUE) |
+              grepl('Median', named, fixed=TRUE) | grepl('Q1', named, fixed=TRUE) |
+              grepl('Min', named, fixed=TRUE))
+  named <- ifelse(tags2==F,
+                  paste("\\textbf{", named, "}", sep=''),
+                  named)
   named <- c(ifelse(
     tags==F,
     paste("\\vspace*{0.1cm}", 
           paste("\\", "\\", sep=''), named) ,
     paste("\\hskip .5cm", named, sep=' ')))
   
-  output <- cbind(named, tab[,2:dim(tab)[2]])
+  #output <- cbind(named, tab[,2:dim(tab)[2]])
+  output <- apply(cbind(named, tab[,2:dim(tab)[2]]), 2, function(x) gsub('%', '\\\\%', x))
   colnames(output) <- colnames
   
-  print(xtable(output, align=cat('ll', rep('r', dim(tab)[2]-1), sep='')), 
+  print(xtable(output, align=paste(c('l', 'l', rep('r', dim(test)[2]-1)), collapse='')), 
         type="latex", 
         sanitize.text.function = function(x){x}, 
         include.rownames=F)
