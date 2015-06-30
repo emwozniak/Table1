@@ -562,7 +562,7 @@ out.html <- function(tab, colnames) {
 #####################
 out.plain <- function(tab, colnames=NULL) {
   output <- cbind(format(as.vector(tab[,1]), justify='left'), 
-                  example[,2:dim(tab)[2]])
+                  tab[,2:dim(tab)[2]])
   colnames(output)=colnames
   return(print(output, row.names=F))
 }
