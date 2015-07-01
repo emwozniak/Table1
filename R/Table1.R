@@ -574,3 +574,141 @@ out.plain <- function(tab, colnames=NULL) {
   colnames(output)=colnames
   return(print(output, row.names=F))
 }
+
+
+#############################
+# Vectorized table function #
+#############################
+make.table <- function(dat,
+                       #Categorical variable options
+                       cat.varlist=NULL,
+                       cat.header=names(sapply(cat.varlist, FUN=get, simplify=F, USE.NAMES=T)),
+                       cat.rownames=lapply(sapply(cat.varlist, FUN=get, simplify=F, USE.NAMES=T), FUN=function(x) 
+                         as.vector(levels(as.factor(x)))),
+                       cat.ptype='None',
+                       
+                       #Continuous variable options
+                       cont.varlist=NULL, 
+                       cont.header=names(sapply(cont.varlist, FUN=get, simplify=F, USE.NAMES=T)),
+                       cont.ptype='None',
+                       
+                       #Overall table options
+                       strat=NULL,
+                       dec=2,
+                       pname=FALSE,
+                       colnames=NULL,
+                       output='plain'
+)
+
+{
+  #Warnings
+  if (any(c(cat.ptype, cont.ptype) != 'None')==TRUE & is.null(strat)==TRUE) {
+    warning('A stratifying variable must be identified for p-values to be computed. See strat=.')
+  }
+  if (any(c(cat.varlist, cont.varlist) %in% ls('package:base'))==TRUE) {
+    warning("Variables cannot take the names of any base R functions -- try 
+            which(dput(colnames(dat)) %in% ls('package:base'))")
+  }
+  
+  #Apply cat.var to all categorical variables
+  cats <- mapply(cat.var, 
+                 var=sapply(cat.varlist, FUN=get, simplify=F, USE.NAMES=T), 
+                 strat=rep(list(strat), length(cat.varlist)), 
+                 dec=dec, 
+                 rownames=cat.rownames,
+                 header=cat.header,
+                 ptype=cat.ptype,
+                 pname=pname,
+                 SIMPLIFY=FALSE)
+  
+  
+  #Apply cont.var to all continuous variables
+  conts <- mapply(cont.var, 
+                  var=sapply(cont.varlist, FUN=get, simplify=F, USE.NAMES=T),
+                  strat=rep(list(strat), length(cont.varlist)),
+                  dec=dec,
+                  header=cont.header,
+                  ptype=cont.ptype,
+                  pname=pname,
+                  SIMPLIFY=FALSE)
+  
+  #Reorder output by variable order in dataset
+  tab <- do.call(rbind, 
+                 (c(cats, conts))[order(match(names(c(cats, conts)), 
+                                              names(dat)))])
+  #Define column names
+  if (!is.null(colnames)) {
+    colnames <- colnames
+  }
+  else {
+    if (is.null(colnames)) {
+      colnames <- colnames(tab)
+    }
+  }
+  
+  #Define output 
+  if (output=='plain') {
+    out.plain <- function(tab) {
+      output <- cbind(format(as.vector(tab[,1]), justify='left'), 
+                      tab[,2:dim(tab)[2]])
+      colnames(output) <- colnames
+      return(print(output, row.names=F))
+    }
+    out.plain(tab)
+  }
+  else {
+    if (output=='html') {
+      out.html <- function(tab) {
+        named <- as.vector(tab[,1])
+        tags <- grepl('^ ', named)
+        tags2 <- (grepl('Count', named, fixed=TRUE) | grepl('%', named, fixed=TRUE) | 
+                    grepl('Missing', named, fixed=T)==TRUE | grepl('Mean', named, fixed=TRUE) |
+                    grepl('Median', named, fixed=TRUE) | grepl('Q1', named, fixed=TRUE) |
+                    grepl('Min', named, fixed=TRUE))
+        named <- ifelse((tags==FALSE | tags2==FALSE), paste('<b>', named, '</b>', sep=''), named)
+        named <- ifelse(tags==TRUE, paste("&nbsp;", "&nbsp;", "&nbsp;", named, sep=' '), named)
+        
+        output <- cbind(named, as.vector(tab[,2:dim(tab)[2]]))
+        colnames(output) <- colnames
+        
+        return (
+          htmlTable(as.matrix(output), 
+                    rnames=F, 
+                    header=colnames,
+                    align=c('l', rep('r', ncol(output)-1)))
+        )
+      }
+      out.html(tab)
+    }
+    else {
+      if (output=='latex') {
+        out.latex <- function(tab) {
+          named <- as.vector(tab[,1])
+          tags <- grepl('^ ', named)
+          tags2 <- (grepl('Count', named, fixed=TRUE) | grepl('%', named, fixed=TRUE) | 
+                      grepl('Missing', named, fixed=T)==TRUE | grepl('Mean', named, fixed=TRUE) |
+                      grepl('Median', named, fixed=TRUE) | grepl('Q1', named, fixed=TRUE) |
+                      grepl('Min', named, fixed=TRUE))
+          named <- ifelse(tags2==F,
+                          paste("\\textbf{", named, "}", sep=''),
+                          named)
+          named <- c(ifelse(
+            tags==F,
+            paste("\\vspace*{0.1cm}", 
+                  paste("\\", "\\", sep=''), named) ,
+            paste("\\hskip .5cm", named, sep=' ')))
+          
+          #output <- cbind(named, tab[,2:dim(tab)[2]])
+          output <- apply(cbind(named, tab[,2:dim(tab)[2]]), 2, function(x) gsub('%', '\\\\%', x))
+          colnames(output) <- colnames
+          
+          print(xtable(output, align=paste(c('l', 'l', rep('r', dim(output)[2]-1)), collapse='')), 
+                type="latex", 
+                sanitize.text.function = function(x){x}, 
+                include.rownames=F)
+        }
+        out.latex(tab)
+      }
+    }
+  }
+  }
