@@ -534,7 +534,7 @@ out.latex <- function(tab, colnames=NULL) {
   output <- apply(cbind(named, tab[,2:dim(tab)[2]]), 2, function(x) gsub('%', '\\\\%', x))
   colnames(output) <- colnames
   
-  print(xtable(output, align=paste(c('l', 'l', rep('r', dim(test)[2]-1)), collapse='')), 
+  print(xtable(output, align=paste(c('l', 'l', rep('r', dim(output)[2]-1)), collapse='')), 
         type="latex", 
         sanitize.text.function = function(x){x}, 
         include.rownames=F)
