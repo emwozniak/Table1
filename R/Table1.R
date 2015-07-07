@@ -650,7 +650,7 @@ make.table <- function(dat,
   if (output=='plain') {
     out.plain <- function(tab) {
       output <- cbind(format(as.vector(tab[,1]), justify='left'), 
-                      tab[,2:dim(tab)[2]])
+                      data.frame(tab[,2:dim(tab)[2]]))
       colnames(output) <- colnames
       return(print(output, row.names=F))
     }
@@ -699,7 +699,7 @@ make.table <- function(dat,
             paste("\\hskip .5cm", named, sep=' ')))
           
           #output <- cbind(named, tab[,2:dim(tab)[2]])
-          output <- apply(cbind(named, tab[,2:dim(tab)[2]]), 2, function(x) gsub('%', '\\\\%', x))
+          output <- apply(cbind(named, data.frame(tab[,2:dim(tab)[2]])), 2, function(x) gsub('%', '\\\\%', x))
           colnames(output) <- colnames
           
           print(xtable(output, align=paste(c('l', 'l', rep('r', dim(output)[2]-1)), collapse='')), 
