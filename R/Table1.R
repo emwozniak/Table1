@@ -616,11 +616,21 @@ make.table <- function(dat,
             which(dput(colnames(dat)) %in% ls('package:base'))")
   }
   
+  if (is.null(strat)) {
+    cat.strat=rep(list(strat), length(cat.varlist))
+    cont.strat=rep(list(strat), length(cont.varlist))
+  }
+  else {
+    if (!is.null(strat)) {
+      cat.strat=rep(list(interaction(sapply(strat, FUN=get, simplify=FALSE, USE.NAMES=TRUE))), length(cat.varlist))
+      cont.strat=rep(list(interaction(sapply(strat, FUN=get, simplify=FALSE, USE.NAMES=TRUE))), length(cont.varlist))
+    }
+  }
   #If only categorical variables are provided
   if (is.null(cont.varlist)) {
     cats <- mapply(cat.var, 
                    var=sapply(cat.varlist, FUN=get, simplify=F, USE.NAMES=T), 
-                   strat=rep(list(interaction(sapply(strat, FUN=get, simplify=FALSE, USE.NAMES=TRUE))), length(cat.varlist)), 
+                   strat=cat.strat, 
                    dec=dec, 
                    rownames=cat.rownames,
                    header=cat.header,
@@ -638,7 +648,7 @@ make.table <- function(dat,
     if (is.null(cat.varlist)) {
       conts <- mapply(cont.var, 
                       var=sapply(cont.varlist, FUN=get, simplify=F, USE.NAMES=T),
-                      strat=rep(list(interaction(sapply(strat, FUN=get, simplify=FALSE, USE.NAMES=TRUE))), length(cont.varlist)),
+                      strat=cont.strat,
                       dec=dec,
                       header=cont.header,
                       ptype=cont.ptype,
@@ -653,7 +663,7 @@ make.table <- function(dat,
       #If both categorical and continuous variables are provided
       cats <- mapply(cat.var, 
                      var=sapply(cat.varlist, FUN=get, simplify=F, USE.NAMES=T), 
-                     strat=rep(list(interaction(sapply(strat, FUN=get, simplify=FALSE, USE.NAMES=TRUE))), length(cat.varlist)), 
+                     strat=cat.strat, 
                      dec=dec, 
                      rownames=cat.rownames,
                      header=cat.header,
@@ -662,7 +672,7 @@ make.table <- function(dat,
                      SIMPLIFY=FALSE)
       conts <- mapply(cont.var, 
                       var=sapply(cont.varlist, FUN=get, simplify=F, USE.NAMES=T),
-                      strat=rep(list(interaction(sapply(strat, FUN=get, simplify=FALSE, USE.NAMES=TRUE))), length(cont.varlist)),
+                      strat=cont.strat,
                       dec=dec,
                       header=cont.header,
                       ptype=cont.ptype,
@@ -750,7 +760,7 @@ make.table <- function(dat,
       }
     }
   }
-  }
+}
 
 
 
