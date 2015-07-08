@@ -602,7 +602,10 @@ make.table <- function(dat,
 
 {
   #Warnings
-  if ((output=='Plain')==FALSE) {
+  #if (missing(dat)) {
+  #warning('A data frame must be provided in dat=.')
+  #}
+  if ((output=='plain')==FALSE) {
     warning('Package dependencies: library(htmlTable) for HTML output and library(xtable) for LaTeX output')
   }
   if (any(c(cat.ptype, cont.ptype) != 'None')==TRUE & is.null(strat)==TRUE) {
@@ -613,32 +616,65 @@ make.table <- function(dat,
             which(dput(colnames(dat)) %in% ls('package:base'))")
   }
   
-  #Apply cat.var to all categorical variables
-  cats <- mapply(cat.var, 
-                 var=sapply(cat.varlist, FUN=get, simplify=F, USE.NAMES=T), 
-                 strat=rep(list(strat), length(cat.varlist)), 
-                 dec=dec, 
-                 rownames=cat.rownames,
-                 header=cat.header,
-                 ptype=cat.ptype,
-                 pname=pname,
-                 SIMPLIFY=FALSE)
+  #If only categorical variables are provided
+  if (is.null(cont.varlist)) {
+    cats <- mapply(cat.var, 
+                   var=sapply(cat.varlist, FUN=get, simplify=F, USE.NAMES=T), 
+                   strat=rep(list(get(strat)), length(cat.varlist)), 
+                   dec=dec, 
+                   rownames=cat.rownames,
+                   header=cat.header,
+                   ptype=cat.ptype,
+                   pname=pname,
+                   SIMPLIFY=FALSE)
+    #Reorder output by variable order in dataset
+    tab <- do.call(rbind, 
+                   (c(cats))[order(match(names(c(cats)), 
+                                         names(dat)))])
+  }
   
+  else {
+    #If only continuous variables are provided
+    if (is.null(cat.varlist)) {
+      conts <- mapply(cont.var, 
+                      var=sapply(cont.varlist, FUN=get, simplify=F, USE.NAMES=T),
+                      strat=rep(list(get(strat)), length(cont.varlist)),
+                      dec=dec,
+                      header=cont.header,
+                      ptype=cont.ptype,
+                      pname=pname,
+                      SIMPLIFY=FALSE)
+      #Reorder output by variable order in dataset
+      tab <- do.call(rbind, 
+                     (c(conts))[order(match(names(c(conts)), 
+                                            names(dat)))])
+    }
+    else {
+      #If both categorical and continuous variables are provided
+      cats <- mapply(cat.var, 
+                     var=sapply(cat.varlist, FUN=get, simplify=F, USE.NAMES=T), 
+                     strat=rep(list(get(strat)), length(cat.varlist)), 
+                     dec=dec, 
+                     rownames=cat.rownames,
+                     header=cat.header,
+                     ptype=cat.ptype,
+                     pname=pname,
+                     SIMPLIFY=FALSE)
+      conts <- mapply(cont.var, 
+                      var=sapply(cont.varlist, FUN=get, simplify=F, USE.NAMES=T),
+                      strat=rep(list(get(strat)), length(cont.varlist)),
+                      dec=dec,
+                      header=cont.header,
+                      ptype=cont.ptype,
+                      pname=pname,
+                      SIMPLIFY=FALSE)
+      #Reorder output by variable order in dataset
+      tab <- do.call(rbind, 
+                     (c(cats, conts))[order(match(names(c(cats, conts)), 
+                                                  names(dat)))])
+    }
+  } 
   
-  #Apply cont.var to all continuous variables
-  conts <- mapply(cont.var, 
-                  var=sapply(cont.varlist, FUN=get, simplify=F, USE.NAMES=T),
-                  strat=rep(list(strat), length(cont.varlist)),
-                  dec=dec,
-                  header=cont.header,
-                  ptype=cont.ptype,
-                  pname=pname,
-                  SIMPLIFY=FALSE)
-  
-  #Reorder output by variable order in dataset
-  tab <- do.call(rbind, 
-                 (c(cats, conts))[order(match(names(c(cats, conts)), 
-                                              names(dat)))])
   #Define column names
   if (!is.null(colnames)) {
     colnames <- colnames
@@ -714,4 +750,7 @@ make.table <- function(dat,
       }
     }
   }
-  }
+}
+
+
+
