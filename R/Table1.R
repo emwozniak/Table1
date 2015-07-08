@@ -620,7 +620,7 @@ make.table <- function(dat,
   if (is.null(cont.varlist)) {
     cats <- mapply(cat.var, 
                    var=sapply(cat.varlist, FUN=get, simplify=F, USE.NAMES=T), 
-                   strat=rep(list(get(strat)), length(cat.varlist)), 
+                   strat=rep(list(interaction(sapply(strat, FUN=get, simplify=FALSE, USE.NAMES=TRUE))), length(cat.varlist)), 
                    dec=dec, 
                    rownames=cat.rownames,
                    header=cat.header,
@@ -638,7 +638,7 @@ make.table <- function(dat,
     if (is.null(cat.varlist)) {
       conts <- mapply(cont.var, 
                       var=sapply(cont.varlist, FUN=get, simplify=F, USE.NAMES=T),
-                      strat=rep(list(get(strat)), length(cont.varlist)),
+                      strat=rep(list(interaction(sapply(strat, FUN=get, simplify=FALSE, USE.NAMES=TRUE))), length(cont.varlist)),
                       dec=dec,
                       header=cont.header,
                       ptype=cont.ptype,
@@ -653,7 +653,7 @@ make.table <- function(dat,
       #If both categorical and continuous variables are provided
       cats <- mapply(cat.var, 
                      var=sapply(cat.varlist, FUN=get, simplify=F, USE.NAMES=T), 
-                     strat=rep(list(get(strat)), length(cat.varlist)), 
+                     strat=rep(list(interaction(sapply(strat, FUN=get, simplify=FALSE, USE.NAMES=TRUE))), length(cat.varlist)), 
                      dec=dec, 
                      rownames=cat.rownames,
                      header=cat.header,
@@ -662,7 +662,7 @@ make.table <- function(dat,
                      SIMPLIFY=FALSE)
       conts <- mapply(cont.var, 
                       var=sapply(cont.varlist, FUN=get, simplify=F, USE.NAMES=T),
-                      strat=rep(list(get(strat)), length(cont.varlist)),
+                      strat=rep(list(interaction(sapply(strat, FUN=get, simplify=FALSE, USE.NAMES=TRUE))), length(cont.varlist)),
                       dec=dec,
                       header=cont.header,
                       ptype=cont.ptype,
@@ -750,7 +750,7 @@ make.table <- function(dat,
       }
     }
   }
-}
+  }
 
 
 
