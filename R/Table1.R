@@ -602,9 +602,9 @@ make.table <- function(dat,
 
 {
   #Warnings
-  #if (missing(dat)) {
-  #warning('A data frame must be provided in dat=.')
-  #}
+  if (missing(dat)) {
+    warning('A data frame must be provided in dat=.')
+  }
   if ((output=='plain')==FALSE) {
     warning('Package dependencies: library(htmlTable) for HTML output and library(xtable) for LaTeX output')
   }
@@ -615,17 +615,32 @@ make.table <- function(dat,
     warning("Variables cannot take the names of any base R functions -- try 
             which(dput(colnames(dat)) %in% ls('package:base'))")
   }
+  if (any(is.na(strat))==TRUE) {
+    warning('Some observations are omitted from summary due to missing levels of strata variables.')
+  }
   
   if (is.null(strat)) {
     cat.strat=rep(list(strat), length(cat.varlist))
     cont.strat=rep(list(strat), length(cont.varlist))
+    strat.miss=0
   }
   else {
     if (!is.null(strat)) {
       cat.strat=rep(list(interaction(sapply(strat, FUN=get, simplify=FALSE, USE.NAMES=TRUE))), length(cat.varlist))
       cont.strat=rep(list(interaction(sapply(strat, FUN=get, simplify=FALSE, USE.NAMES=TRUE))), length(cont.varlist))
+      strat.miss=lapply(sapply(strat, FUN=get, simplify=FALSE, USE.NAMES=TRUE), function(x) sum(is.na(x)))
+      strat.rem=sum(is.na(interaction(sapply(strat, FUN=get, simplify=FALSE, USE.NAMES=TRUE))))
     }
   }
+  
+  if (!is.null(strat) & strat.rem>0) {
+    print(paste("Total observations removed from table:", strat.rem, sep=' '))
+    print("Summary of total missing stratification variable(s):")
+    print(strat.miss)
+    footer.miss <- paste(strat.rem, "observations removed due to missing values in stratifying variable(s)", sep=' ')
+  }
+  else {footer.miss <- paste('')}
+  
   #If only categorical variables are provided
   if (is.null(cont.varlist)) {
     cats <- mapply(cat.var, 
@@ -724,7 +739,8 @@ make.table <- function(dat,
           htmlTable(as.matrix(output), 
                     rnames=F, 
                     header=colnames,
-                    align=c('l', rep('r', ncol(output)-1)))
+                    align=c('l', rep('r', ncol(output)-1)),
+                    tfoot=footer.miss)
         )
       }
       out.html(tab)
@@ -751,7 +767,8 @@ make.table <- function(dat,
           output <- apply(cbind(named, data.frame(tab[,2:dim(tab)[2]])), 2, function(x) gsub('%', '\\\\%', x))
           colnames(output) <- colnames
           
-          print(xtable(output, align=paste(c('l', 'l', rep('r', dim(output)[2]-1)), collapse='')), 
+          print(xtable(output, align=paste(c('l', 'l', rep('r', dim(output)[2]-1)), collapse=''),
+                       caption=footer.miss), 
                 type="latex", 
                 sanitize.text.function = function(x){x}, 
                 include.rownames=F)
@@ -760,7 +777,5 @@ make.table <- function(dat,
       }
     }
   }
-}
-
-
+  }
 
