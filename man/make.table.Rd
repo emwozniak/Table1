@@ -77,6 +77,7 @@ A few miscellaneous notes: \cr
 
 \itemize {
 \item The data frame must be attached (see \code{\link{attach}}) prior to use of the function.
+\item Table output to HTML and LaTeX require the package dependencies \code{\link{htmlTable}} and \code{\link{xtable}}
 \item The user must ensure that no variable names share the name of a base R function; otherwise, the program will throw an error. 
 \item By default, the final summary table is rearranged such that the variables in the table are in the same order as in the raw data set (dat=). 
 \item If missing values occur in stratifying variables (strat=), then the observations with missings will be removed from the table, and a comment will be printed indicating the total number removed. If multiple stratifying variables are provided, look to the console for a summary of total missing observations for each variable.
