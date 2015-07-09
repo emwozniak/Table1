@@ -777,5 +777,5 @@ make.table <- function(dat,
       }
     }
   }
-  }
+}
 
