@@ -9,24 +9,6 @@
 make.table(dat, cat.varlist, cat.header, cat.rownames, cat.ptype,
 cont.varlist, cont.header, cont.ptype, strat, dec, pname, 
 colnames, output)
-%The full call with defaults is given as follows:
-%make.table(dat, 
-    %cat.varlist=NULL, 
-    %cat.header=names(sapply(cat.varlist, FUN=get, simplify=F, USE.NAMES=T)),
-    %cat.rownames=lapply(sapply(cat.varlist, FUN=get, simplify=F, USE.NAMES=T), FUN=function(x) 
-                         %as.vector(levels(as.factor(x)))),
-    %cat.ptype='None',
-                       
-    %cont.varlist=NULL, 
-    %cont.header=names(sapply(cont.varlist, FUN=get, simplify=F, USE.NAMES=T)),
-    %cont.ptype='None',
-                       
-    %strat=NULL,
-    %dec=2,
-    %pname=FALSE,
-    %colnames=NULL,
-    %output='plain'
-    %)
 }
 
 \arguments{
@@ -92,11 +74,14 @@ Erica Wozniak
 
 \note{
 A few miscellaneous notes: \cr
-*The user must ensure that no variable names share the name of a base R function; otherwise, the program will throw an error. \cr
-*By default, the final summary table is rearranged such that the variables in the table are in the same order as in the raw data set (dat=). \cr
-*If missing values occur in stratifying variables (strat=), then the observations with missings will be removed from the table, and a comment will be printed indicating the total number removed. If multiple stratifying variables are provided, look to the console for a summary of total missing observations for each variable.
-*The make.table function provides the option for vectorized calls to cat.var and cont.var, as well as the option to call out.plain, out.html, or out.latex for ease of output; these individual functions are not deprecated. That is, a table may still be constructed by applying \code{\link{rbind}} to individual calls to \code{\link{cat.var}} and \code{\link{cont.var}}, and generating HTML or LaTeX output using \code{\link{out.html}} or \code{\link{out.latex}}.
 
+\itemize {
+\item The data frame must be attached (see \code{\link{attach}}) prior to use of the function.
+\item The user must ensure that no variable names share the name of a base R function; otherwise, the program will throw an error. 
+\item By default, the final summary table is rearranged such that the variables in the table are in the same order as in the raw data set (dat=). 
+\item If missing values occur in stratifying variables (strat=), then the observations with missings will be removed from the table, and a comment will be printed indicating the total number removed. If multiple stratifying variables are provided, look to the console for a summary of total missing observations for each variable.
+\item The make.table function provides the option for vectorized calls to cat.var and cont.var, as well as the option to call out.plain, out.html, or out.latex for ease of output; these individual functions are not deprecated. That is, a table may still be constructed by applying \code{\link{rbind}} to individual calls to \code{\link{cat.var}} and \code{\link{cont.var}}, and generating HTML or LaTeX output using \code{\link{out.html}} or \code{\link{out.latex}}.
+}
 }
 
 \seealso{
