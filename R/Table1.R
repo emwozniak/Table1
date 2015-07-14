@@ -195,10 +195,9 @@ cat.var <- function(var,
 }
 
 
-##############
-# Continuous #
-##############
-
+###############
+# Categorical #
+###############
 
 cont.var <- function(var, 
                      strat=NULL, 
@@ -243,7 +242,7 @@ cont.var <- function(var,
       sep='')
     miss.tot <- length(which(is.na(var)==T))
     out <- sapply(data.frame(rbind(NA, n.tot,
-                      mean.sd.tot, med.iqr.tot, q1.q3.tot, min.max.tot, miss.tot)),
+                                   mean.sd.tot, med.iqr.tot, q1.q3.tot, min.max.tot, miss.tot)),
                   as.character)
     out <- replace(out, is.na(out), '')
     out <- cbind(as.vector(c(paste(header, '     '),  '   Count', '   Mean (SD)', '   Median (IQR)', 
@@ -258,41 +257,35 @@ cont.var <- function(var,
       
       #Stratified summaries
       mean.sd <- format(
-                    round(aggregate(var, list(strat), mean, na.rm=T)[,-1], dec), 
-                 nsmall=dec)
-      mean.sd[] <- paste0(mean.sd, 
-                          paste0(' (', 
-                            (format(
-                                round(aggregate(var, list(strat), sd, na.rm=T)[,-1], dec), 
-                              small=dec)),
-                            ')'))
+        round(aggregate(var, list(strat), mean, na.rm=T)[,-1], dec), 
+        nsmall=dec)
+      mean.sd[] <- paste0(mean.sd, paste0(' (', 
+                                          (format(
+                                            round(aggregate(var, list(strat), sd, na.rm=T)[,-1], dec), 
+                                            nsmall=dec)),
+                                          ')'))
       med.iqr <- format(
-                    round(aggregate(var, list(strat), median, na.rm=T)[,-1], dec), 
-                 nsmall=dec)
-      med.iqr[] <- paste0(med.iqr, 
-                          paste0(' (', 
-                            (format(
-                                round(aggregate(var, list(strat), IQR, na.rm=T)[,-1], dec), 
-                             nsmall=dec)), 
-                          ')'))
+        round(aggregate(var, list(strat), median, na.rm=T)[,-1], dec), 
+        nsmall=dec)
+      med.iqr[] <- paste0(med.iqr, paste0(' (', 
+                                          (format(
+                                            round(aggregate(var, list(strat), IQR, na.rm=T)[,-1], dec), 
+                                            nsmall=dec)), 
+                                          ')'))
       q1.q3 <- format(
-                  round(aggregate(var, list(strat), quantile, 0.25, na.rm=T)[,-1], dec), 
-               nsmall=dec)
-      q1.q3[] <- paste0(q1.q3, 
-                        paste0(', ', 
-                            (format(
-                                round(aggregate(var, list(strat), quantile, 0.75, na.rm=T)[,-1], dec), 
-                             nsmall=dec))
-                        ))
+        round(aggregate(var, list(strat), quantile, 0.25, na.rm=T)[,-1], dec), 
+        nsmall=dec)
+      q1.q3[] <- paste0(q1.q3, paste0(', ', 
+                                      (format(
+                                        round(aggregate(var, list(strat), quantile, 0.75, na.rm=T)[,-1], dec), 
+                                        nsmall=dec))))
       min.max <- format(
-                    round(aggregate(var, list(strat), min, na.rm=T)[,-1], dec), 
-                 nsmall=dec)
-      min.max[] <- paste0(min.max, 
-                          paste0(', ', 
-                              (format(
-                                  round(aggregate(var, list(strat), max, na.rm=T)[,-1], dec), 
-                               nsmall=dec))
-                          ))
+        round(aggregate(var, list(strat), min, na.rm=T)[,-1], dec), 
+        nsmall=dec)
+      min.max[] <- paste0(min.max, paste0(', ', 
+                                          (format(
+                                            round(aggregate(var, list(strat), max, na.rm=T)[,-1], dec), 
+                                            nsmall=dec))))
       miss <- aggregate(var, list(strat), function(x) {sum(is.na(x))})[,-1]
       n <- as.vector(aggregate(var, list(strat), length)[,-1]) - as.vector(miss)
       cont <- rbind(n, mean.sd, med.iqr, q1.q3, min.max, miss)
@@ -397,7 +390,8 @@ cont.var <- function(var,
       else if (p<0.0001 & pname==FALSE) {
         p.col <- c('<0.0001', rep(NA, 6))
       }
-           
+      
+      
       #Create data frame with paired t-test p-values      
       out <- sapply(data.frame(cbind(rbind(rep(NA, length(levels(as.factor(strat))) + 1), 
                                            cbind(cont, tot)), p.col)), as.character)
@@ -427,7 +421,8 @@ cont.var <- function(var,
         else if (p<0.0001 & pname==FALSE) {
           p.col <- c('<0.0001', rep(NA, 6))
         }
-             
+        
+        
         #Create data frame with Wilcoxon rank sum p-values      
         out <- sapply(data.frame(cbind(rbind(rep(NA, length(levels(as.factor(strat))) + 1), 
                                              cbind(cont, tot)), p.col)), as.character)
@@ -457,7 +452,8 @@ cont.var <- function(var,
           else if (p<0.0001 & pname==FALSE) {
             p.col <- c('<0.0001', rep(NA, 6))
           }
-                   
+          
+          
           #Create data frame with signed-rank test p-values       
           out <- sapply(data.frame(cbind(rbind(rep(NA, length(levels(as.factor(strat))) + 1), 
                                                cbind(cont, tot)), p.col)), as.character)
@@ -486,7 +482,8 @@ cont.var <- function(var,
             else if (p<0.0001 & pname==FALSE) {
               p.col <- c('<0.0001', rep(NA, 6))
             }
-                       
+            
+            
             #Create a data frame with Kruskal-Wallis test p-values      
             out <- sapply(data.frame(cbind(rbind(rep(NA, length(levels(as.factor(strat))) + 1), 
                                                  cbind(cont, tot)), p.col)), as.character)
@@ -515,7 +512,8 @@ cont.var <- function(var,
               else if (p<0.0001 & pname==FALSE) {
                 p.col <- c('<0.0001', rep(NA, 6))
               }
-                           
+              
+              
               #Create a data frame with ANOVA p-values      
               out <- sapply(data.frame(cbind(rbind(rep(NA, length(levels(as.factor(strat))) + 1), 
                                                    cbind(cont, tot)), p.col)), as.character)
@@ -532,7 +530,6 @@ cont.var <- function(var,
   }
   return(data.frame(out))
 }
-
 
 ################
 # LaTeX output #
