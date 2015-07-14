@@ -7,34 +7,32 @@
 }
 \usage{
 cat.var(var, strat, dec, rownames, header, ptype, pname)
-%The full call with defaults is given as follows:
-%cat.var(var, strat = NULL, dec = 2, rownames = as.vector(levels(as.factor(var))), header = deparse%(substitute(var)), ptype = "None", pname = FALSE)
 }
 
 \arguments{
   \item{var}{
-  Categorical variable input (required)
+  Categorical variable input. Required.
   }
   \item{strat}{
-  Variable to stratify by across columns (optional)
+  Column stratifying variable. Optional.
   }
   \item{dec}{
-  Number of decimal places on summary statistics (optional; defaults to 2)
+  Number of decimal places on summary statistics. Optional; defaults to 2.
   }
   \item{rownames}{
-  Vector of row names for each level of 'var' (optional; defaults to the value of each level)
+  Ordered character vector of row names for each level of 'var'. Optional; defaults to the value of each level.
   }
   \item{header}{
-  Vector of a short variable description (optional; defaults to variable name)
+  Character vector providing a short variable description. Optional; defaults to variable name.
   }
   \item{ptype}{
-  Statistical test for p-value (optional; defaults to none) \cr
-    'chisq' - Chi-square test \cr
-    'fisher' - Fisher's exact test \cr
-    'mcnemar' - McNemar's test
+  Statistical test for p-value. Optional; defaults to none. \cr
+    * 'chisq' - Chi-square test \cr
+    * 'fisher' - Fisher's exact test \cr
+    * 'mcnemar' - McNemar's test
   }
   \item{pname}{
-  If TRUE then the name of the statistical test will be printed below the p-value (optional; defaults to FALSE)
+  If TRUE then the name of the statistical test used will be printed below the p-value (optional; defaults to FALSE)
   }
 }
 
@@ -49,6 +47,7 @@ Erica Wozniak
 
 \seealso{
 \code{\link{Table1}}
+\code{\link{make.table}}
 \code{\link{cont.var}}
 \code{\link{out.plain}}
 \code{\link{out.latex}}

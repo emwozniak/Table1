@@ -1,46 +1,31 @@
 \name{out.plain}
 \alias{out.plain}
 
-%- Also NEED an '\alias' for EACH other topic documented here.
 \title{Plain Text Output
-%%  ~~function to do ... ~~
 }
-\description{This function outputs the results of the cat.var and cont.var functions to the console as a formatted plain text data frame.
-%%  ~~ A concise (1-5 lines) description of what the function does. ~~
+\description{This function outputs the results of the \code{\link{cat.var}} and \code{\link{cont.var}} functions to the console as a formatted plain text data frame.
 }
 \usage{
 out.plain(tab, colnames)
 }
-%- maybe also 'usage' for other objects documented here.
+
 \arguments{
-  \item{tab}{A single call to either cat.var or cont.var, or a table produced by rbind of multiple calls to these functions (required)
-%%     ~~Describe \code{tab} here~~
+  \item{tab}{A single call to either \code{\link{cat.var}} or \code{\link{cont.var}}, or a data frame produced via \code{\link{rbind}} of multiple calls to these functions. Required.
 }
-  \item{colnames}{A vector of column names for the table output (optional)
-%%     ~~Describe \code{colnames} here~~
+  \item{colnames}{A vector of column names for the table output. Optional.
 }
 }
 \details{
-%%  ~~ If necessary, more details than the description above ~~
+A call to this function is the default output argument to \code{\link{make.table}}.
 }
-\value{ A plain text data frame of summary statistics.
-%%  ~Describe the value returned
-%%  If it is a LIST, use
-%%  \item{comp1 }{Description of 'comp1'}
-%%  \item{comp2 }{Description of 'comp2'}
-%% ...
+\value{ A plain text data frame of summary statistics outputted to the console.
 }
 \references{
-%% ~put references to the literature/web site here ~
 }
 \author{ Erica Wozniak
-%%  ~~who you are~~
 }
 \note{
-%%  ~~further notes~~
 }
-
-%% ~Make other sections like Warning with \section{Warning }{....} ~
 
 \seealso{
 \code{\link{Table1}}
@@ -48,7 +33,6 @@ out.plain(tab, colnames)
 \code{\link{cont.var}}
 \code{\link{out.latex}}
 \code{\link{out.html}}
-%% ~~objects to See Also as \code{\link{help}}, ~~~
 }
 \examples{
 library(survival)
@@ -59,9 +43,4 @@ example <- rbind(
   cont.var(var=bili, strat=trt, header='Serum bilirubin', ptype='ttest')
   )
 out.plain(example, colnames=c('Variable', 'D-penicillmain', 'Placebo', 'Overall', 'p-value'))
-
-% Add one or more standard keywords, see file 'KEYWORDS' in the
-% R documentation directory.
-%\keyword{ univar }
-%\keyword{ misc }% __ONLY ONE__ keyword per line
 }
