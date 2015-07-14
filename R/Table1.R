@@ -195,9 +195,9 @@ cat.var <- function(var,
 }
 
 
-###############
-# Categorical #
-###############
+##############
+# Continuous #
+##############
 
 cont.var <- function(var, 
                      strat=NULL, 
