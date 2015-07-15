@@ -823,6 +823,10 @@ quick.table <- function(dat,
   #Get all numeric variables with >=6 levels when factored
   cont <- dat[, sapply(dat, is.numeric)]
   cont <- dat[, sapply(dat, function(x) length(levels(as.factor(x)))>=6)]
+  
+  if (nrow(cont)>0 & ncol(cont)>0) {
+    print('The following variables are summarized as continuous:')
+  }
   cont.varlist <- dput(colnames(cont))
   
   cont.header=names(sapply(cont.varlist, FUN=get, simplify=F, USE.NAMES=T))
@@ -830,6 +834,10 @@ quick.table <- function(dat,
   
   #Get all variables with <6 levels when factored
   cat <- dat[, sapply(dat, function(x) length(levels(as.factor(x)))<6)]
+  
+  if (nrow(cat)>0 & ncol(cat)>0) {
+    print('The following variables are summarized as categorical:')
+  }
   cat.varlist <- dput(colnames(cat))
   cat.header=names(sapply(cat.varlist, FUN=get, simplify=F, USE.NAMES=T))
   cat.rownames=lapply(sapply(cat.varlist, FUN=get, simplify=F, USE.NAMES=T), FUN=function(x) 
