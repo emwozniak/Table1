@@ -626,7 +626,7 @@ make.table <- function(dat,
     warning('A data frame must be provided in dat=.')
   }
   if ((output=='plain')==FALSE) {
-    warning('Package dependencies: library(htmlTable) for HTML output and library(xtable) for LaTeX output')
+    print('Package dependencies: library(htmlTable) for HTML output and library(xtable) for LaTeX output')
   }
   if (any(c(cat.ptype, cont.ptype) != 'None')==TRUE & is.null(strat)==TRUE) {
     warning('A stratifying variable must be identified for p-values to be computed. See strat=.')
