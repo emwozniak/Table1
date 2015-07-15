@@ -850,6 +850,11 @@ quick.table <- function(dat,
     cat <- cat[,-which(c(names(cat)) %in% ls('package:base'))]
   }
   
+  #Remove variables from table if specified as stratifying variables
+  if (length(strat)>0) {
+    cat <- cat[,-which(c(names(cat)) %in% strat)]
+  }  
+  
   if (nrow(cat)>0 & ncol(cat)>0) {
     print('The following variables are summarized as categorical:')
   }
