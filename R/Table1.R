@@ -819,21 +819,36 @@ quick.table <- function(dat,
     print('Package dependencies: library(htmlTable) for HTML output and library(xtable) for LaTeX output')
   }
   
-  #Define make.table inputs for quick.table
+  ## Classify continuous variables ##
   #Get all numeric variables with >=6 levels when factored
   cont <- dat[, sapply(dat, is.numeric)]
   cont <- dat[, sapply(dat, function(x) length(levels(as.factor(x)))>=6)]
+  
+  #Remove any continuous variables with the same name as a base R function
+  if ((any(c(names(cont)) %in% ls('package:base')))==TRUE) {
+    warning('Variables cannot share the names of any base R functions.')
+    warning(print(paste('The variable', names(cont)[which(c(names(cont)) %in% ls('package:base'))], 'has been removed.', 
+                        sep=' ')))
+    cont <- cont[,-which(c(names(cont)) %in% ls('package:base'))]
+  }
   
   if (nrow(cont)>0 & ncol(cont)>0) {
     print('The following variables are summarized as continuous:')
   }
   cont.varlist <- dput(colnames(cont))
-  
   cont.header=names(sapply(cont.varlist, FUN=get, simplify=F, USE.NAMES=T))
   
-  
+  ## Classify categorical variables ##
   #Get all variables with <6 levels when factored
   cat <- dat[, sapply(dat, function(x) length(levels(as.factor(x)))<6)]
+  
+  #Remove any categorical variables with the same name as a base R function
+  if ((any(c(names(cat)) %in% ls('package:base')))==TRUE) {
+    warning('Variables cannot share the names of any base R functions.')
+    warning(print(paste('The variable', names(cat)[which(c(names(cat)) %in% ls('package:base'))], 'has been removed.', 
+                        sep=' ')))
+    cat <- cat[,-which(c(names(cat)) %in% ls('package:base'))]
+  }
   
   if (nrow(cat)>0 & ncol(cat)>0) {
     print('The following variables are summarized as categorical:')
@@ -842,13 +857,6 @@ quick.table <- function(dat,
   cat.header=names(sapply(cat.varlist, FUN=get, simplify=F, USE.NAMES=T))
   cat.rownames=lapply(sapply(cat.varlist, FUN=get, simplify=F, USE.NAMES=T), FUN=function(x) 
     as.vector(levels(as.factor(x))))
-  
-  #This needs to be corrected to properly remove the variable causing problems
-  #if (any(c(cat.varlist, cont.varlist) %in% ls('package:base'))==TRUE) {
-  #print("Variables cannot take the names of any base R functions. The following variables have been removed:")
-  #dat=dat[-which(dput(colnames(dat)) %in% ls('package:base'))]
-  #print(colnames(dat)[which(dput(colnames(dat)) %in% ls('package:base'))])
-  #}
   
   #Define global options for the table
   pname=FALSE
