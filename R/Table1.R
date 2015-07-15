@@ -807,7 +807,8 @@ quick.table <- function(dat,
                         strat=NULL,
                         dec=2,
                         colnames=NULL,
-                        output='plain'
+                        output='plain',
+                        classlim=6
 )
   
 {
@@ -820,9 +821,9 @@ quick.table <- function(dat,
   }
   
   ## Classify continuous variables ##
-  #Get all numeric variables with >=6 levels when factored
+  #Get all numeric variables with equal or more than classification limit (default 6) levels when factored
   cont <- dat[, sapply(dat, is.numeric)]
-  cont <- dat[, sapply(dat, function(x) length(levels(as.factor(x)))>=6)]
+  cont <- dat[, sapply(dat, function(x) length(levels(as.factor(x)))>=classlim)]
   
   #Remove any continuous variables with the same name as a base R function
   if ((any(c(names(cont)) %in% ls('package:base')))==TRUE) {
@@ -839,8 +840,8 @@ quick.table <- function(dat,
   cont.header=names(sapply(cont.varlist, FUN=get, simplify=F, USE.NAMES=T))
   
   ## Classify categorical variables ##
-  #Get all variables with <6 levels when factored
-  cat <- dat[, sapply(dat, function(x) length(levels(as.factor(x)))<6)]
+  #Get all variables with less than classification limit (default 6) levels when factored
+  cat <- dat[, sapply(dat, function(x) length(levels(as.factor(x)))<classlim)]
   
   #Remove any categorical variables with the same name as a base R function
   if ((any(c(names(cat)) %in% ls('package:base')))==TRUE) {
