@@ -820,18 +820,19 @@ quick.table <- function(dat,
     print('Package dependencies: library(htmlTable) for HTML output and library(xtable) for LaTeX output')
   }
   
+  #Remove any variables with the same name as a base R function
+  if ((any(c(names(dat)) %in% ls('package:base')))==TRUE) {
+    warning('Variables cannot share the names of any base R functions.')
+    warning(print(paste('Removed variable(s):', 
+                        names(dat)[which(c(names(dat)) %in% ls('package:base'))],
+                        sep=' ')))
+    dat <- dat[,-which(c(names(dat)) %in% ls('package:base'))]
+  }
+  
   ## Classify continuous variables ##
   #Get all numeric variables with equal or more than classification limit (default 6) levels when factored
   cont <- dat[, sapply(dat, is.numeric)]
   cont <- dat[, sapply(dat, function(x) length(levels(as.factor(x)))>=classlim)]
-  
-  #Remove any continuous variables with the same name as a base R function
-  if ((any(c(names(cont)) %in% ls('package:base')))==TRUE) {
-    warning('Variables cannot share the names of any base R functions.')
-    warning(print(paste('The variable', names(cont)[which(c(names(cont)) %in% ls('package:base'))], 'has been removed.', 
-                        sep=' ')))
-    cont <- cont[,-which(c(names(cont)) %in% ls('package:base'))]
-  }
   
   if (nrow(cont)>0 & ncol(cont)>0) {
     print('The following variables are summarized as continuous:')
@@ -840,16 +841,8 @@ quick.table <- function(dat,
   cont.header=names(sapply(cont.varlist, FUN=get, simplify=F, USE.NAMES=T))
   
   ## Classify categorical variables ##
-  #Get all variables with less than classification limit (default 6) levels when factored
-  cat <- dat[, sapply(dat, function(x) length(levels(as.factor(x)))<classlim)]
-  
-  #Remove any categorical variables with the same name as a base R function
-  if ((any(c(names(cat)) %in% ls('package:base')))==TRUE) {
-    warning('Variables cannot share the names of any base R functions.')
-    warning(print(paste('The variable', names(cat)[which(c(names(cat)) %in% ls('package:base'))], 'has been removed.', 
-                        sep=' ')))
-    cat <- cat[,-which(c(names(cat)) %in% ls('package:base'))]
-  }
+  #All variables that are not continuous; non-numeric or numeric with <classlim factorable levels
+  cat <- dat[, -which(c(names(dat)) %in% c(names(cont)))]
   
   #Remove variables from table if specified as stratifying variables
   if (length(strat)>0) {
