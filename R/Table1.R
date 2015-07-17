@@ -1026,3 +1026,97 @@ quick.table <- function(dat,
     }
   }
 }
+
+###################################################
+# Create a helper function for p-values and stats #
+###################################################
+#Calls to this function can be made within cat.var and cont.var to 
+#reduce clutter in those functions. Furthermore, all additional 
+#statistical tests can be added to this helper function only, and
+#any statistical test can be computed regardless of whether the 
+#variable is classified as categorical or continuous for computing
+#summary statistics.
+
+stat.col <- function(var, strat, ptype, pname=FALSE) {
+  
+  ##One sample tests
+  #One-sample t-test, mean=0
+  if (ptype=='t.oneway') {
+    t.test(var, mu=0)
+  }
+  #One-sample median test, median=0
+  else if (ptype=='wilcox.oneway') {
+    wilcox.test(var, mu=0)
+  }
+  #Binomial test, proportion=0.5
+  else if (ptype=='prop.oneway') {
+    prop.test(sum(var), length(var), p=0.5)
+  }
+  
+  ##Independent groups
+  #Chi-square test
+  else if (ptype=='chisq') {
+    p <- chisq.test(var, strat)$p.value
+  }
+  #Fisher's exact test
+  else if (ptype=='fisher') {
+    p <- fisher.test(var, strat)$p.value
+  }
+  #t-test
+  else if (ptype=='ttest') {
+    p <- t.test(var[strat==levels(as.factor(strat))[1]], 
+                var[strat==levels(as.factor(strat))[2]])$p.value
+  }
+  #One-way ANOVA
+  else if (ptype=='anova') {
+    p <- summary(aov(var~strat))[[1]][["Pr(>F)"]][[1]]
+  }
+  #Kruskal-Wallis
+  else if (ptype=='kruskal') {
+    p <- kruskal.test(var, strat)$p.value
+  }
+  #Wilcoxon rank-sum test
+  else if (ptype=='wilcox') {
+    p <- wilcox.test(var[strat==levels(as.factor(strat))[1]], 
+                     var[strat==levels(as.factor(strat))[2]])$p.value
+  }
+  
+  ##Dependent groups
+  #Paired t-test
+  else if (ptype=='ttest.pair') {
+    p <- t.test(var[strat==levels(as.factor(strat))[1]], 
+                var[strat==levels(as.factor(strat))[2]],
+                paired=TRUE)$p.value
+  }
+  #Wilcoxon signed-rank test
+  else if (ptype=='wilcox.pair') {
+    p <- wilcox.test(var[strat==levels(as.factor(strat))[1]], 
+                     var[strat==levels(as.factor(strat))[2]],
+                     paired=TRUE)$p.value
+  }
+  #McNemar's test
+  else if (ptype=='mcnemar') {
+    p <- mcnemar.test(var, strat)$p.value
+  }
+  
+  #Format p-values for consistency
+  if (p>=0.001) {
+    p <- format(round(p, 3), nsmall=3)
+  }
+  else {p <- '<0.001'}
+  
+  #Print test or statistic if requested
+  if (pname==TRUE) {
+    if (ptype=='chisq') {
+      p.col <- c(p, 'Chi-square')
+    }
+    else if (ptype=='fisher') {
+      p.col <- c(p, 'Fisher exact')
+    }
+    else if (ptype=='mcnemar') {
+      p.col <- c(p, 'McNemar')
+    }
+  }
+  else {p.col <- p}
+  return(p.col)
+}  
