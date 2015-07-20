@@ -945,15 +945,15 @@ stat.col <- function(var, strat, ptype, pname=FALSE) {
   ##One sample tests
   #One-sample t-test, mean=0
   if (ptype=='t.oneway') {
-    t.test(var, mu=0)
+    p <- t.test(var, mu=0)$p.value
   }
   #One-sample median test, median=0
   else if (ptype=='wilcox.oneway') {
-    wilcox.test(var, mu=0)
+    p <- wilcox.test(var, mu=0)$p.value
   }
   #Binomial test, proportion=0.5
   else if (ptype=='prop.oneway') {
-    prop.test(sum(var, na.rm=T), sum(!is.na(var)), p=0.5)
+    p <- prop.test(sum(var, na.rm=T), sum(!is.na(var)), p=0.5)$p.value
   }
   
   ##Independent groups
