@@ -1027,15 +1027,9 @@ quick.table <- function(dat,
   }
 }
 
-###################################################
-# Create a helper function for p-values and stats #
-###################################################
-#Calls to this function can be made within cat.var and cont.var to 
-#reduce clutter in those functions. Furthermore, all additional 
-#statistical tests can be added to this helper function only, and
-#any statistical test can be computed regardless of whether the 
-#variable is classified as categorical or continuous for computing
-#summary statistics.
+#######################
+# Statistical testing #
+#######################
 
 stat.col <- function(var, strat, ptype, pname=FALSE) {
   
