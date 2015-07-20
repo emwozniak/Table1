@@ -953,7 +953,7 @@ stat.col <- function(var, strat, ptype, pname=FALSE) {
   }
   #Binomial test, proportion=0.5
   else if (ptype=='prop.oneway') {
-    prop.test(sum(var), length(var), p=0.5)
+    prop.test(sum(var, na.rm=T), sum(!is.na(var)), p=0.5)
   }
   
   ##Independent groups
