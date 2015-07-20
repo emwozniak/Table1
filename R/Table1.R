@@ -251,192 +251,23 @@ cont.var <- function(var,
     }
   }
   
-  #t-test
-  ##Options to print test on table
-  ##Re-format small p-values
-  if (ptype=='ttest') {
-    p <- t.test(var[strat==levels(as.factor(strat))[1]], var[strat==levels(as.factor(strat))[2]])$p.value
-    if (p>=0.0001 & pname==TRUE) {
-      p.col <- c(signif(p, 3), 't-test', rep(NA, 5))
-    }
-    else if (p<0.0001 & pname==TRUE) {
-      p.col <- c('<0.0001', 't-test', rep(NA, 5))
-    }
-    else if (p>=0.0001 & pname==FALSE) {
-      p.col <- c(signif(p, 3), rep(NA, 6))
-    }
-    else if (p<0.0001 & pname==FALSE) {
-      p.col <- c('<0.0001', rep(NA, 6))
-    }
-    
-    
-    #Create data frame with t-test p-values      
-    out <- sapply(data.frame(cbind(rbind(rep(NA, length(levels(as.factor(strat))) + 1), 
-                                         cbind(cont, tot)), p.col)), as.character)
+  if (ptype!='None' & pname==FALSE) {
+    p <- c(stat.col(var, strat, ptype, pname=FALSE), rep(NA, 6))
+    out <- cbind(out, p)
     out <- replace(out, is.na(out), '')
-    out <- cbind(as.vector(c(paste(header, '     '), '   Count',  '   Mean (SD)', '   Median (IQR)', 
-                             '   Q1, Q3', '   Min, Max', '   Missing')), out)
+    rownames(out) <- NULL
+    colnames(out) <- c('Variable', as.vector(levels(as.factor(strat))), 'Overall', 'p-value')
+    
+  }
+  
+  else if (ptype!='None' & pname==TRUE) {
+    p <- c(stat.col(var, strat, ptype, pname=TRUE), rep(NA, 5))
+    out <-  cbind(out, p)
+    out <- replace(out, is.na(out), '')
     rownames(out) <- NULL
     colnames(out) <- c('Variable', as.vector(levels(as.factor(strat))), 'Overall', 'p-value')
   }
   
-  #Paired t-test
-  ##Options to print test on table
-  ##Re-format small p-values
-  else {
-    if (ptype=='ttest.pair') {
-      p <- t.test(var[strat==levels(as.factor(strat))[1]], var[strat==levels(as.factor(strat))[2]],
-                  paired=TRUE)$p.value
-      if (p>=0.0001 & pname==TRUE) {
-        p.col <- c(signif(p, 3), 'Paired t-test', rep(NA, 5))
-      }
-      else if (p<0.0001 & pname==TRUE) {
-        p.col <- c('<0.0001', 'Paired t-test', rep(NA, 5))
-      }
-      else if (p>=0.0001 & pname==FALSE) {
-        p.col <- c(signif(p, 3), rep(NA, 6))
-      }
-      else if (p<0.0001 & pname==FALSE) {
-        p.col <- c('<0.0001', rep(NA, 6))
-      }
-      
-      
-      #Create data frame with paired t-test p-values      
-      out <- sapply(data.frame(cbind(rbind(rep(NA, length(levels(as.factor(strat))) + 1), 
-                                           cbind(cont, tot)), p.col)), as.character)
-      out <- replace(out, is.na(out), '')
-      out <- cbind(as.vector(c(paste(header, '     '), '   Count', '   Mean (SD)', '   Median (IQR)', 
-                               '   Q1, Q3', '   Min, Max', '   Missing')), out)
-      rownames(out) <- NULL
-      colnames(out) <- c('Variable', as.vector(levels(as.factor(strat))), 'Overall', 'p-value')
-      
-    }
-    
-    #Wilcoxon rank sum test
-    ##Options to print test on table
-    ##Re-format small p-values
-    else {
-      if (ptype=='wilcox') {
-        p <- wilcox.test(var[strat==levels(as.factor(strat))[1]], var[strat==levels(as.factor(strat))[2]])$p.value
-        if (p>=0.0001 & pname==TRUE) {
-          p.col <- c(signif(p, 3), 'Wilcoxon rank sum', rep(NA, 5))
-        }
-        else if (p<0.0001 & pname==TRUE) {
-          p.col <- c('<0.0001', 'Wilcoxon rank sum', rep(NA, 5))
-        }
-        else if (p>=0.0001 & pname==FALSE) {
-          p.col <- c(signif(p, 3), rep(NA, 6))
-        }
-        else if (p<0.0001 & pname==FALSE) {
-          p.col <- c('<0.0001', rep(NA, 6))
-        }
-        
-        
-        #Create data frame with Wilcoxon rank sum p-values      
-        out <- sapply(data.frame(cbind(rbind(rep(NA, length(levels(as.factor(strat))) + 1), 
-                                             cbind(cont, tot)), p.col)), as.character)
-        out <- replace(out, is.na(out), '')
-        out <- cbind(as.vector(c(paste(header, '     '), '   Count', '   Mean (SD)', '   Median (IQR)', 
-                                 '   Q1, Q3', '   Min, Max', '   Missing')), out)
-        rownames(out) <- NULL
-        colnames(out) <- c('Variable', as.vector(levels(as.factor(strat))), 'Overall', 'p-value')
-      }
-      
-      #Signed rank test
-      ##Options to print test on table
-      ##Re-format small p-values
-      else {
-        if (ptype=='wilcox.pair') {
-          p <- wilcox.test(var[strat==levels(as.factor(strat))[1]], var[strat==levels(as.factor(strat))[2]],
-                           paired=TRUE)$p.value
-          if (p>=0.0001 & pname==TRUE) {
-            p.col <- c(signif(p, 3), 'Signed-rank', rep(NA, 5))
-          }
-          else if (p<0.0001 & pname==TRUE) {
-            p.col <- c('<0.0001', 'Signed-rank', rep(NA, 5))
-          }
-          else if (p>=0.0001 & pname==FALSE) {
-            p.col <- c(signif(p, 3), rep(NA, 6))
-          }
-          else if (p<0.0001 & pname==FALSE) {
-            p.col <- c('<0.0001', rep(NA, 6))
-          }
-          
-          
-          #Create data frame with signed-rank test p-values       
-          out <- sapply(data.frame(cbind(rbind(rep(NA, length(levels(as.factor(strat))) + 1), 
-                                               cbind(cont, tot)), p.col)), as.character)
-          out <- replace(out, is.na(out), '')
-          out <- cbind(as.vector(c(paste(header, '     '), '   Count', '   Mean (SD)', '   Median (IQR)', 
-                                   '   Q1, Q3', '   Min, Max', '   Missing')), out)
-          rownames(out) <- NULL
-          colnames(out) <- c('Variable', as.vector(levels(as.factor(strat))), 'Overall', 'p-value')
-        }
-        
-        #Kruskal-Wallis test
-        ##Options to print test on table
-        ##Re-format small p-values
-        else {
-          if (ptype=='kruskal') {
-            p <- kruskal.test(var, strat)$p.value
-            if (p>=0.0001 & pname==TRUE) {
-              p.col <- c(signif(p, 3), 'Kruskal-Wallis', rep(NA, 5))
-            }
-            else if (p<0.0001 & pname==TRUE) {
-              p.col <- c('<0.0001', 'Kruskal-Wallis', rep(NA, 5))
-            }
-            else if (p>=0.0001 & pname==FALSE) {
-              p.col <- c(signif(p, 3), rep(NA, 6))
-            }
-            else if (p<0.0001 & pname==FALSE) {
-              p.col <- c('<0.0001', rep(NA, 6))
-            }
-            
-            
-            #Create a data frame with Kruskal-Wallis test p-values      
-            out <- sapply(data.frame(cbind(rbind(rep(NA, length(levels(as.factor(strat))) + 1), 
-                                                 cbind(cont, tot)), p.col)), as.character)
-            out <- replace(out, is.na(out), '')
-            out <- cbind(as.vector(c(paste(header, '     '), '   Count', '   Mean (SD)', '   Median (IQR)', 
-                                     '   Q1, Q3', '   Min, Max', '   Missing')), out)
-            rownames(out) <- NULL
-            colnames(out) <- c('Variable', as.vector(levels(as.factor(strat))), 'Overall', 'p-value')
-          }
-          
-          #ANOVA
-          ##Options to print test on table
-          ##Re-format small p-values
-          else {
-            if (ptype=='anova') {
-              p <- summary(aov(var~strat))[[1]][["Pr(>F)"]][[1]]
-              if (p>=0.0001 & pname==TRUE) {
-                p.col <- c(signif(p, 3), 'ANOVA', rep(NA, 5))
-              }
-              else if (p<0.0001 & pname==TRUE) {
-                p.col <- c('<0.0001', 'ANOVA', rep(NA, 5))
-              }
-              else if (p>=0.0001 & pname==FALSE) {
-                p.col <- c(signif(p, 3), rep(NA, 6))
-              }
-              else if (p<0.0001 & pname==FALSE) {
-                p.col <- c('<0.0001', rep(NA, 6))
-              }
-              
-              
-              #Create a data frame with ANOVA p-values      
-              out <- sapply(data.frame(cbind(rbind(rep(NA, length(levels(as.factor(strat))) + 1), 
-                                                   cbind(cont, tot)), p.col)), as.character)
-              out <- replace(out, is.na(out), '')
-              out <- cbind(as.vector(c(paste(header, '     '), '   Count', '   Mean (SD)', '   Median (IQR)', 
-                                       '   Q1, Q3', '   Min, Max', '   Missing')), out)
-              rownames(out) <- NULL
-              colnames(out) <- c('Variable', as.vector(levels(as.factor(strat))), 'Overall', 'p-value')
-            }
-          }
-        }
-      }
-    }
-  }
   return(data.frame(out))
 }
 
