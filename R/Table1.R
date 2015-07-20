@@ -939,6 +939,7 @@ quick.table <- function(dat,
 #######################
 # Statistical testing #
 #######################
+#When adding tests, define both p and the name of the test
 
 stat.col <- function(var, strat, ptype, pname=FALSE) {
   
@@ -1010,11 +1011,38 @@ stat.col <- function(var, strat, ptype, pname=FALSE) {
   
   #Print test or statistic if requested
   if (pname==TRUE) {
-    if (ptype=='chisq') {
+    if (ptype=='t.oneway') {
+      p.col <- c(p, '1-sample t-test')
+    }
+    else if (ptype=='wilcox.oneway') {
+      p.col <- c(p, '1-sample median')
+    }
+    else if (ptype=='prop.oneway') {
+      p.col <- c(p, 'Binomial test')
+    }
+    else if (ptype=='chisq') {
       p.col <- c(p, 'Chi-square')
     }
     else if (ptype=='fisher') {
       p.col <- c(p, 'Fisher exact')
+    }
+    else if (ptype=='ttest') {
+      p.col <- c(p, 't-test')
+    }
+    else if (ptype=='anova') {
+      p.col <- c(p, '1-way ANOVA')
+    }
+    else if (ptype=='kruskal') {
+      p.col <- c(p, 'Kruskal-Wallis')
+    }
+    else if (ptype=='wilcox') {
+      p.col <- c(p, 'Wilcoxon rank-sum')
+    }
+    else if (ptype=='ttest.pair') {
+      p.col <- c(p, 'Paired t-test')
+    }
+    else if (ptype=='wilcox.pair') {
+      p.col <- c(p, 'Wilcoxon signed-rank')
     }
     else if (ptype=='mcnemar') {
       p.col <- c(p, 'McNemar')
