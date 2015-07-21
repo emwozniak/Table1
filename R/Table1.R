@@ -321,7 +321,8 @@ out.html <- function(tab, colnames) {
     htmlTable(as.matrix(output), 
               rnames=F, 
               header=colnames,
-              align=c('l', rep('r', ncol(output)-1)))
+              align=c('l', rep('r', ncol(output)-1)),
+              css.cell="padding-left: .2em; padding-right: 2em;")
   )
 }
 
@@ -500,7 +501,8 @@ make.table <- function(dat,
                     rnames=F, 
                     header=colnames,
                     align=c('l', rep('r', ncol(output)-1)),
-                    tfoot=footer.miss)
+                    tfoot=footer.miss,
+                    css.cell="padding-left: 2em; padding-right: .2em;")
         )
       }
       out.html(tab)
@@ -728,7 +730,8 @@ quick.table <- function(dat,
                     rnames=F, 
                     header=colnames,
                     align=c('l', rep('r', ncol(output)-1)),
-                    tfoot=footer.miss)
+                    tfoot=footer.miss,
+                    css.cell="padding-left: .2em; padding-right: 2em;")
         )
       }
       out.html(tab)
