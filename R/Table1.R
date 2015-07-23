@@ -305,25 +305,60 @@ out.latex <- function(tab, colnames=NULL) {
 ###############
 #For categorical variables, formatting may be a problem if categories 
 #have similar names to available summary statistics
-out.html <- function(tab, colnames) {
-  named <- as.vector(tab[,1])
-  tags <- grepl('^ ', named)
-  tags2 <- (grepl('Count', named, fixed=TRUE) | grepl('%', named, fixed=TRUE) | 
-              grepl('Missing', named, fixed=T)==TRUE | grepl('Mean', named, fixed=TRUE) |
-              grepl('Median', named, fixed=TRUE) | grepl('Q1', named, fixed=TRUE) |
-              grepl('Min', named, fixed=TRUE))
-  named <- ifelse((tags==FALSE | tags2==FALSE), paste('<b>', named, '</b>', sep=''), named)
-  named <- ifelse(tags==TRUE, paste("&nbsp;", "&nbsp;", "&nbsp;", named, sep=' '), named)
-  
-  output <- cbind(named, as.vector(tab[,2:dim(tab)[2]]))
-  
-  return (
-    htmlTable(as.matrix(output), 
-              rnames=F, 
-              header=colnames,
-              align=c('l', rep('r', ncol(output)-1)),
-              css.cell="padding-left: .2em; padding-right: 2em;")
-  )
+out.html <- function (tab, colnames, stripe=TRUE, stripe.col='#F7F7F7') 
+{
+  if (stripe==FALSE) {
+    named <- as.vector(tab[, 1])
+    tags <- grepl("^ ", named)
+    tags2 <- (grepl("Count", named, fixed = TRUE) | 
+                grepl("%", named, fixed = TRUE) | 
+                grepl("Missing", named, fixed = T) == TRUE | 
+                grepl("Mean", named, fixed = TRUE) | 
+                grepl("Median", named, fixed = TRUE) | 
+                grepl("Q1", named, fixed = TRUE) | 
+                grepl("Min", named, fixed = TRUE))
+    named <- ifelse((tags == FALSE | tags2 == FALSE), 
+                    paste("<b>", named, "</b>", sep = ""), 
+                    named)
+    named <- ifelse(tags == TRUE, 
+                    paste("&nbsp;", "&nbsp;", "&nbsp;", named, sep = " "), 
+                    named)
+    output <- cbind(named, as.vector(tab[, 2:dim(tab)[2]]))
+    return(htmlTable(as.matrix(output), 
+                     rnames = F, 
+                     header = colnames, 
+                     align = c("l", rep("r", ncol(output) - 1)), 
+                     css.cell = "padding-left: .2em; padding-right: 2em;"))
+  }
+  else if (stripe==TRUE) {
+    named <- as.vector(tab[, 1])
+    tags <- grepl("^ ", named) 
+    tags2 <- (grepl("Count", named, fixed = TRUE) | 
+                grepl("%", named, fixed = TRUE) | 
+                grepl("Missing", named, fixed = T) == TRUE | 
+                grepl("Mean", named, fixed = TRUE) | 
+                grepl("Median", named, fixed = TRUE) | 
+                grepl("Q1", named, fixed = TRUE) | 
+                grepl("Min", named, fixed = TRUE))
+    named <- ifelse((tags == FALSE | tags2 == FALSE), 
+                    paste("<b>", named, "</b>", sep = ""), 
+                    named)
+    named <- ifelse(tags == TRUE, 
+                    paste("&nbsp;", "&nbsp;", "&nbsp;", named, sep = " "), 
+                    named)
+    output <- cbind(named, as.vector(tab[, 2:dim(tab)[2]]))
+    #Get row lengths for each variable group in the table
+    v <- (rle(tags)$length)[c(FALSE, TRUE)]+1
+    #Specify colors for striping
+    color <- c('#FFFFFF', stripe.col)
+    
+    return(htmlTable(as.matrix(output), 
+                     rnames=FALSE, 
+                     header=colnames, 
+                     col.rgroup=unlist(mapply(rep, x=color, times=v), use.names=FALSE),
+                     align = c("l", rep("r", ncol(output) - 1)), 
+                     css.cell = "padding-left: .2em; padding-right: 2em;"))    
+  }
 }
 
 #####################
