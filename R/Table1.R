@@ -366,7 +366,7 @@ out.html <- function (tab, colnames, stripe=TRUE, stripe.col='#F7F7F7')
 #####################
 out.plain <- function(tab, colnames=NULL) {
   output <- cbind(format(as.vector(tab[,1]), justify='left'), 
-                  tab[,2:dim(tab)[2]])
+                  as.matrix(tab[,2:dim(tab)[2]]))
   colnames(output)=colnames
   return(print(output, row.names=F))
 }
@@ -419,6 +419,7 @@ make.table <- function(dat,
     cat.strat=rep(list(strat), length(cat.varlist))
     cont.strat=rep(list(strat), length(cont.varlist))
     strat.miss=0
+    strat.rem=0
   }
   else {
     if (!is.null(strat)) {
