@@ -404,9 +404,9 @@ make.table <- function(dat,
   if ((output=='plain')==FALSE) {
     print('Package dependencies: library(htmlTable) for HTML output and library(xtable) for LaTeX output')
   }
-  if (any(c(cat.ptype, cont.ptype) != 'None')==TRUE & is.null(strat)==TRUE) {
-    warning('A stratifying variable must be identified for p-values to be computed. See strat=.')
-  }
+  #if (any(c(cat.ptype, cont.ptype) != 'None')==TRUE & is.null(strat)==TRUE) {
+    #warning('A stratifying variable must be identified for p-values to be computed. See strat=.')
+  #}
   if (any(c(cat.varlist, cont.varlist) %in% ls('package:base'))==TRUE) {
     warning("Variables cannot take the names of any base R functions -- try 
             which(dput(colnames(dat)) %in% ls('package:base'))")
