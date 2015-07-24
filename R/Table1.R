@@ -411,9 +411,7 @@ make.table <- function(dat,
     warning("Variables cannot take the names of any base R functions -- try 
             which(dput(colnames(dat)) %in% ls('package:base'))")
   }
-  if (any(is.na(strat))==TRUE) {
-    warning('Some observations are omitted from summary due to missing levels of strata variables.')
-  }
+  
   
   if (is.null(strat)) {
     cat.strat=rep(list(strat), length(cat.varlist))
