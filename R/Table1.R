@@ -366,7 +366,7 @@ out.html <- function (tab, colnames, stripe=TRUE, stripe.col='#F7F7F7')
 #####################
 out.plain <- function(tab, colnames=NULL) {
   output <- cbind(format(as.vector(tab[,1]), justify='left'), 
-                  as.matrix(tab[,2:dim(tab)[2]]))
+                  data.frame(tab[,2:dim(tab)[2]]))
   colnames(output)=colnames
   return(print(output, row.names=F))
 }
