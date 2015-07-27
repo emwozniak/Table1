@@ -426,7 +426,6 @@ cont.var <- function(var,
   if (!is.null(rm.stat)) {
     out <- out[-((which(c('count', 'meansd', 'mediqr', 'q1q3', 'minmax', 'miss') %in% rm.stat))+1),]
   }
-  
   return(data.frame(out))
 }
 
@@ -450,7 +449,7 @@ out.latex <- function(tab, colnames=NULL) {
       paste("\\hskip .5cm", named, sep=' ')))
   
   output <- apply(cbind(named, tab[,2:dim(tab)[2]]), 2, function(x) gsub('%', '\\\\%', x))
-  output <- gsub('<', '\\textless', output)
+  output <- gsub('<', '\\textless ', output)
   colnames(output) <- colnames
   
   print(xtable(output, align=paste(c('l', 'l', rep('r', dim(output)[2]-1)), collapse='')), 
@@ -466,6 +465,7 @@ out.latex <- function(tab, colnames=NULL) {
 #have similar names to available summary statistics
 out.html <- function (tab, colnames, stripe=TRUE, stripe.col='#F7F7F7') 
 {
+  #Option for light zebra striping of every other variable (default)
   if (stripe==FALSE) {
     named <- as.vector(tab[, 1])
     tags <- grepl("^ ", named)
@@ -475,20 +475,27 @@ out.html <- function (tab, colnames, stripe=TRUE, stripe.col='#F7F7F7')
                 grepl("Mean", named, fixed = TRUE) | 
                 grepl("Median", named, fixed = TRUE) | 
                 grepl("Q1", named, fixed = TRUE) | 
-                grepl("Min", named, fixed = TRUE))
+                grepl("Min", named, fixed = TRUE))    
+    #Bold headers and levels of categorical variables
     named <- ifelse((tags == FALSE | tags2 == FALSE), 
                     paste("<b>", named, "</b>", sep = ""), 
                     named)
+    #Indent all row names except variable name by 3 spaces
     named <- ifelse(tags == TRUE, 
                     paste("&nbsp;", "&nbsp;", "&nbsp;", named, sep = " "), 
                     named)
     output <- cbind(named, as.vector(tab[, 2:dim(tab)[2]]))
+    
+    #Left justify row names; right justify all other columns
+    #Use css.cell to add whitespace between columns
     return(htmlTable(as.matrix(output), 
                      rnames = F, 
                      header = colnames, 
                      align = c("l", rep("r", ncol(output) - 1)), 
                      css.cell = "padding-left: .2em; padding-right: 2em;"))
   }
+  
+  #Option to remove zebra striping for an all-white background
   else if (stripe==TRUE) {
     named <- as.vector(tab[, 1])
     tags <- grepl("^ ", named) 
@@ -511,6 +518,8 @@ out.html <- function (tab, colnames, stripe=TRUE, stripe.col='#F7F7F7')
     #Specify colors for striping
     color <- c('#FFFFFF', stripe.col)
     
+    #Left justify row names; right justify all other columns
+    #Use css.cell to add whitespace between columns
     return(htmlTable(as.matrix(output), 
                      rnames=FALSE, 
                      header=colnames, 
