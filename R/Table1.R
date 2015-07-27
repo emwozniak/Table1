@@ -12,7 +12,7 @@ cat.var <- function(var,
                     rm.stat=NULL) {
   
   #~~~~~~~~~~~#
-  # NO STRATA #
+  # No strata #
   #~~~~~~~~~~~#
   #Construct categorical summary 
   ##Column percents only when strat=NULL
@@ -41,7 +41,7 @@ cat.var <- function(var,
   }
   
   #~~~~~~~~#
-  # STRATA #
+  # Strata #
   #~~~~~~~~#
   #Construct categorical summary
   ##Row and column percents as default
@@ -233,140 +233,171 @@ cont.var <- function(var,
                      dec=2, 
                      header=deparse(substitute(var)), 
                      ptype='None',
-                     pname=FALSE) {
+                     pname=FALSE,
+                     rm.stat=NULL) {
   
+  #~~~~~~~~~~~#
+  # No strata #
+  #~~~~~~~~~~~#
   #Continuous summary with no strata
   if (is.null(strat)) {
+    
     n.tot <- length(which(is.na(var)==FALSE))
+    
     mean.sd.tot <- paste(
-      format(
-        round(mean(var, na.rm=T), dec), 
-        nsmall=dec), 
-      paste('(', 
-            format(
-              round(sd(var, na.rm=T), dec), 
-              nsmall=dec), ')', 
-            sep=''))
+                      format(
+                          round(mean(var, na.rm=T), dec), 
+                      nsmall=dec), 
+                   paste('(', 
+                      format(
+                          round(sd(var, na.rm=T), dec), 
+                      nsmall=dec), ')', 
+                   sep=''))
+    
     med.iqr.tot <- paste(
-      format(
-        round(median(var, na.rm=T), dec), 
-        nsmall=dec), 
-      paste('(', 
-            format(
-              round(IQR(var, na.rm=T), dec), 
-              nsmall=dec), ')', 
-            sep=''))
+                      format(
+                          round(median(var, na.rm=T), dec), 
+                      nsmall=dec), 
+                   paste('(', 
+                      format(
+                          round(IQR(var, na.rm=T), dec), 
+                      nsmall=dec), ')', 
+                   sep=''))
+    
     q1.q3.tot <- paste(
-      format(
-        round(quantile(var, 0.25, na.rm=T), dec), 
-        nsmall=2), ', ',
-      format(
-        round(quantile(var, 0.75, na.rm=T), dec)), 
-      sep='')
+                    format(
+                        round(quantile(var, 0.25, na.rm=T), dec), 
+                    nsmall=2), ', ',
+                    format(
+                        round(quantile(var, 0.75, na.rm=T), dec)), 
+                    sep='')
+    
     min.max.tot <- paste(
-      format(
-        round(min(var, na.rm=T), dec), 
-        nsmall=dec), ', ',
-      format(round(max(var, na.rm=T), 2)), 
-      sep='')
+                      format(
+                          round(min(var, na.rm=T), dec), 
+                      nsmall=dec), ', ',
+                      format(
+                          round(max(var, na.rm=T), 2)), 
+                      sep='')
+    
     miss.tot <- length(which(is.na(var)==T))
+    
+    #rbind summary statistics
+    #cbind row headers and replace NAs with '' for printing
     out <- sapply(data.frame(rbind(NA, n.tot,
                       mean.sd.tot, med.iqr.tot, q1.q3.tot, min.max.tot, miss.tot)),
                   as.character)
     out <- cbind(as.vector(c(paste(header, '     '),  '   Count', '   Mean (SD)', '   Median (IQR)', 
-                             '   Q1, Q3', '   Min, Max', '   Missing')), 
+                      '   Q1, Q3', '   Min, Max', '   Missing')), 
                  replace(out, is.na(out), ''))
     rownames(out) <- NULL
     colnames(out) <- c('Variable', 'Overall')
   }
   
+  #~~~~~~~~#
+  # Strata #
+  #~~~~~~~~#
   #Continuous summary with strata
   else {
     if (!is.null(strat)) {
       
       #Stratified summaries
       mean.sd <- format(
-        round(aggregate(var, list(strat), mean, na.rm=T)[,-1], dec), 
-        nsmall=dec)
+                    round(aggregate(var, list(strat), mean, na.rm=T)[,-1], dec), 
+                 nsmall=dec)
       mean.sd[] <- paste0(mean.sd, 
                           paste0(' (', 
                               (format(
                                   round(aggregate(var, list(strat), sd, na.rm=T)[,-1], dec), 
                               nsmall=dec)),
                           ')'))
+      
       med.iqr <- format(
-        round(aggregate(var, list(strat), median, na.rm=T)[,-1], dec), 
-        nsmall=dec)
-      med.iqr[] <- paste0(med.iqr, paste0(' (', 
-                                          (format(
-                                            round(aggregate(var, list(strat), IQR, na.rm=T)[,-1], dec), 
-                                            nsmall=dec)), 
-                                          ')'))
+                    round(aggregate(var, list(strat), median, na.rm=T)[,-1], dec), 
+                 nsmall=dec)
+      med.iqr[] <- paste0(med.iqr, 
+                          paste0(' (', 
+                              (format(
+                                  round(aggregate(var, list(strat), IQR, na.rm=T)[,-1], dec), 
+                              nsmall=dec)), 
+                          ')'))
+      
       q1.q3 <- format(
-        round(aggregate(var, list(strat), quantile, 0.25, na.rm=T)[,-1], dec), 
-        nsmall=dec)
-      q1.q3[] <- paste0(q1.q3, paste0(', ', 
-                                      (format(
-                                        round(aggregate(var, list(strat), quantile, 0.75, na.rm=T)[,-1], dec), 
-                                        nsmall=dec))))
+                  round(aggregate(var, list(strat), quantile, 0.25, na.rm=T)[,-1], dec), 
+               nsmall=dec)
+      q1.q3[] <- paste0(q1.q3, 
+                        paste0(', ', 
+                            (format(
+                                round(aggregate(var, list(strat), quantile, 0.75, na.rm=T)[,-1], dec), 
+                            nsmall=dec))
+                        ))
+      
       min.max <- format(
-        round(aggregate(var, list(strat), min, na.rm=T)[,-1], dec), 
-        nsmall=dec)
-      min.max[] <- paste0(min.max, paste0(', ', 
-                                          (format(
-                                            round(aggregate(var, list(strat), max, na.rm=T)[,-1], dec), 
-                                            nsmall=dec))))
+                    round(aggregate(var, list(strat), min, na.rm=T)[,-1], dec), 
+                 nsmall=dec)
+      min.max[] <- paste0(min.max, 
+                          paste0(', ', 
+                              (format(
+                                  round(aggregate(var, list(strat), max, na.rm=T)[,-1], dec), 
+                              nsmall=dec))
+                          ))
       miss <- aggregate(var, list(strat), function(x) {sum(is.na(x))})[,-1]
       n <- as.vector(aggregate(var, list(strat), length)[,-1]) - as.vector(miss)
       cont <- rbind(n, mean.sd, med.iqr, q1.q3, min.max, miss)
       
       #Overall summaries for total column
       n.tot <- sum(n)
+      
       mean.sd.tot <- paste(
-        format(
-          round(mean(var[!is.na(strat)], na.rm=T), dec), 
-          nsmall=dec), 
-        paste('(', 
-              format(
-                round(sd(var[!is.na(strat)], na.rm=T), dec), 
-                nsmall=dec), ')', 
-              sep=''))
+                        format(
+                            round(mean(var[!is.na(strat)], na.rm=T), dec), 
+                        nsmall=dec), 
+                     paste('(', 
+                        format(
+                            round(sd(var[!is.na(strat)], na.rm=T), dec), 
+                        nsmall=dec), ')', 
+                     sep=''))
+      
       med.iqr.tot <- paste(
-        format(
-          round(median(var[!is.na(strat)], na.rm=T), dec), 
-          nsmall=dec), 
-        paste('(', 
-              format(
-                round(IQR(var[!is.na(strat)], na.rm=T), dec), 
-                nsmall=dec), ')', 
-              sep=''))
+                        format(
+                            round(median(var[!is.na(strat)], na.rm=T), dec), 
+                        nsmall=dec), 
+                     paste('(', 
+                        format(
+                            round(IQR(var[!is.na(strat)], na.rm=T), dec), 
+                        nsmall=dec), ')', 
+                     sep=''))
+      
       q1.q3.tot <- paste(
-        format(
-          round(quantile(var[!is.na(strat)], 0.25, na.rm=T), dec), 
-          nsmall=dec), ', ',
-        format(
-          round(quantile(var[!is.na(strat)], 0.75, na.rm=T), dec),
-          nsmall=dec), 
-        sep='') 
+                      format(
+                          round(quantile(var[!is.na(strat)], 0.25, na.rm=T), dec), 
+                      nsmall=dec), ', ',
+                      format(
+                          round(quantile(var[!is.na(strat)], 0.75, na.rm=T), dec),
+                      nsmall=dec), 
+                   sep='') 
+      
       min.max.tot <- paste(
-        format(
-          round(min(var[!is.na(strat)], na.rm=T), dec), 
-          nsmall=dec), ', ',
-        format(
-          round(max(var[!is.na(strat)], na.rm=T), dec),
-          nsmall=dec), 
-        sep='')
+                        format(
+                            round(min(var[!is.na(strat)], na.rm=T), dec), 
+                        nsmall=dec), ', ',
+                        format(
+                            round(max(var[!is.na(strat)], na.rm=T), dec),
+                        nsmall=dec), 
+                     sep='')
+      
       miss.tot=sum(miss)
+      
       tot <- rbind(n.tot, mean.sd.tot, med.iqr.tot, q1.q3.tot, min.max.tot, miss.tot)
       
       #cbind stratified and total columns
       #rbind counts and missings to create complete summary
       out <- sapply(data.frame(rbind(rep(NA, length(levels(as.factor(strat))) + 1),
-                                     cbind(cont, tot))),
+                          cbind(cont, tot))),
                     as.character)
       #cbind vector of row headers and replace NAs with '' to show up as a blank cell when printed
       out <- cbind(as.vector(c(paste(header, '     '), '   Count', '   Mean (SD)', '   Median (IQR)', 
-                               '   Q1, Q3', '   Min, Max', '   Missing')), 
+                        '   Q1, Q3', '   Min, Max', '   Missing')), 
                    replace(out, is.na(out), ''))
       rownames(out) <- NULL
       colnames(out) <- c('Variable', as.vector(levels(as.factor(strat))), 'Overall')
@@ -413,13 +444,13 @@ out.latex <- function(tab, colnames=NULL) {
                   paste("\\textbf{", named, "}", sep=''),
                   named)
   named <- c(ifelse(
-    tags==F,
-    paste("\\vspace*{0.1cm}", 
+      tags==F,
+      paste("\\vspace*{0.1cm}", 
           paste("\\", "\\", sep=''), named) ,
-    paste("\\hskip .5cm", named, sep=' ')))
+      paste("\\hskip .5cm", named, sep=' ')))
   
-  #output <- cbind(named, tab[,2:dim(tab)[2]])
   output <- apply(cbind(named, tab[,2:dim(tab)[2]]), 2, function(x) gsub('%', '\\\\%', x))
+  output <- gsub('<', '\\textless', output)
   colnames(output) <- colnames
   
   print(xtable(output, align=paste(c('l', 'l', rep('r', dim(output)[2]-1)), collapse='')), 
