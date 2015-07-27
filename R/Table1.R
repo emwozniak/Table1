@@ -151,11 +151,11 @@ cont.var <- function(var,
       sep='')
     miss.tot <- length(which(is.na(var)==T))
     out <- sapply(data.frame(rbind(NA, n.tot,
-                                   mean.sd.tot, med.iqr.tot, q1.q3.tot, min.max.tot, miss.tot)),
+                      mean.sd.tot, med.iqr.tot, q1.q3.tot, min.max.tot, miss.tot)),
                   as.character)
-    out <- replace(out, is.na(out), '')
     out <- cbind(as.vector(c(paste(header, '     '),  '   Count', '   Mean (SD)', '   Median (IQR)', 
-                             '   Q1, Q3', '   Min, Max', '   Missing')), out)
+                             '   Q1, Q3', '   Min, Max', '   Missing')), 
+                 replace(out, is.na(out), ''))
     rownames(out) <- NULL
     colnames(out) <- c('Variable', 'Overall')
   }
@@ -243,29 +243,36 @@ cont.var <- function(var,
       out <- sapply(data.frame(rbind(rep(NA, length(levels(as.factor(strat))) + 1),
                                      cbind(cont, tot))),
                     as.character)
-      out <- replace(out, is.na(out), '')
+      #cbind vector of row headers and replace NAs with '' to show up as a blank cell when printed
       out <- cbind(as.vector(c(paste(header, '     '), '   Count', '   Mean (SD)', '   Median (IQR)', 
-                               '   Q1, Q3', '   Min, Max', '   Missing')), out)
+                               '   Q1, Q3', '   Min, Max', '   Missing')), 
+                   replace(out, is.na(out), ''))
       rownames(out) <- NULL
       colnames(out) <- c('Variable', as.vector(levels(as.factor(strat))), 'Overall')
     }
   }
   
+  #Print p-values without the name of the test used
   if (ptype!='None' & pname==FALSE) {
     p <- c(stat.col(var, strat, ptype, pname=FALSE), rep(NA, 6))
     out <- cbind(out, p)
     out <- replace(out, is.na(out), '')
     rownames(out) <- NULL
-    colnames(out) <- c('Variable', as.vector(levels(as.factor(strat))), 'Overall', 'p-value')
-    
+    colnames(out) <- c('Variable', as.vector(levels(as.factor(strat))), 'Overall', 'p-value')    
   }
   
+  #Print p-values with the name of the test used
   else if (ptype!='None' & pname==TRUE) {
     p <- c(stat.col(var, strat, ptype, pname=TRUE), rep(NA, 5))
     out <-  cbind(out, p)
     out <- replace(out, is.na(out), '')
     rownames(out) <- NULL
     colnames(out) <- c('Variable', as.vector(levels(as.factor(strat))), 'Overall', 'p-value')
+  }
+  
+  #Remove summary statistics specified as unwanted
+  if (!is.null(rm.stat)) {
+    out <- out[-((which(c('count', 'meansd', 'mediqr', 'q1q3', 'minmax', 'miss') %in% rm.stat))+1),]
   }
   
   return(data.frame(out))
