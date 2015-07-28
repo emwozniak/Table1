@@ -9,7 +9,7 @@ cat.var <- function(var,
                     header=deparse(substitute(var)),
                     ptype='None',
                     pname=FALSE,
-                    rm.stat=NULL) {
+                    cat.rmstat=NULL) {
   
   #~~~~~~~~~~~#
   # No strata #
@@ -45,7 +45,7 @@ cat.var <- function(var,
   #~~~~~~~~#
   #Construct categorical summary
   ##Row and column percents as default
-  else if (!is.null(strat) & is.null(rm.stat)) {
+  else if (!is.null(strat) & is.null(cat.rmstat)) {
     cat <- as.matrix(table(var, as.factor(strat)))
     tot <- as.matrix(apply(cat, 1, sum))
     
@@ -66,8 +66,7 @@ cat.var <- function(var,
                     paste0(' (', 
                         format(round(t(t(cat)/colSums(cat))*100, dec), 
                         nsmall=dec), '%)')
-                    )
-              )
+                    ))
     #Overall summary
     tot[] <- paste0(tot, 
                     paste0(' (', 
@@ -76,8 +75,7 @@ cat.var <- function(var,
                     paste0(' (', 
                         format(round((tot/colSums(tot))*100, dec), 
                         nsmall=dec), '%)')
-                    )
-              )
+                    ))
     
     #Aggregate missings
     miss <- c(aggregate(var, list(strat), function(x) {sum(is.na(x))})[,-1],
@@ -99,8 +97,8 @@ cat.var <- function(var,
     colnames(out) <- c('Variable', as.vector(levels(as.factor(strat))), 'Overall')
   }
   
-  #Row percents only ('col' %in% rm.stat)
-  else if (!is.null(strat) & ('col' %in% rm.stat)) {
+  #Row percents only ('col' %in% cat.rmstat)
+  else if (!is.null(strat) & ('col' %in% cat.rmstat)) {
     cat <- as.matrix(table(var, as.factor(strat)))
     tot <- as.matrix(apply(cat, 1, sum))
     
@@ -146,8 +144,8 @@ cat.var <- function(var,
     colnames(out) <- c('Variable', as.vector(levels(as.factor(strat))), 'Overall')
   }
   
-  #Column percents only ('row' %in% rm.stat)
-  else if (!is.null(strat) & ('row' %in% rm.stat)) {
+  #Column percents only ('row' %in% cat.rmstat)
+  else if (!is.null(strat) & ('row' %in% cat.rmstat)) {
     cat <- as.matrix(table(var, as.factor(strat)))
     tot <- as.matrix(apply(cat, 1, sum))
     #Counts
@@ -210,15 +208,15 @@ cat.var <- function(var,
   }
   
   #Remove overall counts and/or missings if requested
-  if ('miss' %in% rm.stat) {
+  if ('miss' %in% cat.rmstat) {
     out <- out[-dim(out)[1], ]
   }
   
-  if (is.null(strat) & ('count' %in% rm.stat)) {
+  if (is.null(strat) & ('count' %in% cat.rmstat)) {
     out <- out[-c(2,3), ]
   }
   
-  else if (!is.null(strat) & 'count' %in% rm.stat) {
+  else if (!is.null(strat) & 'count' %in% cat.rmstat) {
     out <- out[-2, ]
   } 
   return(data.frame(out))
