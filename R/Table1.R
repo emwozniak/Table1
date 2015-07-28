@@ -1,6 +1,6 @@
-###############
-# Categorical #
-###############
+################################
+# Categorical summary function #
+################################
 
 cat.var <- function(var, 
                     strat=NULL, 
@@ -17,6 +17,8 @@ cat.var <- function(var,
   #Construct categorical summary 
   ##Column percents only when strat=NULL
   if (is.null(strat)) {
+    
+    #Total counts and missings
     n <- length(which(is.na(var)==FALSE))
     tot <- as.matrix(table(var))
     tot[] <- paste0(tot, 
@@ -24,6 +26,7 @@ cat.var <- function(var,
                         format(round((tot/colSums(tot))*100, dec), 
                     nsmall=dec), '%)'))
     miss <- length(which(is.na(var)==T))
+    
     #Combine total counts (%s) and missing values into a data frame
     out <- sapply(data.frame(rbind(rep(NA, length(levels(as.factor(strat))) + 1), 
                                    n, 
@@ -32,6 +35,7 @@ cat.var <- function(var,
                                    miss),
                              row.names=NULL),
                   as.character)
+    
     #Paste a column of row headers and replace NA with '' for printing
     out <- cbind(as.vector(c(paste(header, '     '), '  Count', '  (%)',  
                              paste0('  ', rownames), '  Missing')), 
@@ -58,7 +62,7 @@ cat.var <- function(var,
                   )
     n <- cbind(t(n), apply(tot, 2, sum))
     
-    #Stratified summary
+    #Stratified summary: count (row %)(col %)
     cat[] <- paste0(cat, 
                     paste0(' (', 
                         format(round((cat/rowSums(cat))*100, dec), 
@@ -67,7 +71,7 @@ cat.var <- function(var,
                         format(round(t(t(cat)/colSums(cat))*100, dec), 
                         nsmall=dec), '%)')
                     ))
-    #Overall summary
+    #Overall summary: count (row %)(col %)
     tot[] <- paste0(tot, 
                     paste0(' (', 
                         format(round((tot/rowSums(tot))*100, dec), 
@@ -98,6 +102,7 @@ cat.var <- function(var,
   }
   
   #Row percents only ('col' %in% cat.rmstat)
+  # count (row %)
   else if (!is.null(strat) & ('col' %in% cat.rmstat)) {
     cat <- as.matrix(table(var, as.factor(strat)))
     tot <- as.matrix(apply(cat, 1, sum))
@@ -145,9 +150,11 @@ cat.var <- function(var,
   }
   
   #Column percents only ('row' %in% cat.rmstat)
+  # count (col %)
   else if (!is.null(strat) & ('row' %in% cat.rmstat)) {
     cat <- as.matrix(table(var, as.factor(strat)))
     tot <- as.matrix(apply(cat, 1, sum))
+    
     #Counts
     n <- as.matrix(apply(cat, 2, sum))
     n[] <- paste0(n,
@@ -190,6 +197,7 @@ cat.var <- function(var,
     colnames(out) <- c('Variable', as.vector(levels(as.factor(strat))), 'Overall')
   } 
   
+  #Include p-values without printing the name of the test
   if (ptype!='None' & pname==FALSE) {
       p <- c(stat.col(var, strat, ptype, pname=FALSE), rep(NA, length(levels(as.factor(var))) + 3))
       out <- cbind(out, p)
@@ -199,6 +207,7 @@ cat.var <- function(var,
     
   }
   
+  #Print the name of the test used beneath each p-value
   else if (ptype!='None' & pname==TRUE) {
       p <- c(stat.col(var, strat, ptype, pname=TRUE), rep(NA, length(levels(as.factor(var))) + 2))
       out <-  cbind(out, p)
@@ -207,11 +216,12 @@ cat.var <- function(var,
       colnames(out) <- c('Variable', as.vector(levels(as.factor(strat))), 'Overall', 'p-value')
   }
   
-  #Remove overall counts and/or missings if requested
+  #Remove missing values row
   if ('miss' %in% cat.rmstat) {
     out <- out[-dim(out)[1], ]
   }
   
+  #Remove count (%) row
   if (is.null(strat) & ('count' %in% cat.rmstat)) {
     out <- out[-c(2,3), ]
   }
@@ -222,9 +232,9 @@ cat.var <- function(var,
   return(data.frame(out))
 }
 
-##############
-# Continuous #
-##############
+###############################
+# Continuous summary function #
+###############################
 
 cont.var <- function(var, 
                      strat=NULL, 
@@ -232,7 +242,7 @@ cont.var <- function(var,
                      header=deparse(substitute(var)), 
                      ptype='None',
                      pname=FALSE,
-                     rm.stat=NULL) {
+                     cont.rmstat=NULL) {
   
   #~~~~~~~~~~~#
   # No strata #
@@ -240,8 +250,10 @@ cont.var <- function(var,
   #Continuous summary with no strata
   if (is.null(strat)) {
     
+    #Counts
     n.tot <- length(which(is.na(var)==FALSE))
     
+    #Mean (standard deviation)
     mean.sd.tot <- paste(
                       format(
                           round(mean(var, na.rm=T), dec), 
@@ -252,6 +264,7 @@ cont.var <- function(var,
                       nsmall=dec), ')', 
                    sep=''))
     
+    #Median (interquartile range)
     med.iqr.tot <- paste(
                       format(
                           round(median(var, na.rm=T), dec), 
@@ -262,6 +275,7 @@ cont.var <- function(var,
                       nsmall=dec), ')', 
                    sep=''))
     
+    #25th percentile, 75th percentile
     q1.q3.tot <- paste(
                     format(
                         round(quantile(var, 0.25, na.rm=T), dec), 
@@ -270,6 +284,7 @@ cont.var <- function(var,
                         round(quantile(var, 0.75, na.rm=T), dec)), 
                     sep='')
     
+    #Minimum, maximum
     min.max.tot <- paste(
                       format(
                           round(min(var, na.rm=T), dec), 
@@ -278,6 +293,7 @@ cont.var <- function(var,
                           round(max(var, na.rm=T), 2)), 
                       sep='')
     
+    #Missings
     miss.tot <- length(which(is.na(var)==T))
     
     #rbind summary statistics
@@ -299,7 +315,7 @@ cont.var <- function(var,
   else {
     if (!is.null(strat)) {
       
-      #Stratified summaries
+      #Mean (standard deviation)
       mean.sd <- format(
                     round(aggregate(var, list(strat), mean, na.rm=T)[,-1], dec), 
                  nsmall=dec)
@@ -310,6 +326,7 @@ cont.var <- function(var,
                               nsmall=dec)),
                           ')'))
       
+      #Median (interquartile range)
       med.iqr <- format(
                     round(aggregate(var, list(strat), median, na.rm=T)[,-1], dec), 
                  nsmall=dec)
@@ -320,6 +337,7 @@ cont.var <- function(var,
                               nsmall=dec)), 
                           ')'))
       
+      #25th percentile, 75th percentile
       q1.q3 <- format(
                   round(aggregate(var, list(strat), quantile, 0.25, na.rm=T)[,-1], dec), 
                nsmall=dec)
@@ -330,6 +348,7 @@ cont.var <- function(var,
                             nsmall=dec))
                         ))
       
+      #Minimum, maximum
       min.max <- format(
                     round(aggregate(var, list(strat), min, na.rm=T)[,-1], dec), 
                  nsmall=dec)
@@ -339,13 +358,20 @@ cont.var <- function(var,
                                   round(aggregate(var, list(strat), max, na.rm=T)[,-1], dec), 
                               nsmall=dec))
                           ))
+      
+      #Missings
       miss <- aggregate(var, list(strat), function(x) {sum(is.na(x))})[,-1]
+      
+      #Counts
       n <- as.vector(aggregate(var, list(strat), length)[,-1]) - as.vector(miss)
+      
+      #Stratified summary
       cont <- rbind(n, mean.sd, med.iqr, q1.q3, min.max, miss)
       
       #Overall summaries for total column
       n.tot <- sum(n)
       
+      #Overall mean (standard deviation)
       mean.sd.tot <- paste(
                         format(
                             round(mean(var[!is.na(strat)], na.rm=T), dec), 
@@ -356,6 +382,7 @@ cont.var <- function(var,
                         nsmall=dec), ')', 
                      sep=''))
       
+      #Overall median (interquartile range)
       med.iqr.tot <- paste(
                         format(
                             round(median(var[!is.na(strat)], na.rm=T), dec), 
@@ -366,6 +393,7 @@ cont.var <- function(var,
                         nsmall=dec), ')', 
                      sep=''))
       
+      #Overall 2th percentile, 75th percentile
       q1.q3.tot <- paste(
                       format(
                           round(quantile(var[!is.na(strat)], 0.25, na.rm=T), dec), 
@@ -375,6 +403,7 @@ cont.var <- function(var,
                       nsmall=dec), 
                    sep='') 
       
+      #Overall minimum, maximum
       min.max.tot <- paste(
                         format(
                             round(min(var[!is.na(strat)], na.rm=T), dec), 
@@ -384,8 +413,10 @@ cont.var <- function(var,
                         nsmall=dec), 
                      sep='')
       
+      #Overall missings
       miss.tot=sum(miss)
       
+      #Total summary column
       tot <- rbind(n.tot, mean.sd.tot, med.iqr.tot, q1.q3.tot, min.max.tot, miss.tot)
       
       #cbind stratified and total columns
@@ -420,9 +451,9 @@ cont.var <- function(var,
     colnames(out) <- c('Variable', as.vector(levels(as.factor(strat))), 'Overall', 'p-value')
   }
   
-  #Remove summary statistics specified as unwanted
-  if (!is.null(rm.stat)) {
-    out <- out[-((which(c('count', 'meansd', 'mediqr', 'q1q3', 'minmax', 'miss') %in% rm.stat))+1),]
+  #Remove summary statistics specified in cont.rmstat
+  if (!is.null(cont.rmstat)) {
+    out <- out[-((which(c('count', 'meansd', 'mediqr', 'q1q3', 'minmax', 'miss') %in% cont.rmstat))+1),]
   }
   return(data.frame(out))
 }
