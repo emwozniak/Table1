@@ -9,7 +9,7 @@ cat.var <- function(var,
                     header=deparse(substitute(var)),
                     ptype='None',
                     pname=FALSE,
-                    cat.rmstat=NULL) {
+                    cat.rmstat='None') {
   
   #~~~~~~~~~~~#
   # No strata #
@@ -49,7 +49,7 @@ cat.var <- function(var,
   #~~~~~~~~#
   #Construct categorical summary
   ##Row and column percents as default
-  else if (!is.null(strat) & is.null(cat.rmstat)) {
+  else if (!is.null(strat) & all(cat.rmstat=='None')) {
     cat <- as.matrix(table(var, as.factor(strat)))
     tot <- as.matrix(apply(cat, 1, sum))
     
@@ -226,7 +226,7 @@ cat.var <- function(var,
     out <- out[-c(2,3), ]
   }
   
-  else if (!is.null(strat) & 'count' %in% cat.rmstat) {
+  else if (!is.null(strat) & ('count' %in% cat.rmstat)) {
     out <- out[-2, ]
   } 
   return(data.frame(out))
@@ -242,7 +242,7 @@ cont.var <- function(var,
                      header=deparse(substitute(var)), 
                      ptype='None',
                      pname=FALSE,
-                     cont.rmstat=NULL) {
+                     cont.rmstat='None') {
   
   #~~~~~~~~~~~#
   # No strata #
@@ -452,7 +452,7 @@ cont.var <- function(var,
   }
   
   #Remove summary statistics specified in cont.rmstat
-  if (!is.null(cont.rmstat)) {
+  if (!(cont.rmstat=='None')) {
     out <- out[-((which(c('count', 'meansd', 'mediqr', 'q1q3', 'minmax', 'miss') %in% cont.rmstat))+1),]
   }
   return(data.frame(out))
