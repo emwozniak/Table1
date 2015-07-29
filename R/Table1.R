@@ -745,11 +745,19 @@ quick.table <- function(dat,
                         dec=2,
                         colnames=NULL,
                         output='plain',
-                        classlim=6
+                        
+                        #Factor limit for variable classification
+                        classlim=6,
+                        
+                        #HTML output options
+                        stripe=TRUE,
+                        stripe.col='#F7F7F7'            
 )
-  
+
 {
-  #Warnings
+  #----------#
+  # Warnings #
+  #----------#
   if (missing(dat)) {
     warning('A data frame must be provided in dat=.')
   }
@@ -766,7 +774,9 @@ quick.table <- function(dat,
     dat <- dat[,-which(c(names(dat)) %in% ls('package:base'))]
   }
   
-  ## Classify continuous variables ##
+  #-------------------------------#
+  # Classify continuous variables #
+  #-------------------------------#
   #Get all numeric variables with equal or more than classification limit (default 6) levels when factored
   cont <- dat[, sapply(dat, is.numeric)]
   cont <- dat[, sapply(dat, function(x) length(levels(as.factor(x)))>=classlim)]
@@ -775,9 +785,10 @@ quick.table <- function(dat,
     print('The following variables are summarized as continuous:')
   }
   cont.varlist <- dput(colnames(cont))
-  cont.header=names(sapply(cont.varlist, FUN=get, simplify=F, USE.NAMES=T))
   
-  ## Classify categorical variables ##
+  #--------------------------------#
+  # Classify categorical variables #
+  #--------------------------------#
   #All variables that are not continuous; non-numeric or numeric with <classlim factorable levels
   cat <- dat[, -which(c(names(dat)) %in% c(names(cont)))]
   
@@ -786,125 +797,28 @@ quick.table <- function(dat,
     cat <- cat[,-which(c(names(cat)) %in% strat)]
   }  
   
+  #Print summary of variable classification
   if (nrow(cat)>0 & ncol(cat)>0) {
     print('The following variables are summarized as categorical:')
   }
   cat.varlist <- dput(colnames(cat))
-  cat.header=names(sapply(cat.varlist, FUN=get, simplify=F, USE.NAMES=T))
-  cat.rownames=lapply(sapply(cat.varlist, FUN=get, simplify=F, USE.NAMES=T), FUN=function(x) 
-    as.vector(levels(as.factor(x))))
   
-  #Define global options for the table
-  pname=FALSE
-  cont.ptype='None'
-  cat.ptype='None'
+  make.table(dat=dat,
+             cat.varlist=cat.varlist,
+             cat.header=names(sapply(cat.varlist, FUN=get, simplify=F, USE.NAMES=T)),
+             cat.rownames=lapply(sapply(cat.varlist, FUN=get, simplify=F, USE.NAMES=T), FUN=function(x) 
+               as.vector(levels(as.factor(x)))),
+             
+             cont.varlist=cont.varlist,
+             cont.header=names(sapply(cont.varlist, FUN=get, simplify=F, USE.NAMES=T)),
+             
+             strat=strat,
+             colnames=colnames,
+             output=output,
+             stripe=stripe,
+             stripe.col=stripe.col
+  )   
   
-  #Define options for no stratifying variable
-  if (is.null(strat)) {
-    cat.strat=rep(list(strat), length(cat.varlist))
-    cont.strat=rep(list(strat), length(cont.varlist))
-    strat.miss=0
-    strat.rem=0
-  }
-  
-  #Define options for stratifying variable 
-  else {
-    if (!is.null(strat)) {
-      cat.strat=rep(list(interaction(sapply(strat, FUN=get, simplify=FALSE, USE.NAMES=TRUE))), length(cat.varlist))
-      cont.strat=rep(list(interaction(sapply(strat, FUN=get, simplify=FALSE, USE.NAMES=TRUE))), length(cont.varlist))
-      strat.miss=lapply(sapply(strat, FUN=get, simplify=FALSE, USE.NAMES=TRUE), function(x) sum(is.na(x)))
-      strat.rem=sum(is.na(interaction(sapply(strat, FUN=get, simplify=FALSE, USE.NAMES=TRUE))))
-    }
-  }
-  
-  #Define options for stratifying variable
-  if (!is.null(strat) & strat.rem>0) {
-    print(paste("Total observations removed from table:", strat.rem, sep=' '))
-    print("Summary of total missing stratification variable(s):")
-    print(strat.miss)
-    footer.miss <- paste(strat.rem, "observations removed due to missing values in stratifying variable(s)", sep=' ')
-  }
-  else {footer.miss <- paste('')}
-  
-  #If only categorical variables are provided
-  if (is.null(cont.varlist)) {
-    cats <- mapply(cat.var, 
-                   var=sapply(cat.varlist, FUN=get, simplify=F, USE.NAMES=T), 
-                   strat=cat.strat, 
-                   dec=dec, 
-                   rownames=cat.rownames,
-                   header=cat.header,
-                   ptype=cat.ptype,
-                   pname=pname,
-                   SIMPLIFY=FALSE)
-    #Reorder output by variable order in dataset
-    tab <- do.call(rbind, 
-                   (c(cats))[order(match(names(c(cats)), 
-                                         names(dat)))])
-  }
-  
-  else {
-    #If only continuous variables are provided
-    if (is.null(cat.varlist)) {
-      conts <- mapply(cont.var, 
-                      var=sapply(cont.varlist, FUN=get, simplify=F, USE.NAMES=T),
-                      strat=cont.strat,
-                      dec=dec,
-                      header=cont.header,
-                      ptype=cont.ptype,
-                      pname=pname,
-                      SIMPLIFY=FALSE)
-      #Reorder output by variable order in dataset
-      tab <- do.call(rbind, 
-                     (c(conts))[order(match(names(c(conts)), 
-                                            names(dat)))])
-    }
-    else {
-      #If both categorical and continuous variables are provided
-      cats <- mapply(cat.var, 
-                     var=sapply(cat.varlist, FUN=get, simplify=F, USE.NAMES=T), 
-                     strat=cat.strat, 
-                     dec=dec, 
-                     rownames=cat.rownames,
-                     header=cat.header,
-                     ptype=cat.ptype,
-                     pname=pname,
-                     SIMPLIFY=FALSE)
-      conts <- mapply(cont.var, 
-                      var=sapply(cont.varlist, FUN=get, simplify=F, USE.NAMES=T),
-                      strat=cont.strat,
-                      dec=dec,
-                      header=cont.header,
-                      ptype=cont.ptype,
-                      pname=pname,
-                      SIMPLIFY=FALSE)
-      #Reorder output by variable order in dataset
-      tab <- do.call(rbind, 
-                     (c(cats, conts))[order(match(names(c(cats, conts)), 
-                                                  names(dat)))])
-    }
-  } 
-  
-  #Define column names
-  if (!is.null(colnames)) {
-    colnames <- colnames
-  }
-  else {
-    if (is.null(colnames)) {
-      colnames <- colnames(tab)
-    }
-  }
-  
-  #Define output 
-  if (output=='plain') {
-    out.plain(tab, colnames=colnames)
-  }
-  else if (output=='html') {
-      out.html(tab, colnames=colnames)
-    }
-    else if (output=='latex') {
-        out.latex(tab, colnames=colnames)
-      }
 }
 
 #######################
