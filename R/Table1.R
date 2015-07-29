@@ -452,7 +452,7 @@ cont.var <- function(var,
   }
   
   #Remove summary statistics specified in cont.rmstat
-  if (!(cont.rmstat=='None')) {
+  if (!(any(cont.rmstat=='None'))) {
     out <- out[-((which(c('count', 'meansd', 'mediqr', 'q1q3', 'minmax', 'miss') %in% cont.rmstat))+1),]
   }
   return(data.frame(out))
