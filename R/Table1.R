@@ -587,6 +587,8 @@ make.table <- function(dat,
                        
                        #Overall table options
                        strat=NULL,
+                       cat.rmstat='None',
+                       cont.rmstat='None',
                        dec=2,
                        pname=FALSE,
                        colnames=NULL,
@@ -594,37 +596,56 @@ make.table <- function(dat,
 )
 
 {
-  #Warnings
+  #----------#
+  # Warnings #
+  #----------#
   if (missing(dat)) {
     warning('A data frame must be provided in dat=.')
   }
+  
   if ((output=='plain')==FALSE) {
     print('Package dependencies: library(htmlTable) for HTML output and library(xtable) for LaTeX output')
   }
-  #if (any(c(cat.ptype, cont.ptype) != 'None')==TRUE & is.null(strat)==TRUE) {
-    #warning('A stratifying variable must be identified for p-values to be computed. See strat=.')
-  #}
+
   if (any(c(cat.varlist, cont.varlist) %in% ls('package:base'))==TRUE) {
     warning("Variables cannot take the names of any base R functions -- try 
             which(dput(colnames(dat)) %in% ls('package:base'))")
   }
   
-  
+  #-----------#
+  # No strata #
+  #-----------#
   if (is.null(strat)) {
     cat.strat=rep(list(strat), length(cat.varlist))
     cont.strat=rep(list(strat), length(cont.varlist))
     strat.miss=0
     strat.rem=0
   }
-  else {
-    if (!is.null(strat)) {
-      cat.strat=rep(list(interaction(sapply(strat, FUN=get, simplify=FALSE, USE.NAMES=TRUE))), length(cat.varlist))
-      cont.strat=rep(list(interaction(sapply(strat, FUN=get, simplify=FALSE, USE.NAMES=TRUE))), length(cont.varlist))
-      strat.miss=lapply(sapply(strat, FUN=get, simplify=FALSE, USE.NAMES=TRUE), function(x) sum(is.na(x)))
-      strat.rem=sum(is.na(interaction(sapply(strat, FUN=get, simplify=FALSE, USE.NAMES=TRUE))))
-    }
-  }
   
+  #--------#
+  # Strata #
+  #--------#
+  else if (!is.null(strat)) {
+      cat.strat=rep(list(
+                    interaction(
+                        sapply(strat, FUN=get, simplify=FALSE, USE.NAMES=TRUE))), 
+                    length(cat.varlist))
+      cont.strat=rep(list(
+                     interaction(
+                          sapply(strat, FUN=get, simplify=FALSE, USE.NAMES=TRUE))), 
+                     length(cont.varlist))
+      strat.miss=lapply(
+                      sapply(strat, FUN=get, simplify=FALSE, USE.NAMES=TRUE), function(x) sum(is.na(x))
+                      )
+      strat.rem=sum(is.na(
+                    interaction(
+                        sapply(strat, FUN=get, simplify=FALSE, USE.NAMES=TRUE))
+                    ))
+    }
+  
+  #----------------------#
+  # Removed observations #
+  #----------------------#
   if (!is.null(strat) & strat.rem>0) {
     print(paste("Total observations removed from table:", strat.rem, sep=' '))
     print("Summary of total missing stratification variable(s):")
@@ -633,64 +654,78 @@ make.table <- function(dat,
   }
   else {footer.miss <- paste('')}
   
-  #If only categorical variables are provided
+  #------------------#
+  # Categorical only #
+  #------------------#
   if (is.null(cont.varlist)) {
     cats <- mapply(cat.var, 
                    var=sapply(cat.varlist, FUN=get, simplify=F, USE.NAMES=T), 
                    strat=cat.strat, 
+                   cat.rmstat=cat.rmstat,
                    dec=dec, 
                    rownames=cat.rownames,
                    header=cat.header,
                    ptype=cat.ptype,
                    pname=pname,
                    SIMPLIFY=FALSE)
+    
     #Reorder output by variable order in dataset
     tab <- do.call(rbind, 
                    (c(cats))[order(match(names(c(cats)), 
                                          names(dat)))])
   }
   
+  #-----------------#
+  # Continuous only #
+  #-----------------#
+  else if (is.null(cat.varlist)) {
+    conts <- mapply(cont.var, 
+                    var=sapply(cont.varlist, FUN=get, simplify=F, USE.NAMES=T),
+                    strat=cont.strat,
+                    cont.rmstat=cont.rmstat,
+                    dec=dec,
+                    header=cont.header,
+                    ptype=cont.ptype,
+                    pname=pname,
+                    SIMPLIFY=FALSE)
+    
+    #Reorder output by variable order in dataset
+    tab <- do.call(rbind, 
+                   (c(conts))[order(match(names(c(conts)), 
+                                          names(dat)))])
+  }
+  
+  #----------------------------#
+  # Categorical and continuous #
+  #----------------------------#
   else {
-    #If only continuous variables are provided
-    if (is.null(cat.varlist)) {
-      conts <- mapply(cont.var, 
-                      var=sapply(cont.varlist, FUN=get, simplify=F, USE.NAMES=T),
-                      strat=cont.strat,
-                      dec=dec,
-                      header=cont.header,
-                      ptype=cont.ptype,
-                      pname=pname,
-                      SIMPLIFY=FALSE)
-      #Reorder output by variable order in dataset
-      tab <- do.call(rbind, 
-                     (c(conts))[order(match(names(c(conts)), 
-                                            names(dat)))])
-    }
-    else {
-      #If both categorical and continuous variables are provided
-      cats <- mapply(cat.var, 
-                     var=sapply(cat.varlist, FUN=get, simplify=F, USE.NAMES=T), 
-                     strat=cat.strat, 
-                     dec=dec, 
-                     rownames=cat.rownames,
-                     header=cat.header,
-                     ptype=cat.ptype,
-                     pname=pname,
-                     SIMPLIFY=FALSE)
-      conts <- mapply(cont.var, 
-                      var=sapply(cont.varlist, FUN=get, simplify=F, USE.NAMES=T),
-                      strat=cont.strat,
-                      dec=dec,
-                      header=cont.header,
-                      ptype=cont.ptype,
-                      pname=pname,
-                      SIMPLIFY=FALSE)
-      #Reorder output by variable order in dataset
-      tab <- do.call(rbind, 
-                     (c(cats, conts))[order(match(names(c(cats, conts)), 
-                                                  names(dat)))])
-    }
-  } 
+    cats <- mapply(cat.var, 
+                   var=sapply(cat.varlist, FUN=get, simplify=F, USE.NAMES=T), 
+                   strat=cat.strat, 
+                   cat.rmstat=cat.rmstat,
+                   dec=dec, 
+                   rownames=cat.rownames,
+                   header=cat.header,
+                   ptype=cat.ptype,
+                   pname=pname,
+                   SIMPLIFY=FALSE)
+    
+    conts <- mapply(cont.var, 
+                    var=sapply(cont.varlist, FUN=get, simplify=F, USE.NAMES=T),
+                    strat=cont.strat,
+                    cont.rmstat=cont.rmstat,
+                    dec=dec,
+                    header=cont.header,
+                    ptype=cont.ptype,
+                    pname=pname,
+                    SIMPLIFY=FALSE)
+    
+    #Reorder output by variable order in dataset
+    tab <- do.call(rbind, 
+                   (c(cats, conts))[order(match(names(c(cats, conts)), 
+                                                names(dat)))])
+  }
+  
   
   #Define column names
   if (!is.null(colnames)) {
@@ -710,7 +745,7 @@ make.table <- function(dat,
   else if (output=='latex') {
     out.latex(tab, colnames=colnames)
   } 
-  }
+}
 
 ################################
 # Minimal input table function #
