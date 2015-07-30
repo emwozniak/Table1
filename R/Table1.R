@@ -494,8 +494,12 @@ out.latex <- function(tab, colnames=NULL) {
 #have similar names to available summary statistics
 out.html <- function (tab, colnames, stripe=TRUE, stripe.col='#F7F7F7') 
 {
+  #Define the column of row names
   named <- as.vector(tab[, 1])
+  #Identify names with whitespace before text as TRUE
+  #=>variable names are FALSE
   tags <- grepl("^ ", named)
+  #Identify strings with summary stat name components
   tags2 <- (grepl("Count", named, fixed = TRUE) | 
               grepl("%", named, fixed = TRUE) | 
               grepl("Missing", named, fixed = T) == TRUE | 
