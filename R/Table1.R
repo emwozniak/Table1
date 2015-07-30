@@ -23,8 +23,8 @@ cat.var <- function(var,
     tot <- as.matrix(table(var))
     tot[] <- paste0(tot, 
                     paste0(' (', 
-                        format(round((tot/colSums(tot))*100, dec), 
-                    nsmall=dec), '%)'))
+                           format(round((tot/colSums(tot))*100, dec), 
+                           nsmall=dec), '%)'))
     miss <- length(which(is.na(var)==T))
     
     #Combine total counts (%s) and missing values into a data frame
@@ -49,7 +49,7 @@ cat.var <- function(var,
   #~~~~~~~~#
   #Construct categorical summary
   ##Row and column percents as default
-  else if (!is.null(strat) & all(cat.rmstat=='None')) {
+  else if (!is.null(strat) & !('col' %in% cat.rmstat) & !('row' %in% cat.rmstat)) {
     cat <- as.matrix(table(var, as.factor(strat)))
     tot <- as.matrix(apply(cat, 1, sum))
     
@@ -57,28 +57,28 @@ cat.var <- function(var,
     n <- as.matrix(apply(cat, 2, sum))
     n[] <- paste0(n,
                   paste0(' (',
-                      format(round((n/sum(n))*100, dec),
-                      nsmall=dec), '%)')
-                  )
+                         format(round((n/sum(n))*100, dec),
+                          nsmall=dec), '%)')
+            )
     n <- cbind(t(n), apply(tot, 2, sum))
     
     #Stratified summary: count (row %)(col %)
     cat[] <- paste0(cat, 
                     paste0(' (', 
-                        format(round((cat/rowSums(cat))*100, dec), 
-                        nsmall=dec), '%)',
+                           format(round((cat/rowSums(cat))*100, dec), 
+                           nsmall=dec), '%)',
                     paste0(' (', 
-                        format(round(t(t(cat)/colSums(cat))*100, dec), 
-                        nsmall=dec), '%)')
+                                  format(round(t(t(cat)/colSums(cat))*100, dec), 
+                                         nsmall=dec), '%)')
                     ))
     #Overall summary: count (row %)(col %)
     tot[] <- paste0(tot, 
                     paste0(' (', 
-                        format(round((tot/rowSums(tot))*100, dec), 
-                        nsmall=dec), '%)',
+                           format(round((tot/rowSums(tot))*100, dec), 
+                           nsmall=dec), '%)',
                     paste0(' (', 
-                        format(round((tot/colSums(tot))*100, dec), 
-                        nsmall=dec), '%)')
+                           format(round((tot/colSums(tot))*100, dec), 
+                           nsmall=dec), '%)')
                     ))
     
     #Aggregate missings
@@ -111,23 +111,23 @@ cat.var <- function(var,
     n <- as.matrix(apply(cat, 2, sum))
     n[] <- paste0(n,
                   paste0(' (',
-                      format(round((n/sum(n))*100, dec),
-                      nsmall=dec), '%)')
+                         format(round((n/sum(n))*100, dec),
+                         nsmall=dec), '%)')
                   )
     n <- cbind(t(n), apply(tot, 2, sum))
     
     #Stratified summary
     cat[] <- paste0(cat, 
                     paste0(' (', 
-                        format(round((cat/rowSums(cat))*100, dec), 
-                        nsmall=dec), '%)')
-                    )
+                           format(round((cat/rowSums(cat))*100, dec), 
+                           nsmall=dec), '%)')
+    )
     #Overall summary
     tot[] <- paste0(tot, 
                     paste0(' (', 
-                        format(round((tot/rowSums(tot))*100, dec), 
-                        nsmall=dec), '%)')
-                    )
+                           format(round((tot/rowSums(tot))*100, dec), 
+                           nsmall=dec), '%)')
+    )
     
     #Aggregate missings
     miss <- c(aggregate(var, list(strat), function(x) {sum(is.na(x))})[,-1],
@@ -159,22 +159,22 @@ cat.var <- function(var,
     n <- as.matrix(apply(cat, 2, sum))
     n[] <- paste0(n,
                   paste0(' (',
-                      format(round((n/sum(n))*100, dec),
-                      nsmall=dec), '%)')
+                         format(round((n/sum(n))*100, dec),
+                         nsmall=dec), '%)')
                   )
     n <- cbind(t(n), apply(tot, 2, sum))
     
     #Stratified summary
     cat[] <- paste0(cat, 
                     paste0(' (', 
-                          format(round(t(t(cat)/colSums(cat))*100, dec), 
-                          nsmall=dec), '%)')
+                           format(round(t(t(cat)/colSums(cat))*100, dec), 
+                           nsmall=dec), '%)')
                     )
     #Overall summary
     tot[] <- paste0(tot, 
                     paste0(' (', 
-                          format(round((tot/colSums(tot))*100, dec), 
-                          nsmall=dec), '%)')
+                           format(round((tot/colSums(tot))*100, dec), 
+                           nsmall=dec), '%)')
                     )
     
     #Missings
@@ -199,21 +199,21 @@ cat.var <- function(var,
   
   #Include p-values without printing the name of the test
   if (ptype!='None' & pname==FALSE) {
-      p <- c(stat.col(var, strat, ptype, pname=FALSE), rep(NA, length(levels(as.factor(var))) + 3))
-      out <- cbind(out, p)
-      out <- replace(out, is.na(out), '')
-      rownames(out) <- NULL
-      colnames(out) <- c('Variable', as.vector(levels(as.factor(strat))), 'Overall', 'p-value')
+    p <- c(stat.col(var, strat, ptype, pname=FALSE), rep(NA, length(levels(as.factor(var))) + 3))
+    out <- cbind(out, p)
+    out <- replace(out, is.na(out), '')
+    rownames(out) <- NULL
+    colnames(out) <- c('Variable', as.vector(levels(as.factor(strat))), 'Overall', 'p-value')
     
   }
   
   #Print the name of the test used beneath each p-value
   else if (ptype!='None' & pname==TRUE) {
-      p <- c(stat.col(var, strat, ptype, pname=TRUE), rep(NA, length(levels(as.factor(var))) + 2))
-      out <-  cbind(out, p)
-      out <- replace(out, is.na(out), '')
-      rownames(out) <- NULL
-      colnames(out) <- c('Variable', as.vector(levels(as.factor(strat))), 'Overall', 'p-value')
+    p <- c(stat.col(var, strat, ptype, pname=TRUE), rep(NA, length(levels(as.factor(var))) + 2))
+    out <-  cbind(out, p)
+    out <- replace(out, is.na(out), '')
+    rownames(out) <- NULL
+    colnames(out) <- c('Variable', as.vector(levels(as.factor(strat))), 'Overall', 'p-value')
   }
   
   #Remove missing values row
