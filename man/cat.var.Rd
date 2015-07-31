@@ -3,7 +3,7 @@
 
 \title{Categorical Variable Summary}
 
-\description{This function produces counts, row percentages, column percentages, and counts of missing values for each level of a categorical variable input, optionally stratified by another variable. Chi-square, Fisher's exact, and McNemar's tests are currently supported for the addition of p-values to tables.
+\description{This function produces counts, row percentages, column percentages, and counts of missing values for each level of a categorical variable input, optionally stratified by another variable. 
 }
 \usage{
 cat.var(var, strat, dec, rownames, header, ptype, pname, cat.rmstat)
@@ -47,23 +47,19 @@ cat.var(var, strat, dec, rownames, header, ptype, pname, cat.rmstat)
   }
 }
 
-\value{
-Returns a data frame of categorical summary statistics.
-}
+\value{Returns a data frame of categorical summary statistics.}
 
-\author{
-Erica Wozniak
-}
-
+\author{Erica Wozniak}
 
 \seealso{
-\code{\link{Table1}}
-\code{\link{make.table}}
-\code{\link{quick.table}}
-\code{\link{cont.var}}
-\code{\link{out.plain}}
-\code{\link{out.latex}}
-\code{\link{out.html}}
+  \code{\link{Table1}}
+  \code{\link{make.table}}
+  \code{\link{quick.table}}
+  \code{\link{stat.col}}
+  \code{\link{cont.var}}
+  \code{\link{out.plain}}
+  \code{\link{out.latex}}
+  \code{\link{out.html}}
 }
 
 \examples{

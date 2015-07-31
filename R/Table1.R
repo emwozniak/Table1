@@ -245,7 +245,7 @@ cat.var <- function(var,
 }
 
 ###############################
-# Continuous summary function #
+# CONTINUOUS SUMMARY FUNCTION #
 ###############################
 
 cont.var <- function(var, 
