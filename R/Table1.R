@@ -454,9 +454,19 @@ cont.var <- function(var,
     colnames(out) <- c('Variable', as.vector(levels(as.factor(strat))), 'Overall', 'p-value')    
   }
   
-  #Print p-values with the name of the test used
-  else if (ptype!='None' & pname==TRUE) {
+  #Print p-values with the name of the test used 
+  else if (ptype!='None' & pname==TRUE & !('count' %in% cont.rmstat)) {
     p <- c(stat.col(var, strat, ptype, pname=TRUE), rep(NA, 5))
+    out <-  cbind(out, p)
+    out <- replace(out, is.na(out), '')
+    rownames(out) <- NULL
+    colnames(out) <- c('Variable', as.vector(levels(as.factor(strat))), 'Overall', 'p-value')
+  }
+  
+  #Print p-values with the name of the test used if 'count' %in% cont.rmstat
+  else if (ptype!='None' & pname==TRUE & ('count' %in% cont.rmstat)) {
+    p <- c(stat.col(var, strat, ptype, pname=TRUE), rep(NA, 5))
+    p <- replace(p, 3, p[2])
     out <-  cbind(out, p)
     out <- replace(out, is.na(out), '')
     rownames(out) <- NULL
