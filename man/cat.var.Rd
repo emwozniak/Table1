@@ -27,11 +27,10 @@ cat.var(var, strat, dec, rownames, header, ptype, pname, cat.rmstat)
   }
   \item{ptype}{
   Statistical test for p-value. Optional; defaults to none. \cr
-      \describe{
-        \item{'chisq'}{Chi-square test}
-        \item{'fisher'}{Fisher's exact test}
-        \item{'mcnemar'}{McNemar's test}
-      
+      \itemize{
+        \item 'chisq' - Chi-square test
+        \item 'fisher' - Fisher's exact test
+        \item 'mcnemar' - McNemar's test
       }
   }
   \item{pname}{
@@ -69,14 +68,21 @@ Erica Wozniak
 library(survival)
 attach(pbc)
 
+##Default output
+cat.var(var=hepato, 
+        strat=sex
+        )
+        
+##Naming options and p-value
 cat.var(var=hepato, 
         strat=sex, 
         rownames=c('Not present', 'Present'),
         header=c('Hepatomegaly'),
         ptype='chisq',
-        pname=TRUE,
+        pname=TRUE
         )
         
+##Remove row percents and tabulated missing values
 cat.var(var=hepato, 
         strat=sex, 
         rownames=c('Not present', 'Present'),
