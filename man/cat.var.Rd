@@ -6,7 +6,7 @@
 \description{This function produces counts, row percentages, column percentages, and counts of missing values for each level of a categorical variable input, optionally stratified by another variable. Chi-square, Fisher's exact, and McNemar's tests are currently supported for the addition of p-values to tables.
 }
 \usage{
-cat.var(var, strat, dec, rownames, header, ptype, pname)
+cat.var(var, strat, dec, rownames, header, ptype, pname, cat.rmstat)
 }
 
 \arguments{
@@ -27,12 +27,22 @@ cat.var(var, strat, dec, rownames, header, ptype, pname)
   }
   \item{ptype}{
   Statistical test for p-value. Optional; defaults to none. \cr
-    * 'chisq' - Chi-square test \cr
-    * 'fisher' - Fisher's exact test \cr
-    * 'mcnemar' - McNemar's test
+      \describe{
+        \item{'chisq'}{Chi-square test}
+        \item{'fisher'}{Fisher's exact test}
+        \item{'mcnemar'}{McNemar's test}
+      
+      }
   }
   \item{pname}{
-  If TRUE then the name of the statistical test used will be printed below the p-value (optional; defaults to FALSE)
+  If TRUE then the name of the statistical test used will be printed below the p-value. Optional; defaults to FALSE.
+  }
+  \item{cat.rmstat}{
+  Vector naming the statistics that should be removed from the summary data frame. Optional; defaults to none. \cr
+  * 'count' - Remove overall count/percent \cr
+  * 'row' - Remove row percents, leaving only column percents \cr
+  * 'col' - Remove column percents, leaving only row percents \cr
+  * 'miss' - Remove summary of missing values
   }
 }
 
@@ -48,6 +58,7 @@ Erica Wozniak
 \seealso{
 \code{\link{Table1}}
 \code{\link{make.table}}
+\code{\link{quick.table}}
 \code{\link{cont.var}}
 \code{\link{out.plain}}
 \code{\link{out.latex}}
@@ -57,9 +68,21 @@ Erica Wozniak
 \examples{
 library(survival)
 attach(pbc)
+
 cat.var(var=hepato, 
         strat=sex, 
         rownames=c('Not present', 'Present'),
         header=c('Hepatomegaly'),
-        ptype='chisq')
+        ptype='chisq',
+        pname=TRUE,
+        )
+        
+cat.var(var=hepato, 
+        strat=sex, 
+        rownames=c('Not present', 'Present'),
+        header=c('Hepatomegaly'),
+        ptype='chisq',
+        cat.rmstat=c('row', 'miss')
+        )       
+
 }
