@@ -27,10 +27,10 @@ cat.var(var, strat, dec, rownames, header, ptype, pname, cat.rmstat)
   }
   \item{ptype}{
   Statistical test for p-value. Optional; defaults to none. \cr
-      \itemize{
-        \item 'chisq' - Chi-square test
-        \item 'fisher' - Fisher's exact test
-        \item 'mcnemar' - McNemar's test
+      \describe{
+        \item{'chisq'}{Chi-square test}
+        \item{'fisher'}{Fisher's exact test}
+        \item{'mcnemar'}{McNemar's test}
       }
   }
   \item{pname}{
@@ -38,10 +38,12 @@ cat.var(var, strat, dec, rownames, header, ptype, pname, cat.rmstat)
   }
   \item{cat.rmstat}{
   Vector naming the statistics that should be removed from the summary data frame. Optional; defaults to none. \cr
-  * 'count' - Remove overall count/percent \cr
-  * 'row' - Remove row percents, leaving only column percents \cr
-  * 'col' - Remove column percents, leaving only row percents \cr
-  * 'miss' - Remove summary of missing values
+      \describe{
+        \item{'count'}{Remove overall count/percent}
+        \item{'row'}{Remove row percents, leaving only column percents}
+        \item{'col'}{Remove column percents, leaving only row percents}
+        \item{'miss'}{Remove summary of missing values}    
+      }
   }
 }
 
