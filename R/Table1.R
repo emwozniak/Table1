@@ -481,7 +481,7 @@ cont.var <- function(var,
 }
 
 ################
-# LaTeX output #
+# LaTeX OUTPUT #
 ################
 out.latex <- function(tab, colnames=NULL) {
   named <- as.vector(tab[,1])
@@ -510,7 +510,7 @@ out.latex <- function(tab, colnames=NULL) {
 }
 
 ###############
-# HTML output #
+# HTML OUTPUT #
 ###############
 #For categorical variables, formatting may be a problem if categories 
 #have similar names to available summary statistics
@@ -569,7 +569,7 @@ out.html <- function (tab, colnames, stripe=TRUE, stripe.col='#F7F7F7')
 }
 
 #####################
-# Plain text output #
+# PLAIN TEXT OUTPUT #
 #####################
 out.plain <- function(tab, colnames=NULL) {
   output <- cbind(format(as.vector(tab[,1]), justify='left'), 
@@ -580,7 +580,7 @@ out.plain <- function(tab, colnames=NULL) {
 
 
 #############################
-# Vectorized table function #
+# VECTORIZED TABLE FUNCTION #
 #############################
 make.table <- function(dat,
                        #Categorical variable options
@@ -763,7 +763,7 @@ make.table <- function(dat,
 }
 
 ################################
-# Minimal input table function #
+# MINIMAL INPUT TABLE FUNCTION #
 ################################
 
 quick.table <- function(dat,
@@ -848,7 +848,7 @@ quick.table <- function(dat,
 }
 
 #######################
-# Statistical testing #
+# STATISTICAL TESTING #
 #######################
 #When adding tests, define both p and the name of the test
 
