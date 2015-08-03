@@ -854,7 +854,9 @@ quick.table <- function(dat,
 
 stat.col <- function(var, strat, ptype, pname=FALSE) {
   
-  ##One sample tests
+  #------------------#
+  # One sample tests #
+  #------------------#
   #One-sample t-test, mean=0
   if (ptype=='t.oneway') {
     p <- t.test(var, mu=0)$p.value
@@ -868,7 +870,9 @@ stat.col <- function(var, strat, ptype, pname=FALSE) {
     p <- prop.test(sum(var, na.rm=T), sum(!is.na(var)), p=0.5)$p.value
   }
   
-  ##Independent groups
+  #--------------------#
+  # Independent groups #
+  #--------------------#
   #Chi-square test
   else if (ptype=='chisq') {
     p <- chisq.test(var, strat)$p.value
@@ -896,7 +900,9 @@ stat.col <- function(var, strat, ptype, pname=FALSE) {
                      var[strat==levels(as.factor(strat))[2]])$p.value
   }
   
-  ##Dependent groups
+  #------------------#
+  # Dependent groups #
+  #------------------#
   #Paired t-test
   else if (ptype=='ttest.pair') {
     p <- t.test(var[strat==levels(as.factor(strat))[1]], 
