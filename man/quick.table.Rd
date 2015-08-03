@@ -63,8 +63,10 @@ For additional labeling and significance testing options, see \code{\link{make.t
 
 \seealso{
   \code{\link{Table1}}
+  \code{\link{make.table}}
   \code{\link{cat.var}}
   \code{\link{cont.var}}
+  \code{\link{stat.col}}
   \code{\link{out.plain}}
   \code{\link{out.latex}}
   \code{\link{out.html}}
