@@ -3,17 +3,17 @@
 
 \title{Make Summary Table}
 
-\description{This function produces summary statistics for categeorical and continuous variables and combines the results into a data frame for plain text, HTML, or LaTeX output, serving as a wrapper to apply vectorized inputs to \code{\link{cat.var}} and \code{\link{cont.var}}.
+\description{This function produces summary statistics for categeorical and continuous variables and combines the results into a data frame for plain text, HTML, or LaTeX output, serving as a wrapper to apply vectorized inputs to \code{\link{cat.var}} and \code{\link{cont.var}}. Please note that the dataset input must be attached (see \code{\link{attach}}) and cleaned, e.g. blank cells must be replaced with NAs. 
 }
 \usage{
 make.table(dat, cat.varlist, cat.header, cat.rownames, cat.ptype,
-cont.varlist, cont.header, cont.ptype, strat, dec, pname, 
-colnames, output)
+cont.varlist, cont.header, cont.ptype, strat, cat.rmstat, cont.rmstat,
+dec, pname, colnames, output, stripe, stripe.col)
 }
 
 \arguments{
   \item{dat}{
-  Data frame input of all variables used for the summary table. Required.
+  Attached data frame input of all variables used for the summary table. Required. See \code{\link{attach}}.
   }
   \item{cat.varlist}{
   Vector of categorical variable names. Optional; defaults to NULL.
@@ -25,42 +25,43 @@ colnames, output)
   Ordered list of vectors providing row names for each level of each vector found in cat.varlist. Optional; defaults to the coded value of each level.
   }
   \item{cat.ptype}{
-  Ordered vector of tests requested to add p-values to table for categorical variables. Optional; defaults to no p-values. \cr
-    * 'chisq' - Chi-square test \cr
-    * 'fisher' - Fisher's exact test \cr
-    * 'mcnemar' - McNemar's test
+  Ordered vector of tests requested to add p-values to table for categorical variables. Optional; defaults to no p-values. See \code{\link{stat.col}} for a complete list of options. 
   }
   \item{cont.varlist}{
   Vector of continuous variable names. Optional; defaults to NULL.
-
   }
   \item{cont.header}{
   Ordered vector of short descriptions for each continuous variable. Optional; defaults to variable name.
   }
   \item{cont.ptype}{
-    Ordered vector of tests requested to add p-values to table for continuous variables. Optional; defaults to no p-values. \cr
-    * 'anova' - One-way between-subjects ANOVA \cr
-    * 'kruskal' - Kruskal-Wallis test \cr
-    * 'ttest' - t-test \cr
-    * 'ttest.pair' - Paired t-test \cr
-    * 'wilcox' - Wilcoxon rank sum test \cr
-    * 'wilcox.pair' - Wilcoxon signed rank test
-
+    Ordered vector of tests requested to add p-values to table for continuous variables. Optional; defaults to no p-values. See \code{\link{stat.col}} for a complete list of options. 
   }
   \item{strat}{
   Vector of one or more stratifying variables. Optional; defaults to no stratification.
   }
+  \item{cat.rmstat}{
+  Ordered list of vectors of statistics that should be removed from final summaries of categorical variables.
+  }
+  \item{cont.rmstat}{
+    Ordered list of vectors of statistics that should be removed from final summaries of continuous variables.
+  }
   \item{dec}{
-  Integer value for number of decimal places to be printed for each summary statistic. Optional; defaults to 2.
+  Integer value indicating the number of decimal places to be printed for each summary statistic. Optional; defaults to 2.
   }
   \item{pname}{
-  Logical indicator to print statistical test used beneath each p-value. Optional; defaults to FALSE.
+  Logical indicator for whether to print statistical test used beneath each p-value. Optional; defaults to FALSE.
   }
   \item{colnames}{
-  Ordered vector of column names for table. Optional; defaults to levels of strata variable(s).
+  Ordered vector of column names for table. Optional; defaults to levels of stratifying variable(s).
   }
   \item{output}{
   Choice of formatted table output: 'html', 'latex', or 'plain'. Optional; defaults to plain text printed in console.
+  }
+  \item{stripe}{
+  HTML output only: logical indicator for whether to zebra stripe every other variable in the table. Optional; defaults to TRUE.
+  }
+  \item{stripe.col}{
+  HTML output only: hex color code to be used for zebra striping the table. Optional; defaults to a light gray, #F7F7F7.
   }
 }
 
@@ -90,14 +91,15 @@ By default, the final summary table is rearranged such that the variables in the
 If missing values occur in stratifying variables (strat=), then the observations with missings will be removed from the table, and a comment will be printed indicating the total number removed. If multiple stratifying variables are provided, look to the console for a summary of total missing observations for each variable.
 \cr
 \cr
-A table may still be constructed by applying \code{\link{rbind}} to individual calls to \code{\link{cat.var}} and \code{\link{cont.var}}, and generating HTML or LaTeX output using \code{\link{out.html}} or \code{\link{out.latex}}; \code{\link{make.table}} serves as a wrapper for these functions.
+A table may be constructed by applying \code{\link{rbind}} to individual calls to \code{\link{cat.var}} and \code{\link{cont.var}}, and generating HTML or LaTeX output using \code{\link{out.html}} or \code{\link{out.latex}}; \code{\link{make.table}} serves as a wrapper for these functions.
 }
-
 
 \seealso{
 \code{\link{Table1}}
 \code{\link{cat.var}}
 \code{\link{cont.var}}
+\code{\link{stat.col}}
+\code{\link{quick.table}}
 \code{\link{out.plain}}
 \code{\link{out.latex}}
 \code{\link{out.html}}
@@ -106,15 +108,41 @@ A table may still be constructed by applying \code{\link{rbind}} to individual c
 \examples{
 library(survival)
 attach(pbc)
+
+##Example with non-HTML options
 make.table(dat=pbc,
-    cat.varlist=c('stage', 'trt'),
-    cat.header=c('Stage', 'Treatment'),
-    cat.rownames=list(c('I', 'II', 'III', 'IV'), c('D-penicillmain', 'Placebo')),
+    cat.varlist=c('stage', 'sex'),
+    cat.header=c('Stage', 'Sex'),
+    cat.rownames=list(c('I', 'II', 'III', 'IV'), c('Male', 'Female')),
     cat.ptype=c('fisher', 'fisher'),   
     cont.varlist=c('bili', 'copper'),
     cont.header=c('Bilirubin', 'Urine copper'),
     cont.ptype=c('wilcox', 'wilcox'), 
-    strat=c('sex'),
-    colnames=c('', 'Male', 'Female', 'Overall', 'p-value')
+    strat=c('trt'),
+    #Remove row percents from all categorical variables (list is recycled)
+    cat.rmstat=list('row'),
+    #Remove missing, min/max from bili and no summary stats from copper
+    cont.rmstat=list(c('miss', 'minmax'), 'None'),
+    colnames=c('', 'D-penicillamine', 'Placebo', 'Overall', 'p-value')
+    )
+    
+##Example repeated with HTML options
+library(htmlTable)
+make.table(dat=pbc,
+    cat.varlist=c('stage', 'sex'),
+    cat.header=c('Stage', 'Sex'),
+    cat.rownames=list(c('I', 'II', 'III', 'IV'), c('Male', 'Female')),
+    cat.ptype=c('fisher', 'fisher'),   
+    cont.varlist=c('bili', 'copper'),
+    cont.header=c('Bilirubin', 'Urine copper'),
+    cont.ptype=c('wilcox', 'wilcox'), 
+    strat=c('trt'),
+    cat.rmstat=list('row'),
+    cont.rmstat=list(c('miss', 'minmax'), 'None'),
+    colnames=c('', 'D-penicillamine', 'Placebo', 'Overall', 'p-value'),
+    
+    output='html',   
+    #Check out www.color-hex.com
+    stripe.col='#f4dfd0'
     )
 }

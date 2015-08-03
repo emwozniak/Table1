@@ -4,7 +4,7 @@
 \title{Continuous Variable Summary}
 
 \description{
-This function computes mean (SD), median (IQR), Q1/Q3, min/max, and a count of missings for a continuous         variable input, optionally stratified by another variable.
+This function computes mean (SD), median (IQR), Q1/Q3, min/max, and a count of missings for a continuous         variable input, optionally stratified by another variable, and with the option to compute p-values.
 }
 
 \usage{
@@ -26,7 +26,7 @@ cont.var(var, strat, dec, header, ptype, pname, cont.rmstat)
   Character vector providing a short variable description. Optional; defaults to variable name.
   }
   \item{ptype}{
-  Statistical test for p-value. Optional; defaults to none. \cr
+  Statistical test for p-value. Optional; defaults to none. See \code{\link{stat.col}} for a complete list of options. \cr
       \describe{
           \item{'anova'}{One-way between-subjects ANOVA}
           \item{'kruskal'}{Kruskal-Wallis test}
@@ -61,8 +61,10 @@ cont.var(var, strat, dec, header, ptype, pname, cont.rmstat)
 
 \seealso{
   \code{\link{Table1}}
-  \code{\link{make.table}}
   \code{\link{cat.var}}
+  \code{\link{make.table}}
+  \code{\link{quick.table}}
+  \code{\link{stat.col}}
   \code{\link{out.plain}}
   \code{\link{out.latex}}
   \code{\link{out.html}}

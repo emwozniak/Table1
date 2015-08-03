@@ -3,7 +3,7 @@
 
 \title{Categorical Variable Summary}
 
-\description{This function produces counts, row percentages, column percentages, and counts of missing values for each level of a categorical variable input, optionally stratified by another variable. 
+\description{This function produces counts, row percentages, column percentages, and counts of missing values for each level of a categorical variable input, optionally stratified by another variable, and with the option to compute p-values. 
 }
 \usage{
 cat.var(var, strat, dec, rownames, header, ptype, pname, cat.rmstat)
@@ -26,7 +26,7 @@ cat.var(var, strat, dec, rownames, header, ptype, pname, cat.rmstat)
   Character vector providing a short variable description. Optional; defaults to variable name.
   }
   \item{ptype}{
-  Statistical test for p-value. Optional; defaults to none. \cr
+  Statistical test for p-value. Optional; defaults to none. See \code{\link{stat.col}} for a complete list of options.\cr
       \describe{
         \item{'chisq'}{Chi-square test}
         \item{'fisher'}{Fisher's exact test}
@@ -53,10 +53,10 @@ cat.var(var, strat, dec, rownames, header, ptype, pname, cat.rmstat)
 
 \seealso{
   \code{\link{Table1}}
+  \code{\link{cont.var}}
   \code{\link{make.table}}
   \code{\link{quick.table}}
   \code{\link{stat.col}}
-  \code{\link{cont.var}}
   \code{\link{out.plain}}
   \code{\link{out.latex}}
   \code{\link{out.html}}
