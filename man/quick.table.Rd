@@ -3,10 +3,10 @@
 
 \title{Quick Summary Table}
 
-\description{Similarly to \code{\link{make.table}}, this function produces summary statistics for categeorical and continuous variables and combines the results into a data frame for plain text, HTML, or LaTeX output. However, minimal input (a data frame only) is required to construct the table, as this function dynamically classifies variables as either categorical or continuous. This function is ideal for rapid summaries of data frames, but \code{\link{make.table}} should be used instead if custom labeling and significance testing are desired.
+\description{Similarly to \code{\link{make.table}}, this function produces summary statistics for categeorical and continuous variables and combines the results into a data frame for plain text, HTML, or LaTeX output. However, minimal input (an \code{\link{attach}}ed data frame only) is required to construct the table, as this function dynamically classifies variables as either categorical or continuous. This function is ideal for rapid summaries of data frames, but \code{\link{make.table}} should be used instead for custom labeling and significance testing.
 }
 \usage{
-quick.table(dat, strat, dec, colnames, output, classlim)
+quick.table(dat, strat, dec, colnames, output, classlim, stripe, stripe.col)
 }
 
 \arguments{
@@ -28,15 +28,19 @@ quick.table(dat, strat, dec, colnames, output, classlim)
   \item{classlim}{
   Integer classification threshold for categorical and continuous variables. Optional; defaults to numeric variables with 6 or more levels being classified as continuous, and categorical otherwise. All non-numeric variables are classified as categorical.
   }
+  \item{stripe}{
+  HTML output only: logical indicator for whether to zebra stripe every other variable in the table. Optional; defaults to TRUE.
+  }
+  \item{stripe.col}{
+  HTML output only: hex color code to be used for zebra striping the table. Optional; defaults to a light gray, #F7F7F7.
+  }
 }
 
 \value{
 Returns a table of summary statistics for specified categorical and continuous variables in the requested output format. The plain text default returns a data frame to the console.
 }
 
-\author{
-Erica Wozniak
-}
+\author{Erica Wozniak}
 
 \note{
 A few miscellaneous notes: \cr
@@ -58,19 +62,32 @@ For additional labeling and significance testing options, see \code{\link{make.t
 
 
 \seealso{
-\code{\link{Table1}}
-\code{\link{cat.var}}
-\code{\link{cont.var}}
-\code{\link{out.plain}}
-\code{\link{out.latex}}
-\code{\link{out.html}}
+  \code{\link{Table1}}
+  \code{\link{cat.var}}
+  \code{\link{cont.var}}
+  \code{\link{out.plain}}
+  \code{\link{out.latex}}
+  \code{\link{out.html}}
 }
 
 \examples{
 library(survival)
 attach(pbc)
+
+##Plain text example
 quick.table(dat=pbc,
     strat='sex',
     colnames=c('', 'Male', 'Female', 'Overall')
     )
+    
+##Example with HTML options
+library(htmlTable)
+quick.table(dat=pbc,
+    strat='sex',
+    colnames=c('', 'Male', 'Female', 'Overall'),
+    #See www.color-hex.com for codes
+    output='html',
+    stripe.col='#d0f2b0'
+    )
+    
 }

@@ -126,7 +126,7 @@ make.table(dat=pbc,
     colnames=c('', 'D-penicillamine', 'Placebo', 'Overall', 'p-value')
     )
     
-##Example repeated with HTML options
+##Example with HTML options
 library(htmlTable)
 make.table(dat=pbc,
     cat.varlist=c('stage', 'sex'),
@@ -138,7 +138,6 @@ make.table(dat=pbc,
     cont.ptype=c('wilcox', 'wilcox'), 
     strat=c('trt'),
     cat.rmstat=list('row'),
-    cont.rmstat=list(c('miss', 'minmax'), 'None'),
     colnames=c('', 'D-penicillamine', 'Placebo', 'Overall', 'p-value'),
     
     output='html',   
