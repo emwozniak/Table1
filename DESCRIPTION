@@ -5,7 +5,7 @@ Version: 1.0
 Date: 2015-06-18
 Author: Erica Wozniak
 Maintainer: Erica Wozniak <ewozniak@mcw.edu>
-Description: This package creates data frames of formatted summaries for categorical and continuous variables. Basic significance tests across strata are available. Options to output results to LaTeX, HTML, and plain text to the console are currently supported.
+Description: This package creates data frames of formatted summaries for categorical and continuous variables. Basic significance tests across strata are available, in addition to several one-sample tests. Options to output results to LaTeX, HTML, and plain text to the console are currently supported.
 Imports: xtable, htmlTable
 Suggests: survival
 License: GPL-2
