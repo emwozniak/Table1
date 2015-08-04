@@ -1,48 +1,64 @@
 \name{out.html}
 \alias{out.html}
-%- Also NEED an '\alias' for EACH other topic documented here.
-\title{HTML Output
-%%  ~~function to do ... ~~
-}
-\description{This function utilizes \code{\link{htmlTable}} to output the results of the \code{\link{cat.var}} and \code{\link{cont.var}} functions to the R Viewer as a formatted HTML table, and may be used within a knitr document.
+
+\title{HTML Output}
+
+\description{This function utilizes \code{\link{htmlTable}} to output the results of the \code{\link{make.table}} and \code{\link{quick.table}} functions to the R Viewer as a formatted HTML table, and may be used within a knitr document.
 }
 \usage{
-out.html(tab, colnames)
+out.html(tab, colnames, stripe, stripe.col)
 }
 
 \arguments{
-  \item{tab}{A single call to either \code{\link{cat.var}} or \code{\link{cont.var}}, or a data frame produced via \code{\link{rbind}} of multiple calls to these functions. Required.
-}
+  \item{tab}{A \code{\link{make.table}} or \code{\link{quick.table}} data frame. Required.
+  }
   \item{colnames}{A vector of column names for the table output. Optional.
+  }
+  \item{stripe}{Logical indicator for whether to include shaded zebra striping of every other variable in the output. Optional; defaults to TRUE.
+  }
+  \item{stripe.col}{Hex code for the color of the zebra striping. Optional; defaults to a light gray, #F7F7F7.
+  }
 }
-}
+  
 \details{
-A call to this function is an optional argument to \code{\link{make.table}}.
-}
-\value{A formatted HTML table in the Viewer or code for inclusion in a knitr document.
-}
-\references{
-}
-\author{Erica Wozniak
-}
-\note{
-}
+  A call to this function is an optional argument to both \code{\link{make.table}} and \code{\link{quick.table}} via output='html'.
+  }
+\value{A formatted HTML table in the Viewer or code for inclusion in a knitr document.}
+%\references{
+%
+\author{Erica Wozniak}
+%\note{
+%}
 
 \seealso{
-\code{\link{Table1}}
-\code{\link{cat.var}}
-\code{\link{cont.var}}
-\code{\link{out.plain}}
-\code{\link{out.latex}}
+  \code{\link{Table1}}
+  \code{\link{make.table}}
+  \code{\link{quick.table}}
+  \code{\link{cat.var}}
+  \code{\link{cont.var}}
+  \code{\link{stat.col}}
+  \code{\link{out.plain}}
+  \code{\link{out.latex}}
 }
 \examples{
 library(survival)
-library(htmlTable)
 attach(pbc)
-example <- rbind(
-  cont.var(var=age, strat=trt, header='Age', ptype='ttest'),
-  cat.var(var=sex, strat=trt, rownames=c('Male', 'Female'), header='Sex', ptype='chisq'),
-  cont.var(var=bili, strat=trt, header='Serum bilirubin', ptype='ttest')
-  )
-out.html(example, colnames=c('Variable', 'D-penicillmain', 'Placebo', 'Overall', 'p-value'))
+
+library(htmlTable)
+make.table(dat=pbc,
+    cat.varlist=c('stage', 'sex'),
+    cat.header=c('Stage', 'Sex'),
+    cat.rownames=list(c('I', 'II', 'III', 'IV'), c('Male', 'Female')),
+    cat.ptype=c('fisher', 'fisher'),   
+    cont.varlist=c('bili', 'copper'),
+    cont.header=c('Bilirubin', 'Urine copper'),
+    cont.ptype=c('wilcox', 'wilcox'), 
+    strat=c('trt'),
+    cat.rmstat=list('row'),
+    colnames=c('', 'D-penicillamine', 'Placebo', 'Overall', 'p-value'),
+    
+    output='html',   
+    #Check out www.color-hex.com
+    stripe.col='#f4dfd0'
+    )
 }

@@ -95,14 +95,14 @@ A table may be constructed by applying \code{\link{rbind}} to individual calls t
 }
 
 \seealso{
-\code{\link{Table1}}
-\code{\link{cat.var}}
-\code{\link{cont.var}}
-\code{\link{stat.col}}
-\code{\link{quick.table}}
-\code{\link{out.plain}}
-\code{\link{out.latex}}
-\code{\link{out.html}}
+  \code{\link{Table1}}
+  \code{\link{quick.table}}
+  \code{\link{cat.var}}
+  \code{\link{cont.var}}
+  \code{\link{stat.col}}
+  \code{\link{out.plain}}
+  \code{\link{out.latex}}
+  \code{\link{out.html}}
 }
 
 \examples{
