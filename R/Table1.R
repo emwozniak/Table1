@@ -958,10 +958,16 @@ stat.col <- function(var, strat, ptype, pname=FALSE) {
   }
   
   #Format p-values for consistency
-  if (p>=0.001) {
+  if (p>=0.001 & p<=0.999) {
     p <- format(round(p, 3), nsmall=3)
   }
-  else {p <- '<0.001'}
+  else if (p<0.001) {
+    p <- '<0.001'
+  }
+  else if (p>0.999) {
+    p <- '>0.999'
+  }
+
   
   #Print test or statistic if requested
   if (pname==TRUE) {
