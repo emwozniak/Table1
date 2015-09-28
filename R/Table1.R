@@ -688,7 +688,9 @@ make.table <- function(dat,
                          strat.rem, "observations removed due to missing values in stratifying variable(s).", 
                          sep=' ')
   }
-  else {footer.miss <- paste(read.in, "observations in dataset.",
+  else {
+    read.in <- dim(dat)[1]
+    footer.miss <- paste(read.in, "observations in dataset.",
                              "No observations removed due to missing values in stratifying variables(s).",
                              sep=' ')
   }
