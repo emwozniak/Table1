@@ -200,8 +200,17 @@ cat.var <- function(var,
     colnames(out) <- c('Variable', as.vector(levels(as.factor(strat))), 'Overall')
   } 
   
+  #Column with no p-values
+  if (ptype=='None') {
+    p <- rep(NA, length(levels(as.factor(var))) + 4)
+    out <- cbind(out, p)
+    out <- replace(out, is.na(out), '')
+    rownames(out) <- NULL
+    colnames(out) <- c('Variable', as.vector(levels(as.factor(strat))), 'Overall', 'p-value')
+  }
+  
   #Include p-values without printing the name of the test
-  if (ptype!='None' & pname==FALSE) {
+  else if (ptype!='None' & pname==FALSE) {
     p <- c(stat.col(var, strat, ptype, pname=FALSE), rep(NA, length(levels(as.factor(var))) + 3))
     out <- cbind(out, p)
     out <- replace(out, is.na(out), '')
@@ -445,8 +454,17 @@ cont.var <- function(var,
     }
   }
   
+  #No p-values
+  if (ptype=='None') {
+    p <- rep(NA, 7)
+    out <- cbind(out, p)
+    out <- replace(out, is.na(out), '')
+    rownames(out) <- NULL
+    colnames(out) <- c('Variable', as.vector(levels(as.factor(strat))), 'Overall', 'p-value') 
+  }
+  
   #Print p-values without the name of the test used
-  if (ptype!='None' & pname==FALSE) {
+  else if (ptype!='None' & pname==FALSE) {
     p <- c(stat.col(var, strat, ptype, pname=FALSE), rep(NA, 6))
     out <- cbind(out, p)
     out <- replace(out, is.na(out), '')
@@ -665,9 +683,15 @@ make.table <- function(dat,
     print(paste("Total observations removed from table:", strat.rem, sep=' '))
     print("Summary of total missing stratification variable(s):")
     print(strat.miss)
-    footer.miss <- paste(strat.rem, "observations removed due to missing values in stratifying variable(s)", sep=' ')
+    read.in <- dim(dat)[1]
+    footer.miss <- paste(read.in, "observations in dataset.",
+                         strat.rem, "observations removed due to missing values in stratifying variable(s).", 
+                         sep=' ')
   }
-  else {footer.miss <- paste('')}
+  else {footer.miss <- paste(read.in, "observations in dataset.",
+                             "No observations removed due to missing values in stratifying variables(s).",
+                             sep=' ')
+  }
   
   #------------------#
   # Categorical only #
@@ -688,6 +712,10 @@ make.table <- function(dat,
     tab <- do.call(rbind, 
                    (c(cats))[order(match(names(c(cats)), 
                                          names(dat)))])
+    #Remove p-value column if no p-values are calculated 
+    if (all(tab[dim(tab)[2]]=='')) {
+      tab <- tab[,-dim(tab[2])]
+    }
   }
   
   #-----------------#
@@ -708,6 +736,10 @@ make.table <- function(dat,
     tab <- do.call(rbind, 
                    (c(conts))[order(match(names(c(conts)), 
                                           names(dat)))])
+    #Remove p-value column if no p-values are calculated 
+    if (all(tab[dim(tab)[2]]=='')) {
+      tab <- tab[,-dim(tab[2])]
+    }
   }
   
   #----------------------------#
@@ -739,8 +771,11 @@ make.table <- function(dat,
     tab <- do.call(rbind, 
                    (c(cats, conts))[order(match(names(c(cats, conts)), 
                                                 names(dat)))])
+    #Remove p-value column if no p-values are calculated 
+    if (all(tab[dim(tab)[2]]=='')) {
+      tab <- tab[,-dim(tab[2])]
+    }
   }
-  
   
   #Define column names
   if (!is.null(colnames)) {
