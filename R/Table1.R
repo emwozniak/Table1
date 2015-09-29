@@ -38,9 +38,17 @@ cat.var <- function(var,
                   as.character)
     
     #Paste a column of row headers and replace NA with '' for printing
-    out <- cbind(as.vector(c(paste(header, '     '), '  Count', '  (%)',  
-                             paste0('  ', rownames), '  Missing')), 
-                 replace(out, is.na(out), ''))
+    #Omit rows of factor summaries if vector is comprised of all NAs
+    if (n==0) {
+      out <- cbind(as.vector(c(paste(header, '     '), '  Count', '  (%)',  
+                               '  Missing')), 
+                   replace(out, is.na(out), ''))
+    }
+    #Otherwise print factor level names with summary rows
+    else {
+      out <- cbind(as.vector(c(paste(header, '     '), '  Count', '  (%)',  
+                               paste0('  ', rownames), '  Missing')), 
+                   replace(out, is.na(out), ''))
     rownames(out) <- NULL
     colnames(out) <- c('Variable', 'Overall')
   }
