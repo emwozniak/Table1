@@ -49,9 +49,6 @@ cat.var <- function(var,
       out <- cbind(as.vector(c(paste(header, '     '), '  Count', '  (%)',  
                                paste0('  ', rownames), '  Missing')), 
                    replace(out, is.na(out), ''))
-      
-    #Replace any entries with NaN computed with "-"
-    out[grepl("NaN", out)] <- "-"
     
     rownames(out) <- NULL
     colnames(out) <- c('Variable', 'Overall')
