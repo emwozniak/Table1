@@ -49,6 +49,10 @@ cat.var <- function(var,
       out <- cbind(as.vector(c(paste(header, '     '), '  Count', '  (%)',  
                                paste0('  ', rownames), '  Missing')), 
                    replace(out, is.na(out), ''))
+      
+    #Replace any entries with NaN computed with "-"
+    out[grepl("NaN", out)] <- "-"
+    
     rownames(out) <- NULL
     colnames(out) <- c('Variable', 'Overall')
   }
@@ -63,6 +67,7 @@ cat.var <- function(var,
     tot <- as.matrix(apply(cat, 1, sum))
     
     #Counts
+    any.n <- all(as.matrix(apply(cat, 2, sum))==0)
     n <- as.matrix(apply(cat, 2, sum))
     n[] <- paste0(n,
                   paste0(' (',
@@ -104,9 +109,23 @@ cat.var <- function(var,
                                    miss),
                              row.names=NULL),
                   as.character)
-    out <- cbind(as.vector(c(paste(header, '     '), '  Count (%)', '  (Row %)(Col %)', 
-                             paste0('  ', rownames), '  Missing')), 
-                 replace(out, is.na(out), ''))
+    
+    #Remove factor level rownames if variable input is NA
+    if (any.n==TRUE) {
+      out <- cbind(as.vector(c(paste(header, '     '), '  Count (%)', '  (Row %)(Col %)', 
+                               '  Missing')), 
+                   replace(out, is.na(out), ''))
+    }
+    #Otherwise print factor levels as rownames
+    else if (any.n==FALSE) {
+      out <- cbind(as.vector(c(paste(header, '     '), '  Count (%)', '  (Row %)(Col %)', 
+                               paste0('  ', rownames), '  Missing')), 
+                   replace(out, is.na(out), ''))
+    }
+    
+    #Replace any entries with NaN computed with "-"
+    out[grepl("NaN", out)] <- "-"
+    
     rownames(out) <- NULL
     colnames(out) <- c('Variable', as.vector(levels(as.factor(strat))), 'Overall')
   }
@@ -118,6 +137,7 @@ cat.var <- function(var,
     tot <- as.matrix(apply(cat, 1, sum))
     
     #Counts
+    any.n <- all(as.matrix(apply(cat, 2, sum))==0)
     n <- as.matrix(apply(cat, 2, sum))
     n[] <- paste0(n,
                   paste0(' (',
@@ -152,9 +172,23 @@ cat.var <- function(var,
                                    miss),
                              row.names=NULL),
                   as.character)
-    out <- cbind(as.vector(c(paste(header, '     '), '  Count (%)', '  (Row %)', 
-                             paste0('  ', rownames), '  Missing')), 
-                 replace(out, is.na(out), ''))
+    
+    #Remove factor level rownames if input vector is comprised of all NAs
+    if (any.n==TRUE) {
+      out <- cbind(as.vector(c(paste(header, '     '), '  Count (%)', '  (Row %)', 
+                               '  Missing')), 
+                   replace(out, is.na(out), ''))
+    }
+    #Otherwise print factor level names
+    else if (any.n==FALSE) {
+      out <- cbind(as.vector(c(paste(header, '     '), '  Count (%)', '  (Row %)', 
+                               paste0('  ', rownames), '  Missing')), 
+                   replace(out, is.na(out), ''))
+    }
+    
+    #Replace any entries with NaN computed with "-"
+    out[grepl("NaN", out)] <- "-"
+    
     rownames(out) <- NULL
     colnames(out) <- c('Variable', as.vector(levels(as.factor(strat))), 'Overall')
   }
@@ -166,6 +200,7 @@ cat.var <- function(var,
     tot <- as.matrix(apply(cat, 1, sum))
     
     #Counts
+    any.n <- all(as.matrix(apply(cat, 2, sum))==0)
     n <- as.matrix(apply(cat, 2, sum))
     n[] <- paste0(n,
                   paste0(' (',
@@ -201,9 +236,23 @@ cat.var <- function(var,
                                    miss),
                              row.names=NULL),
                   as.character)
-    out <- cbind(as.vector(c(paste(header, '     '), '  Count (%)', '  (Col %)', 
-                             paste0('  ', rownames), '  Missing')), 
-                 replace(out, is.na(out), ''))
+    
+    #Remove factor level row names if input vector is comprised of all NAs
+    if (any.n==TRUE) {
+      out <- cbind(as.vector(c(paste(header, '     '), '  Count (%)', '  (Col %)', 
+                               '  Missing')), 
+                   replace(out, is.na(out), ''))
+    }
+    #Otherwise print factor level row names
+    else if (any.n==FALSE) {
+      out <- cbind(as.vector(c(paste(header, '     '), '  Count (%)', '  (Col %)', 
+                               paste0('  ', rownames), '  Missing')), 
+                   replace(out, is.na(out), ''))
+    }
+    
+    #Replace any entries with NaN computed with "-"
+    out[grepl("NaN", out)] <- "-"
+    
     rownames(out) <- NULL
     colnames(out) <- c('Variable', as.vector(levels(as.factor(strat))), 'Overall')
   } 
