@@ -384,6 +384,7 @@ cont.var <- function(var,
     #Replace any entries with NA or -Inf computed with "-"
     out[grepl("NaN", out)] <- "-"
     out[grepl("-Inf", out)] <- "-"
+    out[grepl("NA", out)] <- "-"
     
     rownames(out) <- NULL
     colnames(out) <- c('Variable', 'Overall')
@@ -513,6 +514,7 @@ cont.var <- function(var,
       #Replace any entries with NA or -Inf computed with "-"
       out[grepl("NaN", out)] <- "-"
       out[grepl("-Inf", out)] <- "-"
+      out[grepl("NA", out)] <- "-"
       
       rownames(out) <- NULL
       colnames(out) <- c('Variable', as.vector(levels(as.factor(strat))), 'Overall')
