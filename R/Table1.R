@@ -52,6 +52,7 @@ cat.var <- function(var,
     
     rownames(out) <- NULL
     colnames(out) <- c('Variable', 'Overall')
+    }
   }
   
   #~~~~~~~~#
