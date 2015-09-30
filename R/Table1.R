@@ -380,6 +380,11 @@ cont.var <- function(var,
     out <- cbind(as.vector(c(paste(header, '     '),  '   Count', '   Mean (SD)', '   Median (IQR)', 
                       '   Q1, Q3', '   Min, Max', '   Missing')), 
                  replace(out, is.na(out), ''))
+    
+    #Replace any entries with NA or -Inf computed with "-"
+    out[grepl("NaN", out)] <- "-"
+    out[grepl("-Inf", out)] <- "-"
+    
     rownames(out) <- NULL
     colnames(out) <- c('Variable', 'Overall')
   }
@@ -504,6 +509,11 @@ cont.var <- function(var,
       out <- cbind(as.vector(c(paste(header, '     '), '   Count', '   Mean (SD)', '   Median (IQR)', 
                         '   Q1, Q3', '   Min, Max', '   Missing')), 
                    replace(out, is.na(out), ''))
+      
+      #Replace any entries with NA or -Inf computed with "-"
+      out[grepl("NaN", out)] <- "-"
+      out[grepl("-Inf", out)] <- "-"
+      
       rownames(out) <- NULL
       colnames(out) <- c('Variable', as.vector(levels(as.factor(strat))), 'Overall')
     }
