@@ -27,7 +27,7 @@ make.table(dat = pbc,
   cont.varlist = c('bili', 'copper'),
          strat = c('trt'),
      cat.ptype = c('fisher', 'fisher'),
-    cont.ptype = c('wilcox', 'wilcox),
+    cont.ptype = c('wilcox', 'wilcox'),
         output = 'html')
 ```
 
@@ -43,7 +43,7 @@ make.table(dat = pbc,
    cont.header = c('Bilirubin', ' Copper'),
          strat = c('trt'),
      cat.ptype = c('fisher', 'fisher'),
-    cont.ptype = c('wilcox', 'wilcox),
+    cont.ptype = c('wilcox', 'wilcox'),
          pname = TRUE,
       colnames = c(' ', 'D-penicillamine', 'Placebo', 'Overall', 'p-value'),
         output = 'html',
