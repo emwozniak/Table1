@@ -47,7 +47,7 @@ make.table(dat = pbc,
          pname = TRUE,
       colnames = c(' ', 'D-penicillamine', 'Placebo', 'Overall', 'p-value'),
         output = 'html',
-    stripe.col = 'f4dfd0')
+    stripe.col = '#f4dfd0')
 ```
 
 ## Quick table options
@@ -68,6 +68,6 @@ quick.table(dat = pbc,
        colnames = c(' ', 'D-penicillamine', 'Placebo', 'Overall'),
        classlim = 4,
             dec = 3,
-     stripe.col = 'f4dfd0',
-         output = 'html'
+     stripe.col = '#f4dfd0',
+         output = 'html')
 ```
