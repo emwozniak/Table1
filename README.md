@@ -15,7 +15,9 @@ attach(pbc)
 make.table(dat = pbc,
    cat.varlist = c('stage', 'sex'),
   cont.varlist = c('bili', 'copper'))
-        
+```
+
+```r
        Variable       Overall
  sex                          
    Count                   418
@@ -57,7 +59,9 @@ make.table(dat = pbc,
          strat = c('trt'),
      cat.ptype = c('fisher', 'fisher'),
     cont.ptype = c('wilcox', 'wilcox'))
-    
+```
+
+```r
          Variable                    X1                    X2                Overall p.value
  sex                                                                                   0.377
    Count (%)               158 (50.64%)          154 (49.36%)                    312        
@@ -104,7 +108,9 @@ make.table(dat = pbc,
     cont.ptype = c('wilcox', 'wilcox'),
          pname = TRUE,
       colnames = c(' ', 'D-penicillamine', 'Placebo', 'Overall', 'p-value'))
-      
+```
+
+```r
                            D-penicillamine               Placebo                Overall           p-value
  Gender                                                                                             0.377
    Count (%)                  158 (50.64%)          154 (49.36%)                    312      Fisher exact
@@ -145,7 +151,9 @@ Only an `attach`ed data frame needs to be passed to the function. The results wi
 
 ```r
 quick.table(dat = pbc)
+```
 
+```r
 [1] "Removed variable(s): chol"
 [1] "The following variables are summarized as continuous:"
 c("id", "time", "age", "bili", "albumin", "copper", "alk.phos", 
@@ -298,7 +306,9 @@ quick.table(dat = pbc,
        colnames = c(' ', 'D-penicillamine', 'Placebo', 'Overall'),
        classlim = 4,
             dec = 3)
-            
+```
+
+```r
 [1] "Removed variable(s): chol"
 [1] "The following variables are summarized as continuous:"
 c("id", "time", "age", "bili", "albumin", "copper", "alk.phos", 
