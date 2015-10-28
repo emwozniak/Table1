@@ -710,9 +710,9 @@ make.table <- function(dat,
     warning('A data frame must be provided in dat=.')
   }
   
-  if ((output=='plain')==FALSE) {
-    print('Package dependencies: library(htmlTable) for HTML output and library(xtable) for LaTeX output')
-  }
+  #if ((output=='plain')==FALSE) {
+  #  print('Package dependencies: library(htmlTable) for HTML output and library(xtable) for LaTeX output')
+  #}
 
   if (any(c(cat.varlist, cont.varlist) %in% ls('package:base'))==TRUE) {
     warning("Variables cannot take the names of any base R functions -- try 
