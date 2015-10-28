@@ -628,11 +628,15 @@ out.html <- function (tab, colnames, stripe=TRUE, stripe.col='#F7F7F7')
   if (stripe==FALSE) {   
     #Left justify row names; right justify all other columns
     #Use css.cell to add whitespace between columns
-    return(htmlTable(as.matrix(output), 
-                     rnames = F, 
-                     header = colnames, 
-                     align = c("l", rep("r", ncol(output) - 1)), 
-                     css.cell = "padding-left: .2em; padding-right: 2em;"))
+    
+    html.return <- htmlTable(as.matrix(output), 
+                      rnames = F, 
+                      header = colnames, 
+                      align = c("l", rep("r", ncol(output) - 1)), 
+                      css.cell = "padding-left: .2em; padding-right: 2em;")
+    #Prevent text wrapping within cells that disrupts formatting
+    html.return <- gsub('<td', '<td nowrap="nowrap"; ', html.return)
+    return(html.return)
   }
   
   #Option to remove zebra striping for an all-white background
@@ -644,12 +648,15 @@ out.html <- function (tab, colnames, stripe=TRUE, stripe.col='#F7F7F7')
     
     #Left justify row names; right justify all other columns
     #Use css.cell to add whitespace between columns
-    return(htmlTable(as.matrix(output), 
-                     rnames=FALSE, 
-                     header=colnames, 
-                     col.rgroup=unlist(mapply(rep, x=color, times=v), use.names=FALSE),
-                     align = c("l", rep("r", ncol(output) - 1)), 
-                     css.cell = "padding-left: .2em; padding-right: 2em;"))    
+    html.return <- htmlTable(as.matrix(output), 
+                             rnames=FALSE, 
+                             header=colnames, 
+                             col.rgroup=unlist(mapply(rep, x=color, times=v), use.names=FALSE),
+                             align = c("l", rep("r", ncol(output) - 1)), 
+                             css.cell = "padding-left: .2em; padding-right: 2em;")
+    #Prevent text wrapping within cells that disrupts formatting
+    html.return <- gsub('<td', '<td nowrap="nowrap"; ', html.return)
+    return(html.return)    
   }
 }
 
