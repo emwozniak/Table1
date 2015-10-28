@@ -688,6 +688,7 @@ make.table <- function(dat,
                        pname=FALSE,
                        colnames=NULL,
                        output='plain',
+                       quietly==TRUE,
                        
                        #HTML defaults
                        stripe=TRUE,
@@ -703,7 +704,7 @@ make.table <- function(dat,
     warning('A data frame must be provided in dat=.')
   }
   
-  if ((output=='plain')==FALSE) {
+  if ((output=='plain')==FALSE & quietly==FALSE) {
     print('Package dependencies: library(htmlTable) for HTML output and library(xtable) for LaTeX output')
   }
 
