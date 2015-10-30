@@ -709,10 +709,6 @@ make.table <- function(dat,
   if (missing(dat)) {
     warning('A data frame must be provided in dat=.')
   }
-  
-  #if ((output=='plain')==FALSE) {
-  #  print('Package dependencies: library(htmlTable) for HTML output and library(xtable) for LaTeX output')
-  #}
 
   if (any(c(cat.varlist, cont.varlist) %in% ls('package:base'))==TRUE) {
     warning("Variables cannot take the names of any base R functions -- try 
@@ -898,9 +894,6 @@ quick.table <- function(dat,
   if (missing(dat)) {
     warning('A data frame must be provided in dat=.')
   }
-  #if ((output=='plain')==FALSE) {
-  #  print('Package dependencies: library(htmlTable) for HTML output and library(xtable) for LaTeX output')
-  #}
   
   #Remove any variables with the same name as a base R function
   if ((any(c(names(dat)) %in% ls('package:base')))==TRUE) {
