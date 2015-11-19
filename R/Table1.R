@@ -689,7 +689,7 @@ make.table <- function(dat,
     }
     tab[grepl("NaN", tab)] <- "-"
     tab[grepl("NA", tab)] <- "-"
-    tab[grepl("-Inf")] <- "-"
+    tab[grepl("-Inf", tab)] <- "-"
   }
   
   #-----------------#
@@ -715,7 +715,7 @@ make.table <- function(dat,
     }
     tab[grepl("NaN", tab)] <- "-"
     tab[grepl("NA", tab)] <- "-"
-    tab[grepl("-Inf")] <- "-"
+    tab[grepl("-Inf", tab)] <- "-"
   }
   
   #----------------------------#
@@ -752,7 +752,7 @@ make.table <- function(dat,
     }
     tab[grepl("NaN", tab)] <- "-"
     tab[grepl("NA", tab)] <- "-"
-    tab[grepl("-Inf")] <- "-"
+    tab[grepl("-Inf", tab)] <- "-"
   }
   
   
