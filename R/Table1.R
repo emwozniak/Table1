@@ -618,10 +618,6 @@ make.table <- function(dat,
     warning('A data frame must be provided in dat=.')
   }
   
-  #if ((output=='plain')==FALSE) {
-  #  print('Package dependencies: library(htmlTable) for HTML output and library(xtable) for LaTeX output')
-  #}
-  
   if (any(c(cat.varlist, cont.varlist) %in% ls('package:base'))==TRUE) {
     warning("Variables cannot take the names of any base R functions -- try 
             which(dput(colnames(dat)) %in% ls('package:base'))")
@@ -691,6 +687,9 @@ make.table <- function(dat,
     if (all(cat.ptype=="None")) { 
       tab <- tab[, -dim(tab)[2]]
     }
+    tab[grepl("NaN", tab)] <- "-"
+    tab[grepl("NA", tab)] <- "-"
+    tab[grepl("-Inf")] <- "-"
   }
   
   #-----------------#
@@ -714,6 +713,9 @@ make.table <- function(dat,
     if (all(cont.ptype=="None")) { 
       tab <- tab[, -dim(tab)[2]]
     }
+    tab[grepl("NaN", tab)] <- "-"
+    tab[grepl("NA", tab)] <- "-"
+    tab[grepl("-Inf")] <- "-"
   }
   
   #----------------------------#
@@ -748,6 +750,9 @@ make.table <- function(dat,
     if (all(cat.ptype=="None" & all(cont.ptype=="None"))) { 
       tab <- tab[, -dim(tab)[2]]
     }
+    tab[grepl("NaN", tab)] <- "-"
+    tab[grepl("NA", tab)] <- "-"
+    tab[grepl("-Inf")] <- "-"
   }
   
   
@@ -795,9 +800,6 @@ quick.table <- function(dat,
   #----------#
   if (missing(dat)) {
     warning('A data frame must be provided in dat=.')
-  }
-  if ((output=='plain')==FALSE) {
-    print('Package dependencies: library(htmlTable) for HTML output and library(xtable) for LaTeX output')
   }
   
   #Remove any variables with the same name as a base R function
