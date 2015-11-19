@@ -241,6 +241,9 @@ cat.var <- function(var,
   else if (!is.null(strat) & ('count' %in% cat.rmstat)) {
     out <- out[-2, ]
   } 
+  out[grepl("NA", out)] <- "-"
+  out[grepl("NaN", out)] <- "-"
+  out[grepl("Inf", out)] <- "-"
   return(data.frame(out))
 }
 
@@ -477,6 +480,9 @@ cont.var <- function(var,
   if (!(any(cont.rmstat=='None'))) {
     out <- out[-((which(c('count', 'meansd', 'mediqr', 'q1q3', 'minmax', 'miss') %in% cont.rmstat))+1),]
   }
+  out[grepl("NA", out)] <- "-"
+  out[grepl("NaN", out)] <- "-"
+  out[grepl("Inf", out)] <- "-"
   return(data.frame(out))
 }
 
