@@ -23,9 +23,9 @@ cat.var <- function(var,
     tot <- as.matrix(table(var))
     tot[] <- paste0(tot, 
                     paste0(' (', 
-                        format(round((tot/colSums(tot))*100, dec), 
-                        nsmall=dec), '%)')
-                    )
+                           format(round((tot/colSums(tot))*100, dec), 
+                                  nsmall=dec), '%)')
+    )
     miss <- length(which(is.na(var)==T))
     
     #Combine total counts (%s) and missing values into a data frame
@@ -38,21 +38,11 @@ cat.var <- function(var,
                   as.character)
     
     #Paste a column of row headers and replace NA with '' for printing
-    #Omit rows of factor summaries if vector is comprised of all NAs
-    if (n==0) {
-      out <- cbind(as.vector(c(paste(header, '     '), '  Count', '  (%)',  
-                               '  Missing')), 
-                   replace(out, is.na(out), ''))
-    }
-    #Otherwise print factor level names with summary rows
-    else {
-      out <- cbind(as.vector(c(paste(header, '     '), '  Count', '  (%)',  
-                               paste0('  ', rownames), '  Missing')), 
-                   replace(out, is.na(out), ''))
-    
+    out <- cbind(as.vector(c(paste(header, '     '), '  Count', '  (%)',  
+                             paste0('  ', rownames), '  Missing')), 
+                 replace(out, is.na(out), ''))
     rownames(out) <- NULL
     colnames(out) <- c('Variable', 'Overall')
-    }
   }
   
   #~~~~~~~~#
@@ -65,33 +55,32 @@ cat.var <- function(var,
     tot <- as.matrix(apply(cat, 1, sum))
     
     #Counts
-    any.n <- all(as.matrix(apply(cat, 2, sum))==0)
     n <- as.matrix(apply(cat, 2, sum))
     n[] <- paste0(n,
                   paste0(' (',
-                      format(round((n/sum(n))*100, dec),
-                      nsmall=dec), '%)')
-                  )
+                         format(round((n/sum(n))*100, dec),
+                                nsmall=dec), '%)')
+    )
     n <- cbind(t(n), apply(tot, 2, sum))
     
     #Stratified summary: count (row %)(col %)
     cat[] <- paste0(cat, 
                     paste0(' (', 
                            format(round((cat/rowSums(cat))*100, dec), 
-                           nsmall=dec), '%)',
-                    paste0(' (', 
-                           format(round(t(t(cat)/colSums(cat))*100, dec), 
-                           nsmall=dec), '%)')
+                                  nsmall=dec), '%)',
+                           paste0(' (', 
+                                  format(round(t(t(cat)/colSums(cat))*100, dec), 
+                                         nsmall=dec), '%)')
                     ))
     
     #Overall summary: count (row %)(col %)
     tot[] <- paste0(tot, 
                     paste0(' (', 
                            format(round((tot/rowSums(tot))*100, dec), 
-                           nsmall=dec), '%)',
-                    paste0(' (', 
-                           format(round((tot/colSums(tot))*100, dec), 
-                           nsmall=dec), '%)')
+                                  nsmall=dec), '%)',
+                           paste0(' (', 
+                                  format(round((tot/colSums(tot))*100, dec), 
+                                         nsmall=dec), '%)')
                     ))
     
     #Aggregate missings
@@ -107,23 +96,9 @@ cat.var <- function(var,
                                    miss),
                              row.names=NULL),
                   as.character)
-    
-    #Remove factor level rownames if variable input is NA
-    if (any.n==TRUE) {
-      out <- cbind(as.vector(c(paste(header, '     '), '  Count (%)', '  (Row %)(Col %)', 
-                               '  Missing')), 
-                   replace(out, is.na(out), ''))
-    }
-    #Otherwise print factor levels as rownames
-    else if (any.n==FALSE) {
-      out <- cbind(as.vector(c(paste(header, '     '), '  Count (%)', '  (Row %)(Col %)', 
-                               paste0('  ', rownames), '  Missing')), 
-                   replace(out, is.na(out), ''))
-    }
-    
-    #Replace any entries with NaN computed with "-"
-    out[grepl("NaN", out)] <- "-"
-    
+    out <- cbind(as.vector(c(paste(header, '     '), '  Count (%)', '  (Row %)(Col %)', 
+                             paste0('  ', rownames), '  Missing')), 
+                 replace(out, is.na(out), ''))
     rownames(out) <- NULL
     colnames(out) <- c('Variable', as.vector(levels(as.factor(strat))), 'Overall')
   }
@@ -135,27 +110,26 @@ cat.var <- function(var,
     tot <- as.matrix(apply(cat, 1, sum))
     
     #Counts
-    any.n <- all(as.matrix(apply(cat, 2, sum))==0)
     n <- as.matrix(apply(cat, 2, sum))
     n[] <- paste0(n,
                   paste0(' (',
-                      format(round((n/sum(n))*100, dec),
-                      nsmall=dec), '%)')
-                  )
+                         format(round((n/sum(n))*100, dec),
+                                nsmall=dec), '%)')
+    )
     n <- cbind(t(n), apply(tot, 2, sum))
     
     #Stratified summary
     cat[] <- paste0(cat, 
                     paste0(' (', 
-                        format(round((cat/rowSums(cat))*100, dec), 
-                        nsmall=dec), '%)')
-                    )
+                           format(round((cat/rowSums(cat))*100, dec), 
+                                  nsmall=dec), '%)')
+    )
     #Overall summary
     tot[] <- paste0(tot, 
                     paste0(' (', 
-                        format(round((tot/rowSums(tot))*100, dec), 
-                        nsmall=dec), '%)')
-                    )
+                           format(round((tot/rowSums(tot))*100, dec), 
+                                  nsmall=dec), '%)')
+    )
     
     #Aggregate missings
     miss <- c(aggregate(var, list(strat), function(x) {sum(is.na(x))})[,-1],
@@ -170,23 +144,9 @@ cat.var <- function(var,
                                    miss),
                              row.names=NULL),
                   as.character)
-    
-    #Remove factor level rownames if input vector is comprised of all NAs
-    if (any.n==TRUE) {
-      out <- cbind(as.vector(c(paste(header, '     '), '  Count (%)', '  (Row %)', 
-                               '  Missing')), 
-                   replace(out, is.na(out), ''))
-    }
-    #Otherwise print factor level names
-    else if (any.n==FALSE) {
-      out <- cbind(as.vector(c(paste(header, '     '), '  Count (%)', '  (Row %)', 
-                               paste0('  ', rownames), '  Missing')), 
-                   replace(out, is.na(out), ''))
-    }
-    
-    #Replace any entries with NaN computed with "-"
-    out[grepl("NaN", out)] <- "-"
-    
+    out <- cbind(as.vector(c(paste(header, '     '), '  Count (%)', '  (Row %)', 
+                             paste0('  ', rownames), '  Missing')), 
+                 replace(out, is.na(out), ''))
     rownames(out) <- NULL
     colnames(out) <- c('Variable', as.vector(levels(as.factor(strat))), 'Overall')
   }
@@ -198,28 +158,27 @@ cat.var <- function(var,
     tot <- as.matrix(apply(cat, 1, sum))
     
     #Counts
-    any.n <- all(as.matrix(apply(cat, 2, sum))==0)
     n <- as.matrix(apply(cat, 2, sum))
     n[] <- paste0(n,
                   paste0(' (',
-                      format(round((n/sum(n))*100, dec),
-                      nsmall=dec), '%)')
-                  )
+                         format(round((n/sum(n))*100, dec),
+                                nsmall=dec), '%)')
+    )
     n <- cbind(t(n), apply(tot, 2, sum))
     
     #Stratified summary
     cat[] <- paste0(cat, 
                     paste0(' (', 
-                        format(round(t(t(cat)/colSums(cat))*100, dec), 
-                        nsmall=dec), '%)')
-                    )
+                           format(round(t(t(cat)/colSums(cat))*100, dec), 
+                                  nsmall=dec), '%)')
+    )
     
     #Overall summary
     tot[] <- paste0(tot, 
                     paste0(' (', 
-                        format(round((tot/colSums(tot))*100, dec), 
-                        nsmall=dec), '%)')
-                    )
+                           format(round((tot/colSums(tot))*100, dec), 
+                                  nsmall=dec), '%)')
+    )
     
     #Missings
     miss <- c(aggregate(var, list(strat), function(x) {sum(is.na(x))})[,-1],
@@ -234,38 +193,15 @@ cat.var <- function(var,
                                    miss),
                              row.names=NULL),
                   as.character)
-    
-    #Remove factor level row names if input vector is comprised of all NAs
-    if (any.n==TRUE) {
-      out <- cbind(as.vector(c(paste(header, '     '), '  Count (%)', '  (Col %)', 
-                               '  Missing')), 
-                   replace(out, is.na(out), ''))
-    }
-    #Otherwise print factor level row names
-    else if (any.n==FALSE) {
-      out <- cbind(as.vector(c(paste(header, '     '), '  Count (%)', '  (Col %)', 
-                               paste0('  ', rownames), '  Missing')), 
-                   replace(out, is.na(out), ''))
-    }
-    
-    #Replace any entries with NaN computed with "-"
-    out[grepl("NaN", out)] <- "-"
-    
+    out <- cbind(as.vector(c(paste(header, '     '), '  Count (%)', '  (Col %)', 
+                             paste0('  ', rownames), '  Missing')), 
+                 replace(out, is.na(out), ''))
     rownames(out) <- NULL
     colnames(out) <- c('Variable', as.vector(levels(as.factor(strat))), 'Overall')
   } 
   
-  #Column with no p-values
-  if (ptype=='None') {
-    p <- rep(NA, length(levels(as.factor(var))) + 4)
-    out <- cbind(out, p)
-    out <- replace(out, is.na(out), '')
-    rownames(out) <- NULL
-    colnames(out) <- c('Variable', as.vector(levels(as.factor(strat))), 'Overall', 'p-value')
-  }
-  
   #Include p-values without printing the name of the test
-  else if (ptype!='None' & pname==FALSE) {
+  if (pname==FALSE) {
     p <- c(stat.col(var, strat, ptype, pname=FALSE), rep(NA, length(levels(as.factor(var))) + 3))
     out <- cbind(out, p)
     out <- replace(out, is.na(out), '')
@@ -274,7 +210,7 @@ cat.var <- function(var,
   }
   
   #Print the name of the test used beneath each p-value
-  else if (ptype!='None' & pname==TRUE & !('count' %in% cat.rmstat)) {
+  else if (pname==TRUE & !('count' %in% cat.rmstat)) {
     p <- c(stat.col(var, strat, ptype, pname=TRUE), rep(NA, length(levels(as.factor(var))) + 2))
     out <-  cbind(out, p)
     out <- replace(out, is.na(out), '')
@@ -283,7 +219,7 @@ cat.var <- function(var,
   }
   
   #Print the name of the test used beneath each p-value when 'count' %in% cat.rmstat
-  else if (ptype!='None' & pname==TRUE & ('count' %in% cat.rmstat)) {
+  else if (pname==TRUE & ('count' %in% cat.rmstat)) {
     p <- c(stat.col(var, strat, ptype, pname=TRUE), rep(NA, length(levels(as.factor(var))) + 2))
     p <- replace(p, 3, p[2])
     out <-  cbind(out, p)
@@ -331,43 +267,43 @@ cont.var <- function(var,
     
     #Mean (standard deviation)
     mean.sd.tot <- paste(
-                      format(
-                          round(mean(var, na.rm=T), dec), 
-                      nsmall=dec), 
-                   paste('(', 
-                      format(
-                          round(sd(var, na.rm=T), dec), 
-                      nsmall=dec), ')', 
-                   sep=''))
+      format(
+        round(mean(var, na.rm=T), dec), 
+        nsmall=dec), 
+      paste('(', 
+            format(
+              round(sd(var, na.rm=T), dec), 
+              nsmall=dec), ')', 
+            sep=''))
     
     #Median (interquartile range)
     med.iqr.tot <- paste(
-                      format(
-                          round(median(var, na.rm=T), dec), 
-                      nsmall=dec), 
-                   paste('(', 
-                      format(
-                          round(IQR(var, na.rm=T), dec), 
-                      nsmall=dec), ')', 
-                   sep=''))
+      format(
+        round(median(var, na.rm=T), dec), 
+        nsmall=dec), 
+      paste('(', 
+            format(
+              round(IQR(var, na.rm=T), dec), 
+              nsmall=dec), ')', 
+            sep=''))
     
     #25th percentile, 75th percentile
     q1.q3.tot <- paste(
-                    format(
-                        round(quantile(var, 0.25, na.rm=T), dec), 
-                    nsmall=2), ', ',
-                    format(
-                        round(quantile(var, 0.75, na.rm=T), dec)), 
-                    sep='')
+      format(
+        round(quantile(var, 0.25, na.rm=T), dec), 
+        nsmall=2), ', ',
+      format(
+        round(quantile(var, 0.75, na.rm=T), dec)), 
+      sep='')
     
     #Minimum, maximum
     min.max.tot <- paste(
-                      format(
-                          round(min(var, na.rm=T), dec), 
-                      nsmall=dec), ', ',
-                      format(
-                          round(max(var, na.rm=T), 2)), 
-                      sep='')
+      format(
+        round(min(var, na.rm=T), dec), 
+        nsmall=dec), ', ',
+      format(
+        round(max(var, na.rm=T), 2)), 
+      sep='')
     
     #Missings
     miss.tot <- length(which(is.na(var)==T))
@@ -375,17 +311,11 @@ cont.var <- function(var,
     #rbind summary statistics
     #cbind row headers and replace NAs with '' for printing
     out <- sapply(data.frame(rbind(NA, n.tot,
-                      mean.sd.tot, med.iqr.tot, q1.q3.tot, min.max.tot, miss.tot)),
+                                   mean.sd.tot, med.iqr.tot, q1.q3.tot, min.max.tot, miss.tot)),
                   as.character)
     out <- cbind(as.vector(c(paste(header, '     '),  '   Count', '   Mean (SD)', '   Median (IQR)', 
-                      '   Q1, Q3', '   Min, Max', '   Missing')), 
+                             '   Q1, Q3', '   Min, Max', '   Missing')), 
                  replace(out, is.na(out), ''))
-    
-    #Replace any entries with NA or -Inf computed with "-"
-    out[grepl("NaN", out)] <- "-"
-    out[grepl("-Inf", out)] <- "-"
-    out[grepl("NA", out)] <- "-"
-    
     rownames(out) <- NULL
     colnames(out) <- c('Variable', 'Overall')
   }
@@ -399,46 +329,46 @@ cont.var <- function(var,
       
       #Mean (standard deviation)
       mean.sd <- format(
-                    round(aggregate(var, list(strat), mean, na.rm=T)[,-1], dec), 
-                 nsmall=dec)
+        round(aggregate(var, list(strat), mean, na.rm=T)[,-1], dec), 
+        nsmall=dec)
       mean.sd[] <- paste0(mean.sd, 
                           paste0(' (', 
-                              (format(
-                                  round(aggregate(var, list(strat), sd, na.rm=T)[,-1], dec), 
-                              nsmall=dec)),
-                          ')'))
+                                 (format(
+                                   round(aggregate(var, list(strat), sd, na.rm=T)[,-1], dec), 
+                                   nsmall=dec)),
+                                 ')'))
       
       #Median (interquartile range)
       med.iqr <- format(
-                    round(aggregate(var, list(strat), median, na.rm=T)[,-1], dec), 
-                 nsmall=dec)
+        round(aggregate(var, list(strat), median, na.rm=T)[,-1], dec), 
+        nsmall=dec)
       med.iqr[] <- paste0(med.iqr, 
                           paste0(' (', 
-                              (format(
-                                  round(aggregate(var, list(strat), IQR, na.rm=T)[,-1], dec), 
-                              nsmall=dec)), 
-                          ')'))
+                                 (format(
+                                   round(aggregate(var, list(strat), IQR, na.rm=T)[,-1], dec), 
+                                   nsmall=dec)), 
+                                 ')'))
       
       #25th percentile, 75th percentile
       q1.q3 <- format(
-                  round(aggregate(var, list(strat), quantile, 0.25, na.rm=T)[,-1], dec), 
-               nsmall=dec)
+        round(aggregate(var, list(strat), quantile, 0.25, na.rm=T)[,-1], dec), 
+        nsmall=dec)
       q1.q3[] <- paste0(q1.q3, 
                         paste0(', ', 
-                            (format(
-                                round(aggregate(var, list(strat), quantile, 0.75, na.rm=T)[,-1], dec), 
-                            nsmall=dec))
+                               (format(
+                                 round(aggregate(var, list(strat), quantile, 0.75, na.rm=T)[,-1], dec), 
+                                 nsmall=dec))
                         ))
       
       #Minimum, maximum
       min.max <- format(
-                    round(aggregate(var, list(strat), min, na.rm=T)[,-1], dec), 
-                 nsmall=dec)
+        round(aggregate(var, list(strat), min, na.rm=T)[,-1], dec), 
+        nsmall=dec)
       min.max[] <- paste0(min.max, 
                           paste0(', ', 
-                              (format(
-                                  round(aggregate(var, list(strat), max, na.rm=T)[,-1], dec), 
-                              nsmall=dec))
+                                 (format(
+                                   round(aggregate(var, list(strat), max, na.rm=T)[,-1], dec), 
+                                   nsmall=dec))
                           ))
       
       #Missings
@@ -455,45 +385,45 @@ cont.var <- function(var,
       
       #Overall mean (standard deviation)
       mean.sd.tot <- paste(
-                        format(
-                            round(mean(var[!is.na(strat)], na.rm=T), dec), 
-                        nsmall=dec), 
-                     paste('(', 
-                        format(
-                            round(sd(var[!is.na(strat)], na.rm=T), dec), 
-                        nsmall=dec), ')', 
-                     sep=''))
+        format(
+          round(mean(var[!is.na(strat)], na.rm=T), dec), 
+          nsmall=dec), 
+        paste('(', 
+              format(
+                round(sd(var[!is.na(strat)], na.rm=T), dec), 
+                nsmall=dec), ')', 
+              sep=''))
       
       #Overall median (interquartile range)
       med.iqr.tot <- paste(
-                        format(
-                            round(median(var[!is.na(strat)], na.rm=T), dec), 
-                        nsmall=dec), 
-                     paste('(', 
-                        format(
-                            round(IQR(var[!is.na(strat)], na.rm=T), dec), 
-                        nsmall=dec), ')', 
-                     sep=''))
+        format(
+          round(median(var[!is.na(strat)], na.rm=T), dec), 
+          nsmall=dec), 
+        paste('(', 
+              format(
+                round(IQR(var[!is.na(strat)], na.rm=T), dec), 
+                nsmall=dec), ')', 
+              sep=''))
       
       #Overall 2th percentile, 75th percentile
       q1.q3.tot <- paste(
-                      format(
-                          round(quantile(var[!is.na(strat)], 0.25, na.rm=T), dec), 
-                      nsmall=dec), ', ',
-                      format(
-                          round(quantile(var[!is.na(strat)], 0.75, na.rm=T), dec),
-                      nsmall=dec), 
-                   sep='') 
+        format(
+          round(quantile(var[!is.na(strat)], 0.25, na.rm=T), dec), 
+          nsmall=dec), ', ',
+        format(
+          round(quantile(var[!is.na(strat)], 0.75, na.rm=T), dec),
+          nsmall=dec), 
+        sep='') 
       
       #Overall minimum, maximum
       min.max.tot <- paste(
-                        format(
-                            round(min(var[!is.na(strat)], na.rm=T), dec), 
-                        nsmall=dec), ', ',
-                        format(
-                            round(max(var[!is.na(strat)], na.rm=T), dec),
-                        nsmall=dec), 
-                     sep='')
+        format(
+          round(min(var[!is.na(strat)], na.rm=T), dec), 
+          nsmall=dec), ', ',
+        format(
+          round(max(var[!is.na(strat)], na.rm=T), dec),
+          nsmall=dec), 
+        sep='')
       
       #Overall missings
       miss.tot=sum(miss)
@@ -504,34 +434,19 @@ cont.var <- function(var,
       #cbind stratified and total columns
       #rbind counts and missings to create complete summary
       out <- sapply(data.frame(rbind(rep(NA, length(levels(as.factor(strat))) + 1),
-                          cbind(cont, tot))),
+                                     cbind(cont, tot))),
                     as.character)
       #cbind vector of row headers and replace NAs with '' to show up as a blank cell when printed
       out <- cbind(as.vector(c(paste(header, '     '), '   Count', '   Mean (SD)', '   Median (IQR)', 
-                        '   Q1, Q3', '   Min, Max', '   Missing')), 
+                               '   Q1, Q3', '   Min, Max', '   Missing')), 
                    replace(out, is.na(out), ''))
-      
-      #Replace any entries with NA or -Inf computed with "-"
-      out[grepl("NaN", out)] <- "-"
-      out[grepl("-Inf", out)] <- "-"
-      out[grepl("NA", out)] <- "-"
-      
       rownames(out) <- NULL
       colnames(out) <- c('Variable', as.vector(levels(as.factor(strat))), 'Overall')
     }
   }
   
-  #No p-values
-  if (ptype=='None') {
-    p <- rep(NA, 7)
-    out <- cbind(out, p)
-    out <- replace(out, is.na(out), '')
-    rownames(out) <- NULL
-    colnames(out) <- c('Variable', as.vector(levels(as.factor(strat))), 'Overall', 'p-value') 
-  }
-  
   #Print p-values without the name of the test used
-  else if (ptype!='None' & pname==FALSE) {
+  if (pname==FALSE) {
     p <- c(stat.col(var, strat, ptype, pname=FALSE), rep(NA, 6))
     out <- cbind(out, p)
     out <- replace(out, is.na(out), '')
@@ -540,7 +455,7 @@ cont.var <- function(var,
   }
   
   #Print p-values with the name of the test used 
-  else if (ptype!='None' & pname==TRUE & !('count' %in% cont.rmstat)) {
+  else if (pname==TRUE & !('count' %in% cont.rmstat)) {
     p <- c(stat.col(var, strat, ptype, pname=TRUE), rep(NA, 5))
     out <-  cbind(out, p)
     out <- replace(out, is.na(out), '')
@@ -549,7 +464,7 @@ cont.var <- function(var,
   }
   
   #Print p-values with the name of the test used if 'count' %in% cont.rmstat
-  else if (ptype!='None' & pname==TRUE & ('count' %in% cont.rmstat)) {
+  else if (pname==TRUE & ('count' %in% cont.rmstat)) {
     p <- c(stat.col(var, strat, ptype, pname=TRUE), rep(NA, 5))
     p <- replace(p, 3, p[2])
     out <-  cbind(out, p)
@@ -579,10 +494,10 @@ out.latex <- function(tab, colnames=NULL) {
                   paste("\\textbf{", named, "}", sep=''),
                   named)
   named <- c(ifelse(
-      tags==F,
-      paste("\\vspace*{0.1cm}", 
+    tags==F,
+    paste("\\vspace*{0.1cm}", 
           paste("\\", "\\", sep=''), named) ,
-      paste("\\hskip .5cm", named, sep=' ')))
+    paste("\\hskip .5cm", named, sep=' ')))
   
   output <- apply(cbind(named, tab[,2:dim(tab)[2]]), 2, function(x) gsub('%', '\\\\%', x))
   output <- gsub('<', '\\textless ', output)
@@ -628,15 +543,11 @@ out.html <- function (tab, colnames, stripe=TRUE, stripe.col='#F7F7F7')
   if (stripe==FALSE) {   
     #Left justify row names; right justify all other columns
     #Use css.cell to add whitespace between columns
-    
-    html.return <- htmlTable(as.matrix(output), 
-                      rnames = F, 
-                      header = colnames, 
-                      align = c("l", rep("r", ncol(output) - 1)), 
-                      css.cell = "padding-left: .2em; padding-right: 2em;")
-    #Prevent text wrapping within cells that disrupts formatting
-    html.return <- gsub('<td', '<td nowrap="nowrap"; ', html.return)
-    return(html.return)
+    return(htmlTable(as.matrix(output), 
+                     rnames = F, 
+                     header = colnames, 
+                     align = c("l", rep("r", ncol(output) - 1)), 
+                     css.cell = "padding-left: .2em; padding-right: 2em;"))
   }
   
   #Option to remove zebra striping for an all-white background
@@ -648,15 +559,12 @@ out.html <- function (tab, colnames, stripe=TRUE, stripe.col='#F7F7F7')
     
     #Left justify row names; right justify all other columns
     #Use css.cell to add whitespace between columns
-    html.return <- htmlTable(as.matrix(output), 
-                             rnames=FALSE, 
-                             header=colnames, 
-                             col.rgroup=unlist(mapply(rep, x=color, times=v), use.names=FALSE),
-                             align = c("l", rep("r", ncol(output) - 1)), 
-                             css.cell = "padding-left: .2em; padding-right: 2em;")
-    #Prevent text wrapping within cells that disrupts formatting
-    html.return <- gsub('<td', '<td nowrap="nowrap"; ', html.return)
-    return(html.return)    
+    return(htmlTable(as.matrix(output), 
+                     rnames=FALSE, 
+                     header=colnames, 
+                     col.rgroup=unlist(mapply(rep, x=color, times=v), use.names=FALSE),
+                     align = c("l", rep("r", ncol(output) - 1)), 
+                     css.cell = "padding-left: .2em; padding-right: 2em;"))    
   }
 }
 
@@ -709,7 +617,11 @@ make.table <- function(dat,
   if (missing(dat)) {
     warning('A data frame must be provided in dat=.')
   }
-
+  
+  #if ((output=='plain')==FALSE) {
+  #  print('Package dependencies: library(htmlTable) for HTML output and library(xtable) for LaTeX output')
+  #}
+  
   if (any(c(cat.varlist, cont.varlist) %in% ls('package:base'))==TRUE) {
     warning("Variables cannot take the names of any base R functions -- try 
             which(dput(colnames(dat)) %in% ls('package:base'))")
@@ -729,22 +641,22 @@ make.table <- function(dat,
   # Strata #
   #--------#
   else if (!is.null(strat)) {
-      cat.strat=rep(list(
-                    interaction(
-                        sapply(strat, FUN=get, simplify=FALSE, USE.NAMES=TRUE))), 
-                    length(cat.varlist))
-      cont.strat=rep(list(
-                     interaction(
-                          sapply(strat, FUN=get, simplify=FALSE, USE.NAMES=TRUE))), 
-                     length(cont.varlist))
-      strat.miss=lapply(
-                      sapply(strat, FUN=get, simplify=FALSE, USE.NAMES=TRUE), function(x) sum(is.na(x))
-                      )
-      strat.rem=sum(is.na(
-                    interaction(
-                        sapply(strat, FUN=get, simplify=FALSE, USE.NAMES=TRUE))
-                    ))
-    }
+    cat.strat=rep(list(
+      interaction(
+        sapply(strat, FUN=get, simplify=FALSE, USE.NAMES=TRUE))), 
+      length(cat.varlist))
+    cont.strat=rep(list(
+      interaction(
+        sapply(strat, FUN=get, simplify=FALSE, USE.NAMES=TRUE))), 
+      length(cont.varlist))
+    strat.miss=lapply(
+      sapply(strat, FUN=get, simplify=FALSE, USE.NAMES=TRUE), function(x) sum(is.na(x))
+    )
+    strat.rem=sum(is.na(
+      interaction(
+        sapply(strat, FUN=get, simplify=FALSE, USE.NAMES=TRUE))
+    ))
+  }
   
   #----------------------#
   # Removed observations #
@@ -753,17 +665,9 @@ make.table <- function(dat,
     print(paste("Total observations removed from table:", strat.rem, sep=' '))
     print("Summary of total missing stratification variable(s):")
     print(strat.miss)
-    read.in <- dim(dat)[1]
-    footer.miss <- paste(read.in, "observations in dataset.",
-                         strat.rem, "observations removed due to missing values in stratifying variable(s).", 
-                         sep=' ')
+    footer.miss <- paste(strat.rem, "observations removed due to missing values in stratifying variable(s)", sep=' ')
   }
-  else {
-    read.in <- dim(dat)[1]
-    footer.miss <- paste(read.in, "observations in dataset.",
-                             "No observations removed due to missing values in stratifying variables(s).",
-                             sep=' ')
-  }
+  else {footer.miss <- paste('')}
   
   #------------------#
   # Categorical only #
@@ -784,9 +688,8 @@ make.table <- function(dat,
     tab <- do.call(rbind, 
                    (c(cats))[order(match(names(c(cats)), 
                                          names(dat)))])
-    #Remove p-value column if no p-values are calculated 
-    if (all(tab[dim(tab)[2]]=='')) {
-      tab <- tab[,-dim(tab[2])]
+    if (all(cat.ptype=="None")) { 
+      tab <- tab[, -dim(tab)[2]]
     }
   }
   
@@ -808,9 +711,8 @@ make.table <- function(dat,
     tab <- do.call(rbind, 
                    (c(conts))[order(match(names(c(conts)), 
                                           names(dat)))])
-    #Remove p-value column if no p-values are calculated 
-    if (all(tab[dim(tab)[2]]=='')) {
-      tab <- tab[,-dim(tab[2])]
+    if (all(cont.ptype=="None")) { 
+      tab <- tab[, -dim(tab)[2]]
     }
   }
   
@@ -843,11 +745,11 @@ make.table <- function(dat,
     tab <- do.call(rbind, 
                    (c(cats, conts))[order(match(names(c(cats, conts)), 
                                                 names(dat)))])
-    #Remove p-value column if no p-values are calculated 
-    if (all(tab[dim(tab)[2]]=='')) {
-      tab <- tab[,-dim(tab[2])]
+    if (all(cat.ptype=="None" & all(cont.ptype=="None"))) { 
+      tab <- tab[, -dim(tab)[2]]
     }
   }
+  
   
   #Define column names
   if (!is.null(colnames)) {
@@ -867,7 +769,7 @@ make.table <- function(dat,
   else if (output=='latex') {
     out.latex(tab, colnames=colnames)
   } 
-}
+  }
 
 ################################
 # MINIMAL INPUT TABLE FUNCTION #
@@ -893,6 +795,9 @@ quick.table <- function(dat,
   #----------#
   if (missing(dat)) {
     warning('A data frame must be provided in dat=.')
+  }
+  if ((output=='plain')==FALSE) {
+    print('Package dependencies: library(htmlTable) for HTML output and library(xtable) for LaTeX output')
   }
   
   #Remove any variables with the same name as a base R function
@@ -956,7 +861,7 @@ quick.table <- function(dat,
 #######################
 #When adding tests, define both p and the name of the test
 
-stat.col <- function(var, strat, ptype, pname=FALSE) {
+stat.col <- function(var, strat, ptype, pname=TRUE) {
   
   #------------------#
   # One sample tests #
@@ -1024,17 +929,31 @@ stat.col <- function(var, strat, ptype, pname=FALSE) {
     p <- mcnemar.test(var, strat)$p.value
   }
   
+  #------------#
+  # No p-value #
+  #------------#
+  else if (ptype=="None") {
+    p <- "-"
+  }
+  
+  #------------#
+  # Formatting #
+  #------------#
+  
   #Format p-values for consistency
-  if (p>=0.001 & p<=0.999) {
+  if (p >= 0.001 & p <= 0.999) {
     p <- format(round(p, 3), nsmall=3)
   }
-  else if (p<0.001) {
+  else if (p=="-") {
+    p <- "-"
+  }
+  else if (p < 0.001) {
     p <- '<0.001'
   }
-  else if (p>0.999) {
+  else if (p > 0.999) { 
     p <- '>0.999'
   }
-
+  
   
   #Print test or statistic if requested
   if (pname==TRUE) {
@@ -1073,6 +992,9 @@ stat.col <- function(var, strat, ptype, pname=FALSE) {
     }
     else if (ptype=='mcnemar') {
       p.col <- c(p, 'McNemar')
+    }
+    else if (ptype=="None") {
+      p.col <- c(p, "-")
     }
   }
   else {p.col <- p}
