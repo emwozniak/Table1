@@ -521,7 +521,9 @@ out.latex <- function(tab, colnames=NULL) {
 #For categorical variables, formatting may be a problem if categories 
 #have similar names to available summary statistics
 out.html <- function (tab, colnames, stripe=TRUE, stripe.col='#F7F7F7', 
-                      header.style="bold", factor.style="bold", stat.style="plain") 
+                      header.style="bold", factor.style="bold", stat.style="plain",
+                      caption, footer, tspanner, n.tspanner, 
+                      cgroup, n.cgroup, col.columns="none") 
 {
   #Define the column of row names
   named <- as.vector(tab[, 1])
@@ -605,7 +607,14 @@ out.html <- function (tab, colnames, stripe=TRUE, stripe.col='#F7F7F7',
                      rnames = F, 
                      header = colnames, 
                      align = c("l", rep("r", ncol(output) - 1)), 
-                     css.cell = "padding-left: .2em; padding-right: 2em;"))
+                     css.cell = "padding-left: .2em; padding-right: 2em;",
+                     caption=caption,
+                     tfoot=footer,
+                     tspanner=tspanner,
+                     n.tspanner=n.tspanner,
+                     cgroup=cgroup,
+                     n.cgroup=n.cgroup,
+                     col.columns=col.columns))
   }
   
   #Option to remove zebra striping for an all-white background
@@ -622,7 +631,14 @@ out.html <- function (tab, colnames, stripe=TRUE, stripe.col='#F7F7F7',
                      header=colnames, 
                      col.rgroup=unlist(mapply(rep, x=color, times=v), use.names=FALSE),
                      align = c("l", rep("r", ncol(output) - 1)), 
-                     css.cell = "padding-left: .2em; padding-right: 2em;"))    
+                     css.cell = "padding-left: .2em; padding-right: 2em;",
+                     caption=caption,
+                     tfoot=footer,
+                     tspanner=tspanner,
+                     n.tspanner=n.tspanner,
+                     cgroup=cgroup,
+                     n.cgroup=n.cgroup,
+                     col.columns=col.columns))    
   }
 }
 
@@ -667,8 +683,16 @@ make.table <- function(dat,
                        stripe.col='#F7F7F7',
                        header.style="bold",
                        factor.style="bold",
-                       stat.style="plain"
+                       stat.style="plain",
                        
+                       #HTML options passed directly to htmlTable
+                       caption,
+                       footer,
+                       tspanner,
+                       n.tspanner,
+                       cgroup,
+                       n.cgroup,
+                       col.columns="none"                      
 )
 
 {
@@ -832,7 +856,13 @@ make.table <- function(dat,
   else if (output=='html') {
     out.html(tab, colnames=colnames, stripe=stripe, stripe.col=stripe.col,
              header.style=header.style, factor.style=factor.style,
-             stat.style=stat.style)
+             stat.style=stat.style, caption,
+             footer,
+             tspanner,
+             n.tspanner,
+             cgroup,
+             n.cgroup,
+             col.columns)
   }
   else if (output=='latex') {
     out.latex(tab, colnames=colnames)
