@@ -18,6 +18,26 @@ out.html(tab, colnames, stripe, stripe.col)
   }
   \item{stripe.col}{Hex code for the color of the zebra striping. Optional; defaults to a light gray, #F7F7F7.
   }
+  \item{header.style}{Variable name style: "plain", "bold", "italic", or "bolditalic". Optional; defaults to "bold".
+  }
+  \item{factor.style}{Variable factor levels style: "plain", "bold", "italic", or "bolditalic". Optional; defaults to "bold".
+  }
+  \item{stat.style}{Summary statistic style: "plain", "bold", "italic", or "bolditalic". Optional; defaults to "plain".
+  }
+  \item{caption}{Table caption. Optional; no default.
+  }
+  \item{footer}{Table footer. Optional; no default.
+  }
+  \item{tspanner}{Rowwise table spanner, passed to htmlTable. Optional; see ?htmlTable for default information.
+  }
+  \item{n.tspanner}{Vector of rows in each table spanner, passed to htmlTable. Optional; see ?htmlTable for default information.
+  }
+  \item{cgroup}{Column group headers, passed to htmlTable. Optional; see ?htmlTable for default information.
+  }
+  \item{n.cgroup}{Vector of columns under each group header, passed to htmlTable. Optional; see ?htmlTable for default information.
+  }
+  \item{col.colnames}{Vector of column colors, passed to htmlTable. Optional; defaults to "none".
+  }
 }
   
 \details{
