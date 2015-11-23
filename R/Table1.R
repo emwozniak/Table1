@@ -520,7 +520,8 @@ out.latex <- function(tab, colnames=NULL) {
 ###############
 #For categorical variables, formatting may be a problem if categories 
 #have similar names to available summary statistics
-out.html <- function (tab, colnames, stripe=TRUE, stripe.col='#F7F7F7') 
+out.html <- function (tab, colnames, stripe=TRUE, stripe.col='#F7F7F7', 
+                      header.style="bold", factor.style="bold", stat.style="plain") 
 {
   #Define the column of row names
   named <- as.vector(tab[, 1])
@@ -534,15 +535,66 @@ out.html <- function (tab, colnames, stripe=TRUE, stripe.col='#F7F7F7')
               grepl("Mean", named, fixed = TRUE) | 
               grepl("Median", named, fixed = TRUE) | 
               grepl("Q1", named, fixed = TRUE) | 
-              grepl("Min", named, fixed = TRUE))    
-  #Bold headers and levels of categorical variables
-  named <- ifelse((tags == FALSE | tags2 == FALSE), 
-                  paste("<b>", named, "</b>", sep = ""), 
-                  named)
+              grepl("Min", named, fixed = TRUE))
   #Indent all row names except variable name by 3 spaces
   named <- ifelse(tags == TRUE, 
                   paste("&nbsp;", "&nbsp;", "&nbsp;", named, sep = " "), 
                   named)
+  
+  #Apply style to variable headers
+  if (header.style=="bold") {
+    named <- ifelse(tags==FALSE, 
+                    paste("<b>", named, "</b>", sep=""), 
+                    named)
+  }
+  else if (header.style=="italic") {
+    named <- ifelse(tags==FALSE, 
+                    paste("<i>", named, "</i>", sep=""), 
+                    named)
+  }
+  else if (header.style=="bolditalic") {
+    named <- ifelse(tags==FALSE, 
+                    paste("<b><i>", named, "</i></b>", sep=""), 
+                    named)
+  }
+  else if (header.style=="plain") {}
+  
+  #Apply style to factor levels
+  if (factor.style=="bold") {
+    named <- ifelse((tags==TRUE & tags2==FALSE), 
+                    paste("<b>", named, "</b>", sep=""), 
+                    named)
+  }
+  else if (factor.style=="italic") {
+    named <- ifelse((tags==TRUE & tags2==FALSE), 
+                    paste("<i>", named, "</i>", sep=""), 
+                    named)
+  }
+  else if (factor.style=="bolditalic") {
+    named <- ifelse((tags==TRUE & tags2==FALSE), 
+                    paste("<b><i>", named, "</i></b>", sep=""), 
+                    named)
+  }
+  else if (factor.style=="plain") {}
+  
+  #Apply style to statistics
+  if (stat.style=="bold") {
+    named <- ifelse(tags2==TRUE, 
+                    paste("<b>", named, "</b>", sep=""), 
+                    named)
+  }
+  else if (stat.style=="italic") {
+    named <- ifelse(tags2==TRUE, 
+                    paste("<i>", named, "</i>", sep=""), 
+                    named)
+  }
+  else if (stat.style=="bolditalic") {
+    named <- ifelse(tags2==TRUE, 
+                    paste("<b><i>", named, "</i></b>", sep=""), 
+                    named)
+  }
+  else if (stat.style=="plain") {}
+  
   output <- cbind(named, as.vector(tab[, 2:dim(tab)[2]]))
   
   #Option for light zebra striping of every other variable (default)
@@ -612,7 +664,10 @@ make.table <- function(dat,
                        
                        #HTML defaults
                        stripe=TRUE,
-                       stripe.col='#F7F7F7'
+                       stripe.col='#F7F7F7',
+                       header.style="bold",
+                       factor.style="bold",
+                       stat.style="plain"
                        
 )
 
@@ -775,7 +830,9 @@ make.table <- function(dat,
     out.plain(tab, colnames=colnames)
   }
   else if (output=='html') {
-    out.html(tab, colnames=colnames, stripe=stripe, stripe.col=stripe.col)
+    out.html(tab, colnames=colnames, stripe=stripe, stripe.col=stripe.col,
+             header.style=header.style, factor.style=factor.style,
+             stat.style=stat.style)
   }
   else if (output=='latex') {
     out.latex(tab, colnames=colnames)
