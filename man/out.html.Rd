@@ -38,7 +38,7 @@ cgroup, n.cgroup, col.columns)
   }
   \item{n.cgroup}{Vector of columns under each group header, passed to htmlTable. Optional; see ?htmlTable for default information.
   }
-  \item{col.colnames}{Vector of column colors, passed to htmlTable. Optional; defaults to "none".
+  \item{col.columns}{Vector of column colors, passed to htmlTable. Optional; defaults to "none".
   }
 }
   
