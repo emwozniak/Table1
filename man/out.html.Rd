@@ -6,7 +6,9 @@
 \description{This function utilizes \code{\link{htmlTable}} to output the results of the \code{\link{make.table}} and \code{\link{quick.table}} functions to the R Viewer as a formatted HTML table, and may be used within a knitr document.
 }
 \usage{
-out.html(tab, colnames, stripe, stripe.col)
+out.html(tab, colnames, stripe, stripe.col, header.style,
+factor.style, stat.style, caption, footer, tspanner, n.tspanner,
+cgroup, n.cgroup, col.columns)
 }
 
 \arguments{
