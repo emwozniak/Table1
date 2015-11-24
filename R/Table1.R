@@ -489,16 +489,71 @@ cont.var <- function(var,
 ################
 # LaTeX OUTPUT #
 ################
-out.latex <- function(tab, colnames=NULL) {
+out.latex <- function(tab, colnames=NULL, header.style="bold", 
+                      factor.style="bold", stat.style="plain") {
   named <- as.vector(tab[,1])
   tags <- grepl('^ ', named)
   tags2 <- (grepl('Count', named, fixed=TRUE) | grepl('%', named, fixed=TRUE) | 
               grepl('Missing', named, fixed=T)==TRUE | grepl('Mean', named, fixed=TRUE) |
               grepl('Median', named, fixed=TRUE) | grepl('Q1', named, fixed=TRUE) |
               grepl('Min', named, fixed=TRUE))
-  named <- ifelse(tags2==F,
-                  paste("\\textbf{", named, "}", sep=''),
-                  named)
+  
+  #Apply style to variable headers
+  if (header.style=="bold") {
+    named <- ifelse(tags==FALSE, 
+                    paste("\\textbf{", named, "}", sep=""), 
+                    named)
+  }
+  else if (header.style=="italic") {
+    named <- ifelse(tags==FALSE, 
+                    paste("\\textit{", named, "}", sep=""), 
+                    named)
+  }
+  else if (header.style=="bolditalic") {
+    named <- ifelse(tags==FALSE, 
+                    paste("\\textbf{\\textit{", named, "}}", sep=""), 
+                    named)
+  }
+  else if (header.style=="plain") {}
+  
+  #Apply style to factor levels
+  if (factor.style=="bold") {
+    named <- ifelse((tags==TRUE & tags2==FALSE), 
+                    paste("\\textbf{", named, "}", sep=""), 
+                    named)
+  }
+  else if (factor.style=="italic") {
+    named <- ifelse((tags==TRUE & tags2==FALSE), 
+                    paste("\\textit{", named, "}", sep=""), 
+                    named)
+  }
+  else if (factor.style=="bolditalic") {
+    named <- ifelse((tags==TRUE & tags2==FALSE), 
+                    paste("\\textbf{\\textit{", named, "}}", sep=""), 
+                    named)
+  }
+  else if (factor.style=="plain") {}
+  
+  #Apply style to statistics
+  if (stat.style=="bold") {
+    named <- ifelse(tags2==TRUE, 
+                    paste("\\textbf{", named, "}", sep=""), 
+                    named)
+  }
+  else if (stat.style=="italic") {
+    named <- ifelse(tags2==TRUE, 
+                    paste("\\textit{", named, "}", sep=""), 
+                    named)
+  }
+  else if (stat.style=="bolditalic") {
+    named <- ifelse(tags2==TRUE, 
+                    paste("\\textbf{\\textit{", named, "}}", sep=""), 
+                    named)
+  }
+  else if (stat.style=="plain") {}
+  #named <- ifelse(tags2==F,
+  #                paste("\\textbf{", named, "}", sep=''),
+  #                named)
   named <- c(ifelse(
     tags==F,
     paste("\\vspace*{0.1cm}", 
@@ -507,6 +562,7 @@ out.latex <- function(tab, colnames=NULL) {
   
   output <- apply(cbind(named, tab[,2:dim(tab)[2]]), 2, function(x) gsub('%', '\\\\%', x))
   output <- gsub('<', '\\textless ', output)
+  output <- gsub('>', '\\textgreater ', output)
   colnames(output) <- colnames
   
   print(xtable(output, align=paste(c('l', 'l', rep('r', dim(output)[2]-1)), collapse='')), 
@@ -882,7 +938,7 @@ make.table <- function(dat,
              nowrap=nowrap)
   }
   else if (output=='latex') {
-    out.latex(tab, colnames=colnames)
+    out.latex(tab, colnames=colnames, header.style=header.style, factor.style=factor.style, stat.style=stat.style)
   } 
   }
 
