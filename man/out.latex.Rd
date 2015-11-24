@@ -6,13 +6,19 @@
 \description{This function utilizes \code{\link{xtable}} to output summary table results to the console as formatted LaTeX code, and may be used within a Sweave or knitr document.
 }
 \usage{
-  out.latex(tab, colnames)
+  out.latex(tab, colnames, header.style, factor.style, stat.style)
 }
 
 \arguments{
   \item{tab}{A single call to either \code{\link{cat.var}} or \code{\link{cont.var}}, or a data frame produced via \code{\link{rbind}} of multiple calls to these functions. Required.
   }
   \item{colnames}{A vector of column names for the table output. Optional.
+  }
+  \item{header.style}{Variable name style: "plain", "bold", "italic", or "bolditalic". Optional; defaults to "bold".
+  }
+  \item{factor.style}{Variable factor levels style: "plain", "bold", "italic", or "bolditalic". Optional; defaults to "bold".
+  }
+  \item{stat.style}{Summary statistic style: "plain", "bold", "italic", or "bolditalic". Optional; defaults to "plain".
   }
 }
 \details{
