@@ -642,17 +642,17 @@ out.html <- function (tab, colnames, stripe=TRUE, stripe.col='#F7F7F7',
   }
   
   if (nowrap==TRUE) {
-    #Replace symbols with HTML tags
-    htmltab <- gsub('<', '&gt;', htmltab)
-    htmltab <- gsub('>', '&lt;', htmltab)
+    #Replace symbols with HTML entities
+    htmltab <- gsub('<', '&lt;', htmltab)
+    htmltab <- gsub('>', '&gt;', htmltab)
     #Prevent within-cell text wrapping
     htmltab <- gsub('<td', '<td nowrap="nowrap"; ', htmltab)
     return(htmltab)
   }
   else if (nowrap==FALSE) {
-    #Replace symbols with HTML tags
-    htmltab <- gsub('<', '&gt;', htmltab)
-    htmltab <- gsub('>', '&lt;', htmltab)
+    #Replace symbols with HTML entities
+    htmltab <- gsub('<', '&lt;', htmltab)
+    htmltab <- gsub('>', '&gt;', htmltab)
     return(htmltab)
   }
 }
