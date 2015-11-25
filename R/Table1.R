@@ -579,7 +579,8 @@ out.latex <- function(tab, colnames=NULL, header.style="bold",
 out.html <- function (tab, colnames, stripe=TRUE, stripe.col='#F7F7F7', 
                       header.style="bold", factor.style="bold", stat.style="plain",
                       caption, footer, tspanner, n.tspanner, 
-                      cgroup, n.cgroup, col.columns="none", nowrap=TRUE) 
+                      cgroup, n.cgroup, col.columns="none", nowrap=TRUE
+                      ) 
 {
   #Define the column of row names
   named <- as.vector(tab[, 1])
@@ -659,7 +660,7 @@ out.html <- function (tab, colnames, stripe=TRUE, stripe.col='#F7F7F7',
   if (stripe==FALSE) {   
     #Left justify row names; right justify all other columns
     #Use css.cell to add whitespace between columns
-    htmltab <- htmlTable(as.matrix(output), 
+    return(htmlTable(as.matrix(output), 
                      rnames = F, 
                      header = colnames, 
                      align = c("l", rep("r", ncol(output) - 1)), 
@@ -670,7 +671,7 @@ out.html <- function (tab, colnames, stripe=TRUE, stripe.col='#F7F7F7',
                      n.tspanner=n.tspanner,
                      cgroup=cgroup,
                      n.cgroup=n.cgroup,
-                     col.columns=col.columns)
+                     col.columns=col.columns))
   }
   
   #Option to remove zebra striping for an all-white background
@@ -682,7 +683,7 @@ out.html <- function (tab, colnames, stripe=TRUE, stripe.col='#F7F7F7',
     
     #Left justify row names; right justify all other columns
     #Use css.cell to add whitespace between columns
-    htmltab <- htmlTable(as.matrix(output), 
+    return(htmlTable(as.matrix(output), 
                      rnames=FALSE, 
                      header=colnames, 
                      col.rgroup=unlist(mapply(rep, x=color, times=v), use.names=FALSE),
@@ -694,23 +695,23 @@ out.html <- function (tab, colnames, stripe=TRUE, stripe.col='#F7F7F7',
                      n.tspanner=n.tspanner,
                      cgroup=cgroup,
                      n.cgroup=n.cgroup,
-                     col.columns=col.columns)    
+                     col.columns=col.columns))    
   }
   
-  if (nowrap==TRUE) {
+  #if (nowrap==TRUE) {
     #Replace symbols with HTML entities
-    htmltab <- gsub('<', '&lt;', htmltab)
-    htmltab <- gsub('>', '&gt;', htmltab)
+    #htmltab <- gsub('<', '&lt;', htmltab)
+    #htmltab <- gsub('>', '&gt;', htmltab)
     #Prevent within-cell text wrapping
-    htmltab <- gsub('<td', '<td nowrap="nowrap"; ', htmltab)
-    return(htmltab)
-  }
-  else if (nowrap==FALSE) {
+    #htmltab <- gsub('<td', '<td nowrap="nowrap"; ', htmltab)
+    #return(htmltab)
+  #}
+  #else if (nowrap==FALSE) {
     #Replace symbols with HTML entities
-    htmltab <- gsub('<', '&lt;', htmltab)
-    htmltab <- gsub('>', '&gt;', htmltab)
-    return(htmltab)
-  }
+    #htmltab <- gsub('<', '&lt;', htmltab)
+    #htmltab <- gsub('>', '&gt;', htmltab)
+    #return(htmltab)
+  #}
 }
 
 #####################
