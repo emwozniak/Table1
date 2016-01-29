@@ -8,7 +8,7 @@ cat.var <- function(var,
                     rownames=as.vector(levels(as.factor(var))),
                     header=deparse(substitute(var)),
                     ptype='None',
-                    pname=FALSE,
+                    pname=TRUE,
                     cat.rmstat='None') {
   
   #~~~~~~~~~~~#
@@ -256,7 +256,7 @@ cont.var <- function(var,
                      dec=2, 
                      header=deparse(substitute(var)), 
                      ptype='None',
-                     pname=FALSE,
+                     pname=TRUE,
                      cont.rmstat='None') {
   
   #~~~~~~~~~~~#
@@ -746,7 +746,7 @@ make.table <- function(dat,
                        cat.rmstat='None',
                        cont.rmstat='None',
                        dec=2,
-                       pname=FALSE,
+                       pname=TRUE,
                        colnames=NULL,
                        output='plain',
                        
