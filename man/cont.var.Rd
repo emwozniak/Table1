@@ -50,6 +50,12 @@ cont.var(var, strat, dec, header, ptype, pname, cont.rmstat)
           \item{'miss'}{Remove summary of missing values}
       }  
   }
+  \item{vspace} {
+  TRUE for additional vertical whitespace between variables (default)
+  }
+  \item{output} {
+  Output type passed from \code{\link{make.table}}.
+  }
 }
 
 \details{Note that warnings and errors beyond those automatically provided by some base R functions are not in place for the improper use of significance testing. For example, if a t-test is requested with more than two strata, the code will execute and the returned p-value will reflect a test of only the first two strata.

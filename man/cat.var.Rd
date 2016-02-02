@@ -45,6 +45,12 @@ cat.var(var, strat, dec, rownames, header, ptype, pname, cat.rmstat)
         \item{'miss'}{Remove summary of missing values}    
       }
   }
+  \item{vspace} {
+  TRUE for additional vertical whitespace between variables (default)
+  }
+  \item{output} {
+  Output type passed from \code{\link{make.table}}.
+  }
 }
 
 \value{Returns a data frame of categorical summary statistics.}

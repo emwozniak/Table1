@@ -40,6 +40,9 @@ cgroup, n.cgroup, col.columns)
   }
   \item{col.columns}{Vector of column colors, passed to htmlTable. Optional; defaults to "none".
   }
+  \item{vspace} {
+  TRUE for additional vertical whitespace between variables (default)
+  }
 }
   
 \details{

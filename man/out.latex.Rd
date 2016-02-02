@@ -20,6 +20,9 @@
   }
   \item{stat.style}{Summary statistic style: "plain", "bold", "italic", or "bolditalic". Optional; defaults to "plain".
   }
+  \item{vspace} {
+  TRUE for additional vertical whitespace between variables (default)
+  }
 }
 \details{
   A call to this function is an optional argument to \code{\link{make.table}} and \code{\link{quick.table}} via output='latex'.
