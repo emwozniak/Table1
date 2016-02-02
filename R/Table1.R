@@ -9,7 +9,9 @@ cat.var <- function(var,
                     header=deparse(substitute(var)),
                     ptype='None',
                     pname=TRUE,
-                    cat.rmstat='None') {
+                    cat.rmstat='None',
+                    vspace=TRUE,
+                    output="plain") {
   
   #~~~~~~~~~~~#
   # No strata #
@@ -244,6 +246,15 @@ cat.var <- function(var,
   out[grepl("NA", out)] <- "-"
   out[grepl("NaN", out)] <- "-"
   out[grepl("Inf", out)] <- "-"
+  
+  #Add vertical spacing between variables
+  if (vspace==TRUE & output=="plain") {
+    out <- rbind(out, rep(" ", dim(out)[2]))
+  }
+  if (vspace==TRUE & output=="html") {
+    out <- rbind(out, rep("&nbsp;", dim(out)[2]))
+  }
+  
   return(data.frame(out))
 }
 
@@ -257,6 +268,8 @@ cont.var <- function(var,
                      header=deparse(substitute(var)), 
                      ptype='None',
                      pname=TRUE,
+                     vspace=TRUE,
+                     output="plain",
                      cont.rmstat='None') {
   
   #~~~~~~~~~~~#
@@ -483,6 +496,15 @@ cont.var <- function(var,
   out[grepl("NA", out)] <- "-"
   out[grepl("NaN", out)] <- "-"
   out[grepl("Inf", out)] <- "-"
+  
+  #Add vertical spacing between variables
+  if (vspace==TRUE & output=="plain") {
+    out <- rbind(out, rep(" ", dim(out)[2]))
+  }
+  if (vspace==TRUE & output=="html") {
+    out <- rbind(out, rep("&nbsp;", dim(out)[2]))
+  }
+  
   return(data.frame(out))
 }
 
@@ -579,8 +601,9 @@ out.latex <- function(tab, colnames=NULL, header.style="bold",
 out.html <- function (tab, colnames, stripe=TRUE, stripe.col='#F7F7F7', 
                       header.style="bold", factor.style="bold", stat.style="plain",
                       caption, footer, tspanner, n.tspanner, 
-                      cgroup, n.cgroup, col.columns="none", nowrap=TRUE
-                      ) 
+                      cgroup, n.cgroup, col.columns="none", nowrap=TRUE,
+                      vspace=TRUE
+) 
 {
   #Define the column of row names
   named <- as.vector(tab[, 1])
@@ -677,7 +700,13 @@ out.html <- function (tab, colnames, stripe=TRUE, stripe.col='#F7F7F7',
   #Option to remove zebra striping for an all-white background
   else if (stripe==TRUE) {
     #Get row lengths for each variable group in the table
-    v <- (rle(tags)$length)[c(FALSE, TRUE)]+1
+    if (vspace==FALSE) {
+      v <- (rle(tags)$length)[c(FALSE, TRUE)]+1
+    }
+    else if (vspace==TRUE) {
+      v <- (rle(tags)$length)[c(FALSE, TRUE)]+1
+    }
+    
     #Specify colors for striping
     color <- c('#FFFFFF', stripe.col)
     
@@ -699,18 +728,18 @@ out.html <- function (tab, colnames, stripe=TRUE, stripe.col='#F7F7F7',
   }
   
   #if (nowrap==TRUE) {
-    #Replace symbols with HTML entities
-    #htmltab <- gsub('<', '&lt;', htmltab)
-    #htmltab <- gsub('>', '&gt;', htmltab)
-    #Prevent within-cell text wrapping
-    #htmltab <- gsub('<td', '<td nowrap="nowrap"; ', htmltab)
-    #return(htmltab)
+  #Replace symbols with HTML entities
+  #htmltab <- gsub('<', '&lt;', htmltab)
+  #htmltab <- gsub('>', '&gt;', htmltab)
+  #Prevent within-cell text wrapping
+  #htmltab <- gsub('<td', '<td nowrap="nowrap"; ', htmltab)
+  #return(htmltab)
   #}
   #else if (nowrap==FALSE) {
-    #Replace symbols with HTML entities
-    #htmltab <- gsub('<', '&lt;', htmltab)
-    #htmltab <- gsub('>', '&gt;', htmltab)
-    #return(htmltab)
+  #Replace symbols with HTML entities
+  #htmltab <- gsub('<', '&lt;', htmltab)
+  #htmltab <- gsub('>', '&gt;', htmltab)
+  #return(htmltab)
   #}
 }
 
@@ -749,6 +778,7 @@ make.table <- function(dat,
                        pname=TRUE,
                        colnames=NULL,
                        output='plain',
+                       vspace=TRUE,
                        
                        #HTML defaults
                        stripe=TRUE,
@@ -836,6 +866,7 @@ make.table <- function(dat,
                    header=cat.header,
                    ptype=cat.ptype,
                    pname=pname,
+                   vspace=TRUE,
                    SIMPLIFY=FALSE)
     
     #Reorder output by variable order in dataset
@@ -862,6 +893,7 @@ make.table <- function(dat,
                     header=cont.header,
                     ptype=cont.ptype,
                     pname=pname,
+                    vspace=TRUE,
                     SIMPLIFY=FALSE)
     
     #Reorder output by variable order in dataset
@@ -889,6 +921,7 @@ make.table <- function(dat,
                    header=cat.header,
                    ptype=cat.ptype,
                    pname=pname,
+                   vspace=TRUE,
                    SIMPLIFY=FALSE)
     
     conts <- mapply(cont.var, 
@@ -899,6 +932,7 @@ make.table <- function(dat,
                     header=cont.header,
                     ptype=cont.ptype,
                     pname=pname,
+                    vspace=TRUE,
                     SIMPLIFY=FALSE)
     
     #Reorder output by variable order in dataset
