@@ -8,7 +8,7 @@
 \usage{
 out.html(tab, colnames, stripe, stripe.col, header.style,
 factor.style, stat.style, caption, footer, tspanner, n.tspanner,
-cgroup, n.cgroup, col.columns)
+cgroup, n.cgroup, col.columns, vspace)
 }
 
 \arguments{

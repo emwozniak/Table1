@@ -8,7 +8,7 @@ This function computes mean (SD), median (IQR), Q1/Q3, min/max, and a count of m
 }
 
 \usage{
-cont.var(var, strat, dec, header, ptype, pname, cont.rmstat)
+cont.var(var, strat, dec, header, ptype, pname, cont.rmstat, vspace, output)
 }
 
 \arguments{

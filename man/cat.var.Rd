@@ -6,7 +6,7 @@
 \description{This function produces counts, row percentages, column percentages, and counts of missing values for each level of a categorical variable input, optionally stratified by another variable, and with the option to compute p-values. 
 }
 \usage{
-cat.var(var, strat, dec, rownames, header, ptype, pname, cat.rmstat)
+cat.var(var, strat, dec, rownames, header, ptype, pname, cat.rmstat, vspace, output)
 }
 
 \arguments{

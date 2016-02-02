@@ -10,7 +10,7 @@ make.table(dat, cat.varlist, cat.header, cat.rownames, cat.ptype,
 cont.varlist, cont.header, cont.ptype, strat, cat.rmstat, cont.rmstat,
 dec, pname, colnames, output, stripe, stripe.col, header.style,
 factor.style, stat.style, caption, footer, tspanner, n.tspanner,
-cgroup, n.cgroup, col.columns)
+cgroup, n.cgroup, col.columns, vspace)
 }
 
 \arguments{

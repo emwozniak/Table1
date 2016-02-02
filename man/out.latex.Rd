@@ -6,7 +6,7 @@
 \description{This function utilizes \code{\link{xtable}} to output summary table results to the console as formatted LaTeX code, and may be used within a Sweave or knitr document.
 }
 \usage{
-  out.latex(tab, colnames, header.style, factor.style, stat.style)
+  out.latex(tab, colnames, header.style, factor.style, stat.style, vspace)
 }
 
 \arguments{
