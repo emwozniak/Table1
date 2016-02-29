@@ -795,21 +795,42 @@ make.table <- function(dat,
                        n.tspanner,
                        cgroup,
                        n.cgroup,
-                       col.columns="none"                      
+                       col.columns="none"
+                       
+                       #Options for ordering variables in the table
+                       #varorder.abc=FALSE,
+                       #varorder.input=TRUE,
+                       #varorder.custom=NULL #e.g. c("var1", "var2", ...)
 )
 
 {
+  
   #----------#
   # Warnings #
   #----------#
-  if (missing(dat)) {
-    warning('A data frame must be provided in dat=.')
+  #dat is a required input and must be an attached data frame
+  if (missing(dat) | (!is.data.frame(dat))) {
+    warning('A data frame object must be provided in dat=.')
   }
   
   if (any(c(cat.varlist, cont.varlist) %in% ls('package:base'))==TRUE) {
     warning("Variables cannot take the names of any base R functions -- try 
-            which(dput(colnames(dat)) %in% ls('package:base'))")
+            which(dput(colnames(dat)) %in% ls('package:base')) and rename")
   }
+  
+  #----------------------------#
+  # Re-order data as requested #
+  #----------------------------#
+  
+  #Customize variable re-ordering by variable name
+  #if (!is.null(varorder.custom)) {
+  #  dat <- dat[c(varorder.custom)]
+  #}
+  
+  #Re-order variables alphabetically
+  #if (varorder.abc=TRUE) {
+  #  dat <- dat[order(names(dat))]
+  #}
   
   #-----------#
   # No strata #
