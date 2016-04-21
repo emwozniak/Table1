@@ -45,10 +45,10 @@ cat.var(var, strat, dec, rownames, header, ptype, pname, cat.rmstat, vspace, out
         \item{'miss'}{Remove summary of missing values}    
       }
   }
-  \item{vspace} {
+  \item{vspace}{
   TRUE for additional vertical whitespace between variables (default)
   }
-  \item{output} {
+  \item{output}{
   Output type passed from \code{\link{make.table}}.
   }
 }

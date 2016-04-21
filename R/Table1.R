@@ -268,9 +268,9 @@ cont.var <- function(var,
                      header=deparse(substitute(var)), 
                      ptype='None',
                      pname=TRUE,
+                     cont.rmstat='None',
                      vspace=TRUE,
-                     output="plain",
-                     cont.rmstat='None') {
+                     output="plain") {
   
   #~~~~~~~~~~~#
   # No strata #

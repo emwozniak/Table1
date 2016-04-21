@@ -50,10 +50,10 @@ cont.var(var, strat, dec, header, ptype, pname, cont.rmstat, vspace, output)
           \item{'miss'}{Remove summary of missing values}
       }  
   }
-  \item{vspace} {
+  \item{vspace}{
   TRUE for additional vertical whitespace between variables (default)
   }
-  \item{output} {
+  \item{output}{
   Output type passed from \code{\link{make.table}}.
   }
 }

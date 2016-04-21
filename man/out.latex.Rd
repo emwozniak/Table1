@@ -20,7 +20,7 @@
   }
   \item{stat.style}{Summary statistic style: "plain", "bold", "italic", or "bolditalic". Optional; defaults to "plain".
   }
-  \item{vspace} {
+  \item{vspace}{
   TRUE for additional vertical whitespace between variables (default)
   }
 }
