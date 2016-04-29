@@ -832,7 +832,11 @@ make.table <- function(dat,
   #  dat <- dat[order(names(dat))]
   #}
   
+  #Replace any NaN values with NA and attach data
+  #NaNs create formatting problems
+  dat[is.na(dat)] <- NA
   attach(dat)
+  
   #-----------#
   # No strata #
   #-----------#
