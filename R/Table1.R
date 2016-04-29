@@ -762,7 +762,7 @@ make.table <- function(dat,
                        cat.varlist=NULL,
                        cat.header=names(sapply(cat.varlist, FUN=get, simplify=F, USE.NAMES=T)),
                        cat.rownames=lapply(sapply(cat.varlist, FUN=get, simplify=F, USE.NAMES=T), FUN=function(x) 
-                         -                         as.vector(levels(as.factor(x)))),
+                                                  as.vector(levels(as.factor(x)))),
                        cat.ptype='None',
                        
                        #Continuous variable options
