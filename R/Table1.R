@@ -834,7 +834,7 @@ make.table <- function(dat,
   
   #Replace any NaN values with NA and attach data
   #NaNs create formatting problems
-  dat[is.na(dat)] <- NA
+  #dat[is.na(dat)] <- NA
   attach(dat)
   
   #-----------#
