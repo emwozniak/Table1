@@ -760,14 +760,13 @@ out.plain <- function(tab, colnames=NULL) {
 make.table <- function(dat,
                        #Categorical variable options
                        cat.varlist=NULL,
-                       cat.header=names(sapply(cat.varlist, FUN=get, simplify=F, USE.NAMES=T)),
-                       cat.rownames=lapply(sapply(cat.varlist, FUN=get, simplify=F, USE.NAMES=T), FUN=function(x) 
-                         as.vector(levels(as.factor(x)))),
+                       cat.header=names(dat[, cat.varlist]),
+                       cat.rownames=lapply(lapply(dat[, cat.varlist], factor), levels),
                        cat.ptype='None',
                        
                        #Continuous variable options
                        cont.varlist=NULL, 
-                       cont.header=names(sapply(cont.varlist, FUN=get, simplify=F, USE.NAMES=T)),
+                       cont.header=names(dat[, cont.varlist]),
                        cont.ptype='None',
                        
                        #Overall table options
@@ -818,6 +817,7 @@ make.table <- function(dat,
             which(dput(colnames(dat)) %in% ls('package:base')) and rename")
   }
   
+
   #----------------------------#
   # Re-order data as requested #
   #----------------------------#
@@ -832,6 +832,7 @@ make.table <- function(dat,
   #  dat <- dat[order(names(dat))]
   #}
   
+  attach(dat)
   #-----------#
   # No strata #
   #-----------#
@@ -996,6 +997,7 @@ make.table <- function(dat,
   else if (output=='latex') {
     out.latex(tab, colnames=colnames, header.style=header.style, factor.style=factor.style, stat.style=stat.style)
   } 
+  detach(dat)
   }
 
 ################################
