@@ -760,14 +760,13 @@ out.plain <- function(tab, colnames=NULL) {
 make.table <- function(dat,
                        #Categorical variable options
                        cat.varlist=NULL,
-                       cat.header=names(sapply(cat.varlist, FUN=get, simplify=F, USE.NAMES=T)),
-                       cat.rownames=lapply(sapply(cat.varlist, FUN=get, simplify=F, USE.NAMES=T), FUN=function(x) 
-                                                  as.vector(levels(as.factor(x)))),
+                       cat.header=names(dat[, cat.varlist]),
+                       cat.rownames=lapply(lapply(dat[, cat.varlist], factor), levels),
                        cat.ptype='None',
                        
                        #Continuous variable options
                        cont.varlist=NULL, 
-                       cont.header=names(sapply(cont.varlist, FUN=get, simplify=F, USE.NAMES=T)),
+                       cont.header=names(dat[, cont.varlist]),
                        cont.ptype='None',
                        
                        #Overall table options
@@ -818,7 +817,7 @@ make.table <- function(dat,
             which(dput(colnames(dat)) %in% ls('package:base')) and rename")
   }
   
-
+  
   #----------------------------#
   # Re-order data as requested #
   #----------------------------#
@@ -854,18 +853,18 @@ make.table <- function(dat,
   else if (!is.null(strat)) {
     cat.strat=rep(list(
       interaction(
-        sapply(strat, FUN=get, simplify=FALSE, USE.NAMES=TRUE))), 
+        sapply(strat, FUN=get, pos=dat, simplify=FALSE, USE.NAMES=TRUE))), 
       length(cat.varlist))
     cont.strat=rep(list(
       interaction(
-        sapply(strat, FUN=get, simplify=FALSE, USE.NAMES=TRUE))), 
+        sapply(strat, FUN=get, pos=dat, simplify=FALSE, USE.NAMES=TRUE))), 
       length(cont.varlist))
     strat.miss=lapply(
-      sapply(strat, FUN=get, simplify=FALSE, USE.NAMES=TRUE), function(x) sum(is.na(x))
+      sapply(strat, FUN=get, pos=dat, simplify=FALSE, USE.NAMES=TRUE), function(x) sum(is.na(x))
     )
     strat.rem=sum(is.na(
       interaction(
-        sapply(strat, FUN=get, simplify=FALSE, USE.NAMES=TRUE))
+        sapply(strat, FUN=get, pos=dat, simplify=FALSE, USE.NAMES=TRUE))
     ))
   }
   
@@ -885,7 +884,7 @@ make.table <- function(dat,
   #------------------#
   if (is.null(cont.varlist)) {
     cats <- mapply(cat.var, 
-                   var=sapply(cat.varlist, FUN=get, simplify=F, USE.NAMES=T), 
+                   var=sapply(cat.varlist, FUN=get, pos=dat, simplify=F, USE.NAMES=T), 
                    strat=cat.strat, 
                    cat.rmstat=cat.rmstat,
                    dec=dec, 
@@ -913,7 +912,7 @@ make.table <- function(dat,
   #-----------------#
   else if (is.null(cat.varlist)) {
     conts <- mapply(cont.var, 
-                    var=sapply(cont.varlist, FUN=get, simplify=F, USE.NAMES=T),
+                    var=sapply(cont.varlist, FUN=get, pos=dat, simplify=F, USE.NAMES=T),
                     strat=cont.strat,
                     cont.rmstat=cont.rmstat,
                     dec=dec,
@@ -940,7 +939,7 @@ make.table <- function(dat,
   #----------------------------#
   else {
     cats <- mapply(cat.var, 
-                   var=sapply(cat.varlist, FUN=get, simplify=F, USE.NAMES=T), 
+                   var=sapply(cat.varlist, FUN=get, pos=dat, simplify=F, USE.NAMES=T), 
                    strat=cat.strat, 
                    cat.rmstat=cat.rmstat,
                    dec=dec, 
@@ -952,7 +951,7 @@ make.table <- function(dat,
                    SIMPLIFY=FALSE)
     
     conts <- mapply(cont.var, 
-                    var=sapply(cont.varlist, FUN=get, simplify=F, USE.NAMES=T),
+                    var=sapply(cont.varlist, FUN=get, pos=dat, simplify=F, USE.NAMES=T),
                     strat=cont.strat,
                     cont.rmstat=cont.rmstat,
                     dec=dec,
