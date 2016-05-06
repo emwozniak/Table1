@@ -3,43 +3,44 @@
 ################################
 
 cat.var <- function(var, 
-                    strat=NULL, 
-                    dec=2, 
-                    rownames=as.vector(levels(as.factor(var))),
-                    header=deparse(substitute(var)),
-                    ptype='None',
-                    pname=TRUE,
-                    cat.rmstat='None',
-                    vspace=TRUE,
-                    output="plain") {
+                    strat      = NULL, 
+                    dec        = 2, 
+                    rownames   = as.vector(levels(as.factor(var))),
+                    header     = deparse(substitute(var)),
+                    ptype      = 'None',
+                    pname      = TRUE,
+                    cat.rmstat = 'None',
+                    vspace     = TRUE,
+                    output     = "plain") {
   
   #~~~~~~~~~~~#
   # No strata #
   #~~~~~~~~~~~#
-  #Construct categorical summary 
-  ##Column percents only when strat=NULL
+  # Construct categorical summary 
+  # Column percents only when strat=NULL
   if (is.null(strat)) {
     
-    #Total counts and missings
-    n <- length(which(is.na(var)==FALSE))
+    # Total counts and missings
+    n <- length(which(is.na(var) == FALSE))
     tot <- as.matrix(table(var))
     tot[] <- paste0(tot, 
                     paste0(' (', 
-                           format(round((tot/colSums(tot))*100, dec), 
-                                  nsmall=dec), '%)')
-    )
-    miss <- length(which(is.na(var)==T))
+                           format(round((tot / colSums(tot)) * 100, dec), 
+                                  nsmall=dec), 
+                           '%)')
+                    )
+    miss <- length(which(is.na(var) == T))
     
-    #Combine total counts (%s) and missing values into a data frame
+    # Combine total count (%) and missing values into a data frame
     out <- sapply(data.frame(rbind(rep(NA, length(levels(as.factor(strat))) + 1), 
                                    n, 
                                    rep(NA, length(levels(as.factor(strat))) + 1),
                                    tot, 
                                    miss),
-                             row.names=NULL),
+                             row.names = NULL),
                   as.character)
     
-    #Paste a column of row headers and replace NA with '' for printing
+    # Paste a column of row headers and replace NA with '' for printing
     out <- cbind(as.vector(c(paste(header, '     '), '  Count', '  (%)',  
                              paste0('  ', rownames), '  Missing')), 
                  replace(out, is.na(out), ''))
@@ -50,47 +51,58 @@ cat.var <- function(var,
   #~~~~~~~~#
   # Strata #
   #~~~~~~~~#
-  #Construct categorical summary
-  ##Row and column percents as default
+  # Construct categorical summary
+  # Row and column percents as default
   else if (!is.null(strat) & !('col' %in% cat.rmstat) & !('row' %in% cat.rmstat)) {
     cat <- as.matrix(table(var, as.factor(strat)))
     tot <- as.matrix(apply(cat, 1, sum))
     
-    #Counts
+    # Counts
     n <- as.matrix(apply(cat, 2, sum))
     n[] <- paste0(n,
                   paste0(' (',
-                         format(round((n/sum(n))*100, dec),
-                                nsmall=dec), '%)')
-    )
+                         format(round((n / sum(n)) * 100, dec),
+                                nsmall=dec),
+                         '%)')
+                  )
     n <- cbind(t(n), apply(tot, 2, sum))
     
-    #Stratified summary: count (row %)(col %)
+    # Stratified summary: count (row %)(col %)
     cat[] <- paste0(cat, 
                     paste0(' (', 
-                           format(round((cat/rowSums(cat))*100, dec), 
-                                  nsmall=dec), '%)',
+                           format(round((cat / rowSums(cat)) * 100, dec), 
+                                  nsmall=dec),
+                           '%)',
                            paste0(' (', 
-                                  format(round(t(t(cat)/colSums(cat))*100, dec), 
-                                         nsmall=dec), '%)')
-                    ))
+                                  format(round(t(t(cat) / colSums(cat)) * 100, dec), 
+                                         nsmall=dec),
+                                  '%)')
+                          )
+                        )
     
-    #Overall summary: count (row %)(col %)
+    # Overall summary: count (row %)(col %)
     tot[] <- paste0(tot, 
                     paste0(' (', 
-                           format(round((tot/rowSums(tot))*100, dec), 
-                                  nsmall=dec), '%)',
+                           format(round((tot / rowSums(tot)) * 100, dec), 
+                                  nsmall=dec), 
+                           '%)',
                            paste0(' (', 
-                                  format(round((tot/colSums(tot))*100, dec), 
-                                         nsmall=dec), '%)')
-                    ))
+                                  format(round((tot / colSums(tot)) * 100, dec), 
+                                         nsmall=dec), 
+                                  '%)')
+                          )
+                        )
     
-    #Aggregate missings
-    miss <- c(aggregate(var, list(strat), function(x) {sum(is.na(x))})[,-1],
-              sum(aggregate(var, list(strat), function(x) {sum(is.na(x))})[,-1]))
+    # Aggregate missings
+    miss <- c(aggregate(var, 
+                        list(strat), 
+                        function(x) {sum(is.na(x))})[,-1],
+                        sum(aggregate(var, list(strat), 
+                        function(x) {sum(is.na(x))})[,-1])
+              )
     
-    #cbind stratified and overall summaries
-    #rbind counts and missings to create complete summary
+    # cbind stratified and overall summaries
+    # rbind counts and missings to create complete summary
     out <- sapply(data.frame(rbind(rep(NA, length(levels(as.factor(strat))) + 1),
                                    n,
                                    rep(NA, length(levels(as.factor(strat))) + 1),
@@ -98,8 +110,11 @@ cat.var <- function(var,
                                    miss),
                              row.names=NULL),
                   as.character)
-    out <- cbind(as.vector(c(paste(header, '     '), '  Count (%)', '  (Row %)(Col %)', 
-                             paste0('  ', rownames), '  Missing')), 
+    out <- cbind(as.vector(c(paste(header, '     '), 
+                             '  Count (%)', 
+                             '  (Row %)(Col %)', 
+                             paste0('  ', rownames), 
+                             '  Missing')), 
                  replace(out, is.na(out), ''))
     rownames(out) <- NULL
     colnames(out) <- c('Variable', as.vector(levels(as.factor(strat))), 'Overall')
@@ -115,27 +130,38 @@ cat.var <- function(var,
     n <- as.matrix(apply(cat, 2, sum))
     n[] <- paste0(n,
                   paste0(' (',
-                         format(round((n/sum(n))*100, dec),
-                                nsmall=dec), '%)')
-    )
+                         format(round((n / sum(n)) * 100, dec),
+                                nsmall = dec), 
+                         '%)'
+                         )
+                        )
     n <- cbind(t(n), apply(tot, 2, sum))
     
     #Stratified summary
     cat[] <- paste0(cat, 
                     paste0(' (', 
-                           format(round((cat/rowSums(cat))*100, dec), 
-                                  nsmall=dec), '%)')
-    )
+                           format(round((cat / rowSums(cat)) * 100, dec), 
+                                  nsmall = dec), 
+                           '%)'
+                           )
+                          )
+    
     #Overall summary
     tot[] <- paste0(tot, 
                     paste0(' (', 
-                           format(round((tot/rowSums(tot))*100, dec), 
-                                  nsmall=dec), '%)')
-    )
+                           format(round((tot / rowSums(tot)) * 100, dec), 
+                                  nsmall=dec), 
+                           '%)'
+                           )
+                          )
     
     #Aggregate missings
-    miss <- c(aggregate(var, list(strat), function(x) {sum(is.na(x))})[,-1],
-              sum(aggregate(var, list(strat), function(x) {sum(is.na(x))})[,-1]))
+    miss <- c(aggregate(var, 
+                        list(strat), 
+                        function(x) {sum(is.na(x))})[,-1],
+                        sum(aggregate(var, list(strat), 
+                        function(x) {sum(is.na(x))})[,-1])
+              )
     
     #cbind stratified and overall summaries
     #rbind counts and missings to create complete summary
@@ -146,11 +172,16 @@ cat.var <- function(var,
                                    miss),
                              row.names=NULL),
                   as.character)
-    out <- cbind(as.vector(c(paste(header, '     '), '  Count (%)', '  (Row %)', 
-                             paste0('  ', rownames), '  Missing')), 
+    out <- cbind(as.vector(c(paste(header, '     '), 
+                             '  Count (%)', 
+                             '  (Row %)', 
+                             paste0('  ', rownames), 
+                             '  Missing')), 
                  replace(out, is.na(out), ''))
     rownames(out) <- NULL
-    colnames(out) <- c('Variable', as.vector(levels(as.factor(strat))), 'Overall')
+    colnames(out) <- c('Variable', 
+                       as.vector(levels(as.factor(strat))), 
+                       'Overall')
   }
   
   #Column percents only ('row' %in% cat.rmstat)
@@ -164,23 +195,26 @@ cat.var <- function(var,
     n[] <- paste0(n,
                   paste0(' (',
                          format(round((n/sum(n))*100, dec),
-                                nsmall=dec), '%)')
-    )
+                                nsmall=dec), 
+                         '%)')
+                  )
     n <- cbind(t(n), apply(tot, 2, sum))
     
     #Stratified summary
     cat[] <- paste0(cat, 
                     paste0(' (', 
                            format(round(t(t(cat)/colSums(cat))*100, dec), 
-                                  nsmall=dec), '%)')
-    )
+                                  nsmall=dec), '%)'
+                           )
+                          )
     
     #Overall summary
     tot[] <- paste0(tot, 
                     paste0(' (', 
                            format(round((tot/colSums(tot))*100, dec), 
-                                  nsmall=dec), '%)')
-    )
+                                  nsmall=dec), '%)'
+                           )
+                          )
     
     #Missings
     miss <- c(aggregate(var, list(strat), function(x) {sum(is.na(x))})[,-1],
