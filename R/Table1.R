@@ -941,22 +941,23 @@ make.table <- function(dat,
                        cat.rownames = lapply(lapply(
                                         dat[, cat.varlist], factor), 
                                         levels),
-                       cat.ptype    = 'None',
+                       cat.ptype    = "None",
                        
                        # Continuous variable options
                        cont.varlist = NULL, 
                        cont.header  = names(dat[, cont.varlist]),
-                       cont.ptype   ='None',
+                       cont.ptype   = "None",
                        
                        # Overall table options
                        strat        = NULL,
-                       cat.rmstat   = 'None',
-                       cont.rmstat  = 'None',
+                       cat.rmstat   = "None",
+                       cont.rmstat  = "None",
                        dec          = 2,
                        pname        = TRUE,
                        colnames     = NULL,
-                       output       = 'plain',
+                       output       = "plain",
                        vspace       = TRUE,
+                       varorder     = "data",
                        
                        # HTML defaults
                        stripe       = TRUE,
@@ -973,13 +974,7 @@ make.table <- function(dat,
                        n.tspanner,
                        cgroup,
                        n.cgroup,
-                       col.columns  = "none"
-                       
-                       #Options for ordering variables in the table
-                       #varorder.abc=FALSE,
-                       #varorder.input=TRUE,
-                       #varorder.custom=NULL #e.g. c("var1", "var2", ...)
-                       ) {
+                       col.columns  = "none") {
   
   #----------#
   # Warnings #
@@ -1101,14 +1096,21 @@ make.table <- function(dat,
                    vspace     = TRUE,
                    SIMPLIFY   = FALSE)
     
-    # Reorder output by variable order in dataset
-    # Other ordering options should be included here
-    tab <- do.call(rbind, 
-                   (c(cats))[order(match(names(c(cats)), 
-                                         names(dat))
-                                   )
-                                  ]
-                                 )
+    # Order variables in the table as requested
+    # By variable order in dataset
+    if (varorder == "data") {
+      tab <- do.call(rbind, 
+                     (c(cats))[order(
+                       match(names(c(cats)), names(dat))
+                     )])
+      }
+    # Alphabetically
+      else if (varorder == "abc") {
+        tab <- do.call(rbind, 
+                       (c(cats))[order(
+                         match(names(c(cats)), sort(names(dat)))
+                       )])
+        }
     
     # Remove p-value column if no p-values are calculated
     if (all(cat.ptype == "None")) { 
@@ -1140,10 +1142,23 @@ make.table <- function(dat,
                     vspace      = TRUE,
                     SIMPLIFY    = FALSE)
     
-    # Reorder output by variable order in dataset
-    tab <- do.call(rbind, 
-                   (c(conts))[order(match(names(c(conts)), 
-                                          names(dat)))])
+    # Order variables in the table as requested
+    # By variable order in dataset
+    if (varorder == "data") {
+      tab <- do.call(rbind, 
+                     (c(conts))[order(
+                       match(names(c(conts)), names(dat))
+                     )])
+      }
+    # Alphabetically
+      else if (varorder == "abc") {
+        tab <- do.call(rbind, 
+                      (c(conts))[order(
+                         match(names(c(conts)), sort(names(dat)))
+                       )])
+        }
+    
+    # Remove p-value column if none are calculated
     if (all(cont.ptype == "None")) { 
       tab <- tab[, -dim(tab)[2]]
     }
@@ -1191,13 +1206,21 @@ make.table <- function(dat,
                     vspace      = TRUE,
                     SIMPLIFY    = FALSE)
     
-    # Reorder output by variable order in dataset
-    tab <- do.call(rbind, 
-                   (c(cats, conts))[order(match(names(c(cats, conts)), 
-                                                names(dat))
-                                          )
-                                         ]
-                                        )
+    # Order variables in the table as requested
+    # By variable order in dataset
+    if (varorder == "data") {
+      tab <- do.call(rbind, 
+                     (c(cats, conts))[order(
+                       match(names(c(cats, conts)), names(dat))
+                     )])
+      }
+    # Alphabetically
+      else if (varorder == "abc") {
+        tab <- do.call(rbind, 
+                      (c(cats, conts))[order(
+                        match(names(c(cats, conts)), sort(names(dat)))
+                      )])
+        }
     
     # Remove p-value column if no p-values are calculated
     if (all(cat.ptype == "None" & all(cont.ptype == "None"))) { 
