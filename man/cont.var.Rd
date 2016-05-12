@@ -4,7 +4,7 @@
 \title{Continuous Variable Summary}
 
 \description{
-This function computes mean (SD), median (IQR), Q1/Q3, min/max, and a count of missings for a continuous         variable input, optionally stratified by another variable, and with the option to compute p-values.
+This function computes mean (SD), median (IQR), Q1/Q3, min/max, and a count of missings for a continuous variable input, optionally stratified by another variable, and with the option to compute p-values.
 }
 
 \usage{
@@ -12,7 +12,6 @@ cont.var(var, strat, dec, header, ptype, pname, cont.rmstat, vspace, output)
 }
 
 \arguments{
-
   \item{var}{
   Continuous variable input. Required.  
   }
@@ -26,32 +25,24 @@ cont.var(var, strat, dec, header, ptype, pname, cont.rmstat, vspace, output)
   Character vector providing a short variable description. Optional; defaults to variable name.
   }
   \item{ptype}{
-  Statistical test for p-value. Optional; defaults to none. See \code{\link{stat.col}} for a complete list of options. \cr
-      \describe{
-          \item{'anova'}{One-way between-subjects ANOVA}
-          \item{'kruskal'}{Kruskal-Wallis test}
-          \item{'ttest'}{Student's t-test}
-          \item{'ttest.pair'}{Paired t-test}
-          \item{'wilcox'}{Wilcoxon rank sum test}
-          \item{'wilcox.pair'}{Wilcoxon signed-rank test}    
-      }
+  Statistical test for p-value. Optional; defaults to none. See \code{\link{stat.col}} for a complete list of options.
   }
   \item{pname}{
-  If TRUE then the name of the statistical test used will be printed below the p-value. Optional; defaults to FALSE.
+  If TRUE then the name of the statistical test used will be printed below the p-value(default). Optional.
   }
   \item{cont.rmstat}{
   Vector naming the statistics that should be removed from the summary data frame. Optional; defaults to none.
       \describe{
-          \item{'count'}{Remove overall count}
-          \item{'meansd'}{Remove mean and standard deviation}
-          \item{'mediqr'}{Remove median and interquartile range}
-          \item{'q1q3'}{Remove 25th and 75th percentiles}
-          \item{'minmax'}{Remove minimum and maximum}
-          \item{'miss'}{Remove summary of missing values}
+          \item{"count"}{Remove overall count}
+          \item{"meansd"}{Remove mean and standard deviation}
+          \item{"mediqr"}{Remove median and interquartile range}
+          \item{"q1q3"}{Remove 25th and 75th percentiles}
+          \item{"minmax"}{Remove minimum and maximum}
+          \item{"miss"}{Remove summary of missing values}
       }  
   }
   \item{vspace}{
-  TRUE for additional vertical whitespace between variables (default)
+  TRUE for additional vertical whitespace between variables (default). Optional.
   }
   \item{output}{
   Output type passed from \code{\link{make.table}}.
@@ -78,27 +69,25 @@ cont.var(var, strat, dec, header, ptype, pname, cont.rmstat, vspace, output)
 
 \examples{
 library(survival)
-attach(pbc)
 
-##Default output 
-cont.var(var=age,
-         strat=sex
+# Default output 
+cont.var(var   = age,
+         strat = sex
          )
          
-##Naming options and p-value         
-cont.var(var=age,
-         strat=sex,
-         header='Age',
-         ptype='ttest',
-         pname=TRUE
+# Naming options and p-value         
+cont.var(var    = age,
+         strat  = sex,
+         header = "Age",
+         ptype  = "ttest"
          )
          
-##Remove min/max and missing statistics
-cont.var(var=age,
-         strat=sex,
-         header='Age',
-         ptype='ttest',
-         pname=TRUE,
-         cont.rmstat=c('minmax', 'miss')
+# Remove min/max and missing statistics, and test for p-value
+cont.var(var         = age,
+         strat       = sex,
+         header      = "Age",
+         ptype       = "ttest",
+         cont.rmstat = c("minmax", "miss"),
+         pname       = FALSE
          )
 }

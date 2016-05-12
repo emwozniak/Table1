@@ -8,15 +8,15 @@
 \usage{
 out.html(tab, colnames, stripe, stripe.col, header.style,
 factor.style, stat.style, caption, footer, tspanner, n.tspanner,
-cgroup, n.cgroup, col.columns, vspace)
+cgroup, n.cgroup, col.columns, nowrap, vspace)
 }
 
 \arguments{
-  \item{tab}{A \code{\link{make.table}} or \code{\link{quick.table}} data frame. Required.
+  \item{tab}{A \code{\link{make.table}} or \code{\link{quick.table}} generated data frame. Required.
   }
   \item{colnames}{A vector of column names for the table output. Optional.
   }
-  \item{stripe}{Logical indicator for whether to include shaded zebra striping of every other variable in the output. Optional; defaults to TRUE.
+  \item{stripe}{Logical indicator for whether to include lightly shaded zebra striping of every other variable in the output. Optional; defaults to TRUE.
   }
   \item{stripe.col}{Hex code for the color of the zebra striping. Optional; defaults to a light gray, #F7F7F7.
   }
@@ -40,8 +40,8 @@ cgroup, n.cgroup, col.columns, vspace)
   }
   \item{col.columns}{Vector of column colors, passed to htmlTable. Optional; defaults to "none".
   }
-  \item{vspace}{
-  TRUE for additional vertical whitespace between variables (default)
+  \item{nowrap}{Option to prevent text wrapping of long lines to the table output. Useful for generating wide tables with knitr. Optional; defaults to TRUE.}
+  \item{vspace}{TRUE for additional vertical whitespace between variables (default).
   }
 }
   
@@ -49,11 +49,8 @@ cgroup, n.cgroup, col.columns, vspace)
   A call to this function is an optional argument to both \code{\link{make.table}} and \code{\link{quick.table}} via output='html'.
   }
 \value{A formatted HTML table in the Viewer or code for inclusion in a knitr document.}
-%\references{
-%
+
 \author{Erica Wozniak}
-%\note{
-%}
 
 \seealso{
   \code{\link{Table1}}
@@ -67,23 +64,21 @@ cgroup, n.cgroup, col.columns, vspace)
 }
 \examples{
 library(survival)
-attach(pbc)
-
 library(htmlTable)
-make.table(dat=pbc,
-    cat.varlist=c('stage', 'sex'),
-    cat.header=c('Stage', 'Sex'),
-    cat.rownames=list(c('I', 'II', 'III', 'IV'), c('Male', 'Female')),
-    cat.ptype=c('fisher', 'fisher'),   
-    cont.varlist=c('bili', 'copper'),
-    cont.header=c('Bilirubin', 'Urine copper'),
-    cont.ptype=c('wilcox', 'wilcox'), 
-    strat=c('trt'),
-    cat.rmstat=list('row'),
-    colnames=c('', 'D-penicillamine', 'Placebo', 'Overall', 'p-value'),
-    
-    output='html',   
-    #Check out www.color-hex.com
-    stripe.col='#f4dfd0'
+
+make.table(dat   = pbc,
+    cat.varlist  = c('stage', 'sex'),
+    cat.header   = c('Stage', 'Sex'),
+    cat.rownames = list(c('I', 'II', 'III', 'IV'), c('Male', 'Female')),
+    cat.ptype    = c('fisher', 'fisher'),   
+    cont.varlist = c('bili', 'copper'),
+    cont.header  = c('Bilirubin', 'Urine copper'),
+    cont.ptype   = c('wilcox', 'wilcox'), 
+    strat        = c('trt'),
+    cat.rmstat   = list('row'),
+    colnames     = c('', 'D-penicillamine', 'Placebo', 'Overall', 'p-value'),
+    output       = 'html',   
+    # Check out \url{www.color-hex.com}
+    stripe.col   = '#f4dfd0'
     )
 }

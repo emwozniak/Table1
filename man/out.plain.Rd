@@ -23,11 +23,7 @@ A call to this function is the default output argument to all package functions 
 \value{A plain text data frame of summary statistics outputted to the console.
   }
   
-%\references{
-%}
 \author{ Erica Wozniak}
-%\note{
-%}
 
 \seealso{
   \code{\link{Table1}}
@@ -41,21 +37,20 @@ A call to this function is the default output argument to all package functions 
 }
 \examples{
 library(survival)
-attach(pbc)
 
-make.table(dat=pbc,
-    cat.varlist=c('stage', 'sex'),
-    cat.header=c('Stage', 'Sex'),
-    cat.rownames=list(c('I', 'II', 'III', 'IV'), c('Male', 'Female')),
-    cat.ptype=c('fisher', 'fisher'),   
-    cont.varlist=c('bili', 'copper'),
-    cont.header=c('Bilirubin', 'Urine copper'),
-    cont.ptype=c('wilcox', 'wilcox'), 
-    strat=c('trt'),
-    #Remove row percents from all categorical variables (list is recycled)
-    cat.rmstat=list('row'),
-    #Remove missing, min/max from bili and no summary stats from copper
-    cont.rmstat=list(c('miss', 'minmax'), 'None'),
-    colnames=c('', 'D-penicillamine', 'Placebo', 'Overall', 'p-value')
+make.table(dat   = pbc,
+    cat.varlist  = c('stage', 'sex'),
+    cat.header   = c('Stage', 'Sex'),
+    cat.rownames = list(c('I', 'II', 'III', 'IV'), c('Male', 'Female')),
+    cat.ptype    = c('fisher', 'fisher'),   
+    cont.varlist = c('bili', 'copper'),
+    cont.header  = c('Bilirubin', 'Urine copper'),
+    cont.ptype   = c('wilcox', 'wilcox'), 
+    strat        = c('trt'),
+    # Remove row percents from all categorical variables (list is recycled)
+    cat.rmstat   = list('row'),
+    # Remove missing, min/max from bili and no summary stats from copper
+    cont.rmstat  = list(c('miss', 'minmax'), 'None'),
+    colnames     = c('', 'D-penicillamine', 'Placebo', 'Overall', 'p-value')
     )
 }

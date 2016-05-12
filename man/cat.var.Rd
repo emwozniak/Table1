@@ -20,18 +20,13 @@ cat.var(var, strat, dec, rownames, header, ptype, pname, cat.rmstat, vspace, out
   Number of decimal places on summary statistics. Optional; defaults to 2.
   }
   \item{rownames}{
-  Ordered character vector of row names for each level of 'var'. Optional; defaults to the value of each level.
+  Ordered character vector of row names for each level of 'var'. Optional; defaults to the value of each factor level.
   }
   \item{header}{
   Character vector providing a short variable description. Optional; defaults to variable name.
   }
   \item{ptype}{
-  Statistical test for p-value. Optional; defaults to none. See \code{\link{stat.col}} for a complete list of options.\cr
-      \describe{
-        \item{'chisq'}{Chi-square test}
-        \item{'fisher'}{Fisher's exact test}
-        \item{'mcnemar'}{McNemar's test}
-      }
+  Statistical test for p-value. Optional; defaults to none. See \code{\link{stat.col}} for a complete list of options.
   }
   \item{pname}{
   If TRUE then the name of the statistical test used will be printed below the p-value. Optional; defaults to FALSE.
@@ -39,14 +34,14 @@ cat.var(var, strat, dec, rownames, header, ptype, pname, cat.rmstat, vspace, out
   \item{cat.rmstat}{
   Vector naming the statistics that should be removed from the summary data frame. Optional; defaults to none. \cr
       \describe{
-        \item{'count'}{Remove overall count/percent}
-        \item{'row'}{Remove row percents, leaving only column percents}
-        \item{'col'}{Remove column percents, leaving only row percents}
-        \item{'miss'}{Remove summary of missing values}    
+        \item{"count"}{Remove overall count/percent}
+        \item{"row"}{Remove row percents, leaving only column percents}
+        \item{"col"}{Remove column percents, leaving only row percents}
+        \item{"miss"}{Remove summary of missing values}    
       }
   }
   \item{vspace}{
-  TRUE for additional vertical whitespace between variables (default)
+  TRUE for additional vertical whitespace between variables (default).
   }
   \item{output}{
   Output type passed from \code{\link{make.table}}.
@@ -70,29 +65,28 @@ cat.var(var, strat, dec, rownames, header, ptype, pname, cat.rmstat, vspace, out
 
 \examples{
 library(survival)
-attach(pbc)
 
-##Default output
-cat.var(var=hepato, 
-        strat=sex
+# Default output
+cat.var(var   = hepato, 
+        strat = sex
         )
         
-##Naming options and p-value
-cat.var(var=hepato, 
-        strat=sex, 
-        rownames=c('Not present', 'Present'),
-        header=c('Hepatomegaly'),
-        ptype='chisq',
-        pname=TRUE
+# Naming options and p-value
+cat.var(var      = hepato, 
+        strat    = sex, 
+        rownames = c("Not present", "Present"),
+        header   = c("Hepatomegaly"),
+        ptype    = "chisq"
         )
         
-##Remove row percents and tabulated missing values
-cat.var(var=hepato, 
-        strat=sex, 
-        rownames=c('Not present', 'Present'),
-        header=c('Hepatomegaly'),
-        ptype='chisq',
-        cat.rmstat=c('row', 'miss')
+# Remove row percents, missing values, and name of statistical test used
+cat.var(var        = hepato, 
+        strat      = sex, 
+        rownames   = c("Not present", "Present"),
+        header     = c("Hepatomegaly"),
+        ptype      = "chisq",
+        cat.rmstat = c("row", "miss"),
+        pname      = FALSE
         )       
 
 }
