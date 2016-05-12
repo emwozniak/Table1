@@ -6,9 +6,9 @@ cat.var <- function(var,
                     dec        = 2, 
                     rownames   = as.vector(levels(as.factor(var))),
                     header     = deparse(substitute(var)),
-                    ptype      = 'None',
+                    ptype      = "None",
                     pname      = TRUE,
-                    cat.rmstat = 'None',
+                    cat.rmstat = "None",
                     vspace     = TRUE,
                     output     = "plain") {
   
@@ -984,14 +984,18 @@ make.table <- function(dat,
   #----------#
   # Warnings #
   #----------#
-  # dat is a required input and must be an attached data frame
+  # A data frame must be supplied
   if (missing(dat) | (!is.data.frame(dat))) {
-    warning('A data frame object must be provided in dat=.')
+    warning("A data frame object must be provided in dat = .")
   }
   
-  if (any(c(cat.varlist, cont.varlist) %in% ls('package:base')) == TRUE) {
-    warning("Variables cannot take the names of any base R functions -- try 
-            which(dput(colnames(dat)) %in% ls('package:base')) and rename")
+  # Lists of variables, headers, and rownames must be equal length
+  if (!(length(cat.varlist) == length(cat.header) == length(cat.rownames))) {
+    warning("cat.varlist, cat.header, and cat.rownames must be the same length.")
+  }
+  
+  if (!(length(cont.varlist) == length(cont.header))) {
+    warning("cont.varlist and cont.header must be the same length.")
   }
   
   #----------------------------#
