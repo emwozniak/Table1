@@ -1,7 +1,6 @@
 ################################
 # CATEGORICAL SUMMARY FUNCTION #
 ################################
-#-------------------------------------------------------------------------------
 cat.var <- function(var, 
                     strat      = NULL, 
                     dec        = 2, 
@@ -245,7 +244,7 @@ cat.var <- function(var,
   
   # Include p-values without printing the name of the test
   if (pname == FALSE) {
-    p <- c(stat.col(var, strat, ptype, pname = FALSE), 
+    p <- c(stat.col(var, strat, ptype, pname = FALSE, output = output), 
            rep(NA, length(levels(as.factor(var))) + 3))
     out <- cbind(out, p)
     out <- replace(out, is.na(out), '')
@@ -258,7 +257,7 @@ cat.var <- function(var,
   
   # Print the name of the test used beneath each p-value
   else if (pname == TRUE & !('count' %in% cat.rmstat)) {
-    p <- c(stat.col(var, strat, ptype, pname=TRUE), 
+    p <- c(stat.col(var, strat, ptype, pname = TRUE, output = output), 
            rep(NA, length(levels(as.factor(var))) + 2))
     out <-  cbind(out, p)
     out <- replace(out, is.na(out), '')
@@ -272,7 +271,7 @@ cat.var <- function(var,
   # Print the name of the test used beneath each p-value when 
   # 'count' %in% cat.rmstat
   else if (pname == TRUE & ('count' %in% cat.rmstat)) {
-    p <- c(stat.col(var, strat, ptype, pname=TRUE), 
+    p <- c(stat.col(var, strat, ptype, pname = TRUE, output = output), 
            rep(NA, length(levels(as.factor(var))) + 2))
     p <- replace(p, 3, p[2])
     out <-  cbind(out, p)
@@ -588,7 +587,7 @@ cont.var <- function(var,
   
   # Print p-values without the name of the test used
   if (pname == FALSE) {
-    p <- c(stat.col(var, strat, ptype, pname=FALSE), rep(NA, 6))
+    p <- c(stat.col(var, strat, ptype, pname = FALSE, output = output), rep(NA, 6))
     out <- cbind(out, p)
     out <- replace(out, is.na(out), '')
     rownames(out) <- NULL
@@ -600,7 +599,7 @@ cont.var <- function(var,
   
   # Print p-values with the name of the test used (default)
   else if (pname == TRUE & !('count' %in% cont.rmstat)) {
-    p <- c(stat.col(var, strat, ptype, pname=TRUE), rep(NA, 5))
+    p <- c(stat.col(var, strat, ptype, pname = TRUE, output = output), rep(NA, 5))
     out <-  cbind(out, p)
     out <- replace(out, is.na(out), '')
     rownames(out) <- NULL
@@ -612,7 +611,7 @@ cont.var <- function(var,
   
   # Print p-values with the name of the test used if 'count' %in% cont.rmstat
   else if (pname == TRUE & ('count' %in% cont.rmstat)) {
-    p <- c(stat.col(var, strat, ptype, pname=TRUE), rep(NA, 5))
+    p <- c(stat.col(var, strat, ptype, pname = TRUE, output = output), rep(NA, 5))
     p <- replace(p, 3, p[2])
     out <-  cbind(out, p)
     out <- replace(out, is.na(out), '')
@@ -1137,13 +1136,15 @@ make.table <- function(dat,
                     vspace      = TRUE,
                     SIMPLIFY    = FALSE)
     
-    #Reorder output by variable order in dataset
+    # Reorder output by variable order in dataset
     tab <- do.call(rbind, 
                    (c(conts))[order(match(names(c(conts)), 
                                           names(dat)))])
-    if (all(cont.ptype=="None")) { 
+    if (all(cont.ptype == "None")) { 
       tab <- tab[, -dim(tab)[2]]
     }
+    
+    # Replace uncalculated values with hyphens
     tab[grepl("NaN", tab)] <- "-"
     tab[grepl("NA", tab)] <- "-"
     tab[grepl("-Inf", tab)] <- "-"
@@ -1193,14 +1194,17 @@ make.table <- function(dat,
                                           )
                                          ]
                                         )
-    if (all(cat.ptype=="None" & all(cont.ptype=="None"))) { 
+    
+    # Remove p-value column if no p-values are calculated
+    if (all(cat.ptype == "None" & all(cont.ptype == "None"))) { 
       tab <- tab[, -dim(tab)[2]]
     }
+    
+    # Replace uncalculated values with hyphens
     tab[grepl("NaN", tab)] <- "-"
     tab[grepl("NA", tab)] <- "-"
     tab[grepl("-Inf", tab)] <- "-"
   }
-  
   
   # Define column names
   if (!is.null(colnames)) {
@@ -1234,9 +1238,9 @@ make.table <- function(dat,
         }
         else if (output == 'latex') {
           out.latex(tab, 
-                    colnames     =colnames, 
-                    header.style =header.style, 
-                    factor.style =factor.style, 
+                    colnames     = colnames, 
+                    header.style = header.style, 
+                    factor.style = factor.style, 
                     stat.style   = stat.style)
           } 
         }
@@ -1325,8 +1329,8 @@ quick.table <- function(dat,
              cont.varlist = cont.varlist,
              cont.header  = names(sapply(cont.varlist, 
                                          FUN = get, 
-                                         simplify = F, 
-                                         USE.NAMES = T)),
+                                         simplify = FALSE, 
+                                         USE.NAMES = TRUE)),
              
              # Basic table options
              strat        = strat,
@@ -1342,7 +1346,8 @@ quick.table <- function(dat,
 stat.col <- function(var, 
                      strat, 
                      ptype, 
-                     pname = TRUE) {
+                     pname = TRUE,
+                     output) {
   
   #------------------#
   # One sample tests #
@@ -1355,7 +1360,7 @@ stat.col <- function(var,
     else if (ptype == 'wilcox.oneway') {
       p <- wilcox.test(var, mu = 0)$p.value
       }
-  # Binomial test, proportion=0.5
+  # Binomial test, proportion = 0.5
       else if (ptype == 'prop.oneway') {
         p <- prop.test(sum(var, na.rm = TRUE), 
                        sum(!is.na(var)), p = 0.5)$p.value
@@ -1414,6 +1419,7 @@ stat.col <- function(var,
   #------------#
   # No p-value #
   #------------#
+  # Print a placeholder dash if no p-value is calculated
   else if (ptype == "None") {
     p <- "-"
     }
@@ -1428,12 +1434,18 @@ stat.col <- function(var,
     else if (p == "-") {
       p <- "-"
       }
-      else if (p < 0.001) {
+      else if (p < 0.001 & output %in% c("plain", "latex")) {
         p <- "<0.001"
         }
-        else if (p > 0.999) { 
-          p <- ">0.999"
+        else if (p < 0.001 & output == "html") {
+          p <- "&lt;0.001"
           }
+          else if (p > 0.999 & output %in% c("plain", "latex")) { 
+            p <- ">0.999"
+            }
+            else if (p > 0.999 & output == "html") {
+              p <- "&gt;0.999"
+              }
   
   
   # Print name of test or statistic if requested
@@ -1475,9 +1487,17 @@ stat.col <- function(var,
                             p.col <- c(p, 'McNemar')
                             }
                             else if (ptype=="None") {
-                              p.col <- c(p, "-")
+                              if (output == "plain") {
+                                p.col <- c(p, "-")
+                              }
+                              else if (output == "html") {
+                                p.col <- c(p, "&nbsp;")
+                              }
+                              else if (output == "latex") {
+                                p.col <- c(p, "~")
                               }
                             }
+                          }
     else {p.col <- p}
   return(p.col)
 }  
