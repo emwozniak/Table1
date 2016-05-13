@@ -6,7 +6,7 @@
 \description{This function produces vectors of p-values and tests for addition via ptype= to a summary table generated with \code{\link{make.table}}. P-values are rounded to three decimal places or formatted as '<0.001' as appropriate. The name of the test is printed if requested with pname=TRUE.
 }
 \usage{
-stat.col(var, strat, ptype, pname)
+stat.col(var, strat, ptype, pname, output)
 }
 
 \arguments{
@@ -38,6 +38,9 @@ stat.col(var, strat, ptype, pname)
   }
   \item{pname}{
   If TRUE then the name of the statistical test used will be printed below the p-value. Optional; defaults to FALSE.
+  }
+  \item{output}{
+  Type of output, passed from \code{\link{make.table}} or \code{\link{quick.table}}. Optional; defaults to "plain".
   }
 }
 

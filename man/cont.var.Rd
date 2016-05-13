@@ -71,20 +71,20 @@ cont.var(var, strat, dec, header, ptype, pname, cont.rmstat, vspace, output)
 library(survival)
 
 # Default output 
-cont.var(var   = age,
-         strat = sex
+cont.var(var   = pbc$age,
+         strat = pbc$sex
          )
          
 # Naming options and p-value         
-cont.var(var    = age,
-         strat  = sex,
+cont.var(var    = pbc$age,
+         strat  = pbc$sex,
          header = "Age",
          ptype  = "ttest"
          )
          
 # Remove min/max and missing statistics, and test for p-value
-cont.var(var         = age,
-         strat       = sex,
+cont.var(var         = pbc$age,
+         strat       = pbc$sex,
          header      = "Age",
          ptype       = "ttest",
          cont.rmstat = c("minmax", "miss"),

@@ -67,21 +67,21 @@ cat.var(var, strat, dec, rownames, header, ptype, pname, cat.rmstat, vspace, out
 library(survival)
 
 # Default output
-cat.var(var   = hepato, 
-        strat = sex
+cat.var(var   = pbc$hepato, 
+        strat = pbc$sex
         )
         
 # Naming options and p-value
-cat.var(var      = hepato, 
-        strat    = sex, 
+cat.var(var      = pbc$hepato, 
+        strat    = pbc$sex, 
         rownames = c("Not present", "Present"),
         header   = c("Hepatomegaly"),
         ptype    = "chisq"
         )
         
 # Remove row percents, missing values, and name of statistical test used
-cat.var(var        = hepato, 
-        strat      = sex, 
+cat.var(var        = pbc$hepato, 
+        strat      = pbc$sex, 
         rownames   = c("Not present", "Present"),
         header     = c("Hepatomegaly"),
         ptype      = "chisq",
