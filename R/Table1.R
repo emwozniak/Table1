@@ -985,8 +985,12 @@ make.table <- function(dat,
   }
   
   # Lists of variables, headers, and rownames must be equal length
-  if (!(length(cat.varlist) == length(cat.header) == length(cat.rownames))) {
-    warning("cat.varlist, cat.header, and cat.rownames must be the same length.")
+  if (!(length(cat.varlist) == length(cat.header))) {
+    warning("cat.varlist and cat.header must be the same length.")
+  }
+  
+  if (!(length(cat.varlist) == length(cat.rownames))) {
+    warning("cat.varlist and cat.rownames must be the same length.")
   }
   
   if (!(length(cont.varlist) == length(cont.header))) {
