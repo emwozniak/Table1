@@ -46,29 +46,29 @@ library(htmlTable)
 attach(pbc)
 
 #Plain text table generated with make.table using vectorized inputs
-make.table(dat=pbc,
-    cat.varlist=c('stage', 'sex'),
-    cat.header=c('Stage', 'Sex'),
-    cat.rownames=list(c('I', 'II', 'III', 'IV'), c('Male', 'Female')),
-    cat.ptype=c('fisher', 'fisher'),   
-    cont.varlist=c('bili', 'copper'),
-    cont.header=c('Bilirubin', 'Urine copper'),
-    cont.ptype=c('wilcox', 'wilcox'), 
-    strat=c('trt'),
-    #Remove row percents from all categorical variables (list is recycled)
-    cat.rmstat=list('row'),
-    #Remove missing, min/max from bili and no summary stats from copper
-    cont.rmstat=list(c('miss', 'minmax'), 'None'),
-    colnames=c('', 'D-penicillamine', 'Placebo', 'Overall', 'p-value')
+make.table(dat   = pbc,
+    cat.varlist  = c('stage', 'sex'),
+    cat.header   = c('Stage', 'Sex'),
+    cat.rownames = list(c('I', 'II', 'III', 'IV'), c('Male', 'Female')),
+    cat.ptype    = c('fisher', 'fisher'),   
+    cont.varlist = c('bili', 'copper'),
+    cont.header  = c('Bilirubin', 'Urine copper'),
+    cont.ptype   = c('wilcox', 'wilcox'), 
+    strat        = c('trt'),
+    # Remove row percents from all categorical variables (list is recycled)
+    cat.rmstat   = list('row'),
+    # Remove missing, min/max from bili and no summary stats from copper
+    cont.rmstat  = list(c('miss', 'minmax'), 'None'),
+    colnames     = c('', 'D-penicillamine', 'Placebo', 'Overall', 'p-value')
     )
     
-#HTML table generated with quick.table 
+# HTML table generated with quick.table 
 library(htmlTable)
-quick.table(dat=pbc,
-    strat='sex',
-    colnames=c('', 'Male', 'Female', 'Overall'),
-    #See www.color-hex.com for codes
-    output='html',
-    stripe.col='#d0f2b0'
+quick.table(dat = pbc,
+    strat       = 'sex',
+    colnames    = c('', 'Male', 'Female', 'Overall'),
+    # See www.color-hex.com for codes
+    output      = 'html',
+    stripe.col  = '#d0f2b0'
     )
 }
