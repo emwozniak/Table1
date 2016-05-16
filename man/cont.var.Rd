@@ -4,7 +4,7 @@
 \title{Continuous Variable Summary}
 
 \description{
-This function computes mean (SD), median (IQR), Q1/Q3, min/max, and a count of missings for a continuous variable input, optionally stratified by another variable, and with the option to compute p-values.
+This function computes the mean (SD), median (IQR), Q1/Q3, min/max, and a count of missings for a continuous variable input, optionally stratified by another variable, and with the option to compute p-values.
 }
 
 \usage{
@@ -28,7 +28,7 @@ cont.var(var, strat, dec, header, ptype, pname, cont.rmstat, vspace, output)
   Statistical test for p-value. Optional; defaults to none. See \code{\link{stat.col}} for a complete list of options.
   }
   \item{pname}{
-  If TRUE then the name of the statistical test used will be printed below the p-value(default). Optional.
+  If TRUE then the name of the statistical test used will be printed below the p-value (default). Optional.
   }
   \item{cont.rmstat}{
   Vector naming the statistics that should be removed from the summary data frame. Optional; defaults to none.
@@ -49,7 +49,7 @@ cont.var(var, strat, dec, header, ptype, pname, cont.rmstat, vspace, output)
   }
 }
 
-\details{Note that warnings and errors beyond those automatically provided by some base R functions are not in place for the improper use of significance testing. For example, if a t-test is requested with more than two strata, the code will execute and the returned p-value will reflect a test of only the first two strata.
+\details{Note that warnings and errors beyond those automatically provided by some base R functions are not in place for the improper use of significance testing. For example, if a t-test is requested across more than two strata, the code will execute and the returned p-value will reflect a test of only the first two strata.
 }
 
 \value{Returns a data frame of continuous summary statistics.}

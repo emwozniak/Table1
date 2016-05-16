@@ -3,7 +3,7 @@
 
 \title{Quick Summary Table}
 
-\description{Similarly to \code{\link{make.table}}, this function produces summary statistics for categeorical and continuous variables and combines the results into a data frame for plain text, HTML, or LaTeX output. However, minimal input (an \code{\link{attach}}ed data frame only) is required to construct the table, as this function dynamically classifies variables as either categorical or continuous. This function is ideal for rapid summaries of data frames, but \code{\link{make.table}} should be used instead for custom labeling and significance testing.
+\description{Similarly to \code{\link{make.table}}, this function produces summary statistics for categeorical and continuous variables and combines the results into a data frame for plain text, HTML, or LaTeX output. However, minimal input (a data frame only) is required to construct the table, as this function dynamically classifies variables as either categorical or continuous. This function is ideal for rapid summaries of data frames, but \code{\link{make.table}} should be used instead for custom labeling and significance testing.
 }
 \usage{
 quick.table(dat, strat, dec, colnames, output, classlim, stripe, stripe.col)
@@ -46,9 +46,6 @@ Returns a table of summary statistics for specified categorical and continuous v
 A few miscellaneous notes: \cr
 \cr
 Table output to HTML and LaTeX require the package dependencies \code{\link{htmlTable}} and \code{\link{xtable}}
-\cr
-\cr
-The user must ensure that no variables share the names of any base R functions. This function throws out such variables with a warning to continue compiling.
 \cr
 \cr
 By default, the final summary table is rearranged such that the variables in the table are in the same order as in the raw data set (dat=). 

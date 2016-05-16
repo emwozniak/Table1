@@ -24,7 +24,7 @@ Maintainer: \packageMaintainer{Table1}
 %}
 
 \note{
-You must \code{\link{attach}} and clean (e.g., replace blank entries with NAs) the data frame of interest before applying these functions. \cr
+You must clean (e.g., replace blank entries with NAs) the data frame of interest before applying these functions. \cr
 \cr
 Working installations of \code{\link{xtable}} and \code{\link{htmlTable}} are required for LaTeX and HTML output, respectively.
 }
