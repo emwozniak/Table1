@@ -1303,13 +1303,13 @@ quick.table <- function(dat,
   }
   
   # Remove any variables with the same name as a base R function
-  if ((any(c(names(dat)) %in% ls('package:base'))) == TRUE) {
-    warning('Variables cannot share the names of any base R functions.')
-    warning(print(paste('Removed variable(s):', 
-                        names(dat)[which(c(names(dat)) %in% ls('package:base'))],
-                        sep=' ')))
-    dat <- dat[, -which(c(names(dat)) %in% ls('package:base'))]
-  }
+#   if ((any(c(names(dat)) %in% ls('package:base'))) == TRUE) {
+#     warning('Variables cannot share the names of any base R functions.')
+#     warning(print(paste('Removed variable(s):', 
+#                         names(dat)[which(c(names(dat)) %in% ls('package:base'))],
+#                         sep=' ')))
+#     dat <- dat[, -which(c(names(dat)) %in% ls('package:base'))]
+#   }
   
   #-------------------------------#
   # Classify continuous variables #
@@ -1346,22 +1346,12 @@ quick.table <- function(dat,
              
              # Categorical variable options
              cat.varlist  = cat.varlist,
-             cat.header   = names(sapply(cat.varlist, 
-                                         FUN = get, 
-                                         simplify = FALSE, 
-                                         USE.NAMES = TRUE)),
-             cat.rownames = lapply(sapply(cat.varlist, 
-                                          FUN = get, 
-                                          simplify = FALSE, 
-                                          USE.NAMES = TRUE), 
-                                   FUN=function(x) as.vector(levels(as.factor(x)))),
+             cat.header   = names(dat[, cat.varlist])
+             cat.rownames = lapply(lapply(dat[, cat.varlist], factor), levels)
              
              # Continuous variable options
              cont.varlist = cont.varlist,
-             cont.header  = names(sapply(cont.varlist, 
-                                         FUN = get, 
-                                         simplify = FALSE, 
-                                         USE.NAMES = TRUE)),
+             cont.header  = names(dat[, cont.varlist])
              
              # Basic table options
              strat        = strat,
