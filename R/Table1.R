@@ -1346,12 +1346,12 @@ quick.table <- function(dat,
              
              # Categorical variable options
              cat.varlist  = cat.varlist,
-             cat.header   = names(dat[, cat.varlist])
-             cat.rownames = lapply(lapply(dat[, cat.varlist], factor), levels)
+             cat.header   = names(dat[, cat.varlist]),
+             cat.rownames = lapply(lapply(dat[, cat.varlist], factor), levels),
              
              # Continuous variable options
              cont.varlist = cont.varlist,
-             cont.header  = names(dat[, cont.varlist])
+             cont.header  = names(dat[, cont.varlist]),
              
              # Basic table options
              strat        = strat,
